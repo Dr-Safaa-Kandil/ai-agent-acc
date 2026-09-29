@@ -1,0 +1,23 @@
+{
+  "name": "ai-agent-acc",
+  "version": "1.0.0",
+  "description": "الوكيل الذكي للمحاسبة المالية - النظام الشامل المتكامل",
+  "main": "api/process_tx.py",
+  "scripts": {
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "fastapi": "^0.110.0",
+    "pydantic": "^2.6.4",
+    "requests": "^2.31.0",
+    "google-api-python-client": "^2.120.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
+}

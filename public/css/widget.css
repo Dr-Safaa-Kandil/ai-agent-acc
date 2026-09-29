@@ -1,0 +1,10 @@
+/* تنسيقات عامة للمساعد الذكي وأيقونة الحقيبة */
+body { font-family: Tahoma, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; }
+.ai-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+.launcher-btn { background: #2563eb; color: white; border: none; border-radius: 30px; padding: 12px 20px; cursor: pointer; font-size: 16px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.modal-box { position: absolute; bottom: 60px; right: 0; width: 350px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+.welcome-container { transition: transform 0.3s ease; background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 14px; color: #475569; }
+.controls-section select, .actions-section button, .persistence-options button { width: 100%; padding: 8px; margin-top: 5px; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
+.persistence-options button { background: #059669; color: white; border: none; }
+.persistence-options button:hover { background: #047857; }

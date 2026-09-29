@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent for Financial Accounting - TaaS</title>
+    <link rel="stylesheet" href="css/widget.css">
+</head>
+<body>
+    <!-- الحاوية الرئيسية للمساعد الذكي -->
+    <div id="ai-cost-assistant-widget" class="ai-widget-container">
+        <!-- زر الإطلاق بأيقونة الحقيبة -->
+        <button id="ai-launcher-btn" class="launcher-btn">
+            🛍️ <span id="launcher-text">المساعد المحاسبي</span>
+        </button>
+        
+        <!-- النافذة المنسدلة التفاعلية -->
+        <div id="ai-modal-box" class="modal-box" style="display: none;">
+            <div class="modal-header">
+                <span id="header-title">الوكيل الذكي للمحاسبة المالية</span>
+                <button id="lang-toggle-btn">En / Ar</button>
+            </div>
+            
+            <!-- رسالة الترحيب التي تنتقل للأسفل -->
+            <div id="welcome-msg-container" class="welcome-container">
+                <p id="welcome-text">مرحباً بك! أنا وكيلك الذكي لتسجيل التكاليف والمعاملات فورياً.</p>
+            </div>
+
+            <!-- خيارات الضبط والعملات -->
+            <div class="controls-section">
+                <select id="country-currency-select">
+                    <option value="EGY">مصر (ج.م - بدون سعر صرف)</option>
+                    <option value="SAU">السعودية (ريال سعودي)</option>
+                    <option value="ARE">الإمارات (درهم إماراتي)</option>
+                    <option value="KWT">الكويت (دينار كويتي)</option>
+                </select>
+            </div>
+
+            <!-- أزرار الإدخال والوسائط -->
+            <div class="actions-section">
+                <button id="record-audio-btn">🎤 تسجيل صوتي</button>
+                <button id="scan-doc-btn">📷 مسح ضوئي</button>
+            </div>
+
+            <!-- عرض النتيجة واستخلاص المعاملة -->
+            <div id="result-display-area" class="result-area"></div>
+
+            <!-- خيارات الرصد والترحيل -->
+            <div class="persistence-options">
+                <button id="save-live-db">رصد لحظي (قاعدة البيانات)</button>
+                <button id="save-sheets-btn">ترحيل (جوجل شيت اليومية الإيطالية)</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/recorder.js"></script>
+</body>
+</html>
