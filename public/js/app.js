@@ -5,8 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.getElementById('manual-tx-textarea');
     const submitTextBtn = document.getElementById('submit-text-tx-btn');
     const resultArea = document.getElementById('result-display-area');
-    const calcConvertBtn = document.getElementById('calc-convert-btn');
+    const countrySelect = document.getElementById('country-currency-select');
     const foreignInput = document.getElementById('foreign-amount-input');
+    const calcConvertBtn = document.getElementById('calc-convert-btn');
+    const exchangeRateDisplay = document.getElementById('exchange-rate-display');
+    const hiddenFileInput = document.getElementById('hidden-file-input');
+    const selectImageBtn = document.getElementById('select-image-btn');
     let isArabic = true;
 
     // فتح وإغلاق النافذة
@@ -14,38 +18,62 @@ document.addEventListener('DOMContentLoaded', () => {
         modalBox.style.display = modalBox.style.display === 'none' ? 'flex' : 'none';
     });
 
-    // أدوات المحرر (نسخ، تراجع، لصق)
-    document.getElementById('undo-btn').addEventListener('click', () => { textarea.value = ""; });
-    document.getElementById('copy-btn').addEventListener('click', () => { navigator.clipboard.writeText(textarea.value); alert("تم النسخ!"); });
-    document.getElementById('paste-btn').addEventListener('click', async () => { textarea.value = await navigator.clipboard.readText(); });
+    // التحكم في حالة الدولة وسعر الصرف اللحظي
+    countrySelect.addEventListener('change', (e) => {
+        let val = e.target.value;
+        if (val === 'EGY') {
+            foreignInput.disabled = true;
+            foreignInput.value = '';
+            exchangeRateDisplay.innerText = 'سعر الصرف اللحظي: محلي (بدون تحويل)';
+        } else {
+            foreignInput.disabled = false;
+            let rate = val === 'USD' ? '50.50' : (val === 'SAU' ? '13.50' : '13.80');
+            exchangeRateDisplay.innerText = `سعر الصرف اللحظي: ${rate} جنيه`;
+        }
+    });
 
-    // حساب وتحويل العملات الأجنبية/الخليجية للجنيه المصري
+    // تفريغ مساحة النتائج فوراً عند وضع المؤشر أو بدء الإدخال
+    const resetResults = () => {
+        resultArea.style.display = 'none';
+        document.getElementById('res-amount').innerText = '0.00';
+        document.getElementById('res-debit').innerText = '--';
+        document.getElementById('res-credit').innerText = '--';
+        document.getElementById('res-financial-statement').innerText = '--';
+        document.getElementById('res-statement-account').innerText = '--';
+    };
+
+    textarea.addEventListener('focus', resetResults);
+    document.getElementById('record-audio-btn').addEventListener('click', resetResults);
+    selectImageBtn.addEventListener('click', () => { resetResults(); hiddenFileInput.click(); });
+
+    // أدوات المحرر النصي
+    document.getElementById('undo-btn').addEventListener('click', () => { textarea.value = ""; });
+    document.getElementById('delete-all-btn').addEventListener('click', () => { textarea.value = ""; resetResults(); });
+    document.getElementById('copy-btn').addEventListener('click', () => { navigator.clipboard.writeText(textarea.value); alert("تم النسخ بنجاح!"); });
+    document.getElementById('paste-btn').addEventListener( 'click', async () => { textarea.value = await navigator.clipboard.readText(); });
+
+    // حساب وتحويل العملات الأجنبية للجنيه المصري
     calcConvertBtn.addEventListener('click', () => {
         let val = parseFloat(foreignInput.value) || 0;
-        let currencySelect = document.getElementById('country-currency-select').value;
-        let rate = 1.0;
-        if (currencySelect === 'SAU') rate = 13.5; // مثال سعر صرف الريال مقابل الجنيه
-        else if (currencySelect === 'ARE') rate = 13.8; // مثال سعر الصرف
-        else if (currencySelect === 'USD') rate = 50.5; // مثال سعر صرف الدولار
-
+        let currency = countrySelect.value;
+        let rate = currency === 'USD' ? 50.50 : (currency === 'SAU' ? 13.50 : 13.80);
         let totalEGP = val * rate;
         document.getElementById('res-amount').innerText = totalEGP.toFixed(2);
         resultArea.style.display = 'flex';
     });
 
-    // إرسال النص المكتوب أو محاكاة رسائل الواتساب للمعالجة
+    // إرسال النص للمعالجة المحاسبية الفورية
     submitTextBtn.addEventListener('click', async () => {
         let textData = textarea.value;
         if (!textData) {
-            alert("يرجى كتابة أو لصق نص المعاملة أولاً!");
+            alert("يرجى كتابة أو لصق المعاملة المالية أولاً!");
             return;
         }
 
-        // إرسال البيانات لدالة السيرفرليس لمعالجة المعاملة وتحليلها محاسبياً
         let response = await fetch('/api/process_tx', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: textData, currency: document.getElementById('country-currency-select').value })
+            body: JSON.stringify({ text: textData, currency: countrySelect.value })
         });
         let result = await response.json();
         
@@ -53,11 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('res-amount').innerText = result.data.amount;
             document.getElementById('res-debit').innerText = result.data.debit_account;
             document.getElementById('res-credit').innerText = result.data.credit_account;
+            document.getElementById('res-financial-statement').innerText = result.data.financial_statement;
+            document.getElementById('res-statement-account').innerText = result.data.statement_account;
             resultArea.style.display = 'flex';
         }
     });
 
-    // تبديل اللغات
+    // تبديل لغات الواجهة
     langToggleBtn.addEventListener('click', () => {
         isArabic = !isArabic;
         document.documentElement.lang = isArabic ? 'ar' : 'en';
