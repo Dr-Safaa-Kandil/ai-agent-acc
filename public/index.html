@@ -13,7 +13,7 @@
             🛍️ <span id="launcher-text">المساعد المحاسبي</span>
         </button>
         
-        <!-- النافذة المنسدلة التفاعلية (معروضة بنسبة الثلثين تقريباً وبدون شريط تمرير رئيسي) -->
+        <!-- النافذة المنسدلة التفاعلية (بمقاس شاشة موبايل عادي مضغوطة ومنظمة) -->
         <div id="ai-modal-box" class="modal-box" style="display: none;">
             <div class="modal-header">
                 <span id="header-title">الوكيل الذكي للمحاسبة المالية</span>
@@ -32,24 +32,24 @@
                 <span id="exchange-rate-label">سعر صرف العملة</span>
             </div>
 
-            <!-- صف العملات الأجنبية المدمج: الدولة، المبلغ، زر تحويل ج.م برمز الحاسبة -->
+            <!-- صف العملات الأجنبية المدمج: الدولة بعملتها، المبلغ المصغر، وزر تحويل ج.م الأوسع -->
             <div class="foreign-currency-row">
                 <select id="country-currency-select">
-                    <option value="EGY" selected>مصر</option>
-                    <option value="SAU">السعودية</option>
-                    <option value="ARE">الإمارات</option>
-                    <option value="KWT">الكويت</option>
-                    <option value="USD">الدولار الأمريكي</option>
-                    <option value="EUR">اليورو</option>
-                    <option value="CNY">اليوان الصيني</option>
+                    <option value="EGY" selected>مصر (جنيه مصري)</option>
+                    <option value="SAU">السعودية (ريال سعودي)</option>
+                    <option value="ARE">الإمارات (درهم إماراتي)</option>
+                    <option value="KWT">الكويت (دينار كويتي)</option>
+                    <option value="USD">الدولار الأمريكي (دولار)</option>
+                    <option value="EUR">اليورو (يورو)</option>
+                    <option value="CNY">اليوان الصيني (يوان)</option>
                 </select>
                 <input type="number" id="foreign-amount-input" placeholder="المبلغ..." disabled>
                 <button id="calc-convert-btn" title="تحويل ج.م">🧮 تحويل ج.م</button>
             </div>
 
-            <!-- إطار ناتج التحويل وبيان المعاملة الخارجية -->
+            <!-- إطار ناتج التحويل وبيان المعاملة الخارجية (خانة البيان أكبر بنسبة 50%) -->
             <div class="foreign-result-row">
-                <input type="text" id="res-converted-amount" placeholder="ناتج التحويل بالجنيه..." readonly>
+                <input type="text" id="res-converted-amount" placeholder="ناتج التحويل..." readonly>
                 <input type="text" id="foreign-statement-input" placeholder="أكمل بيان المعاملة المالية بالدولة الأجنبية">
             </div>
 
@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <!-- إطار المعاملة المالية المحلية بمصر (مع القيد الذكي لغير مصر) -->
+            <!-- إطار المعاملة المالية المحلية بمصر والأمثلة المرتبطة -->
             <div class="local-tx-section">
                 <textarea id="manual-tx-textarea" placeholder="أكتب هنا المعاملة المالية بمصر موضحا المبلغ بالجنيه المصرى والبيان.."></textarea>
                 <div class="examples-box">
