@@ -14,16 +14,18 @@ body {
     margin: 0;
     padding: 10px;
     direction: rtl;
+    text-align: right;
 }
 
 .accounting-widget-container {
-    max-width: 420px;
+    max-width: 390px; /* ضبط العرض ليكون دقيقاً كشاشة موبايل */
     background: var(--bg-gradient);
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    padding: 14px;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 12px;
     margin: auto;
     border: 2px solid #e2e8f0;
+    box-sizing: border-box;
 }
 
 .widget-header {
@@ -32,20 +34,20 @@ body {
     align-items: center;
     background: var(--primary-color);
     color: white;
-    padding: 8px 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
 .widget-header h3 {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .brand-tag {
-    font-size: 11px;
+    font-size: 10px;
     background: rgba(255, 255, 255, 0.2);
-    padding: 2px 6px;
+    padding: 2px 5px;
     border-radius: 4px;
     font-weight: bold;
 }
@@ -54,66 +56,69 @@ body {
     background: var(--accent-color);
     border: none;
     color: #fff;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 3px 6px;
+    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
 }
 
-/* الصف العلوي المعدل هندسياً */
+/* الصف العلوي للعملات والدولة وزر التحويل (منضبط تماماً في سطر واحد) */
 .form-row-top {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 8px;
     align-items: center;
+    width: 100%;
 }
 
 .country-field {
-    width: 25%;
-    height: 32px;
-    font-size: 12px;
-    border-radius: 6px;
+    flex: 1;
+    height: 30px;
+    font-size: 11px;
+    border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 0 4px;
+    padding: 0 3px;
+    background: #fff;
 }
 
 .amount-field {
-    width: 25%;
-    height: 32px;
-    font-size: 12px;
-    border-radius: 6px;
+    flex: 0.8;
+    height: 30px;
+    font-size: 11px;
+    border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 0 4px;
+    padding: 0 3px;
+    background: #fff;
 }
 
 .convert-action-btn {
-    width: 50%;
-    height: 32px;
+    flex: 2.2; /* زر التحويل بعرض أكبر 3 أضعاف تقريباً */
+    height: 30px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 5px;
+    font-size: 11px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+    white-space: nowrap;
 }
 
-/* الصف الفرعي والناتج */
+/* الصف الفرعي والناتج والأيقونات */
 .form-row-sub {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    gap: 6px;
+    gap: 4px;
 }
 
 .foreign-res-field {
-    width: 35%;
-    height: 30px;
+    width: 32%;
+    height: 28px;
     font-size: 11px;
-    border-radius: 6px;
+    border-radius: 5px;
     border: 1px solid var(--border-color);
     background: #f1f5f9;
     text-align: center;
@@ -121,141 +126,124 @@ body {
 
 .action-icons-group {
     display: flex;
-    gap: 3px;
+    gap: 2px;
 }
 
 .icon-btn {
     background: #e2e8f0;
     border: none;
     border-radius: 4px;
-    padding: 4px 6px;
+    padding: 3px 5px;
     font-size: 10px;
     cursor: pointer;
 }
 
-/* صف خانة النص الشاملة */
+/* خانة نص بيان المعاملة */
 .form-row-textarea {
     margin-bottom: 8px;
 }
 
 .full-desc-field {
     width: 100%;
-    height: 55px;
-    border-radius: 6px;
+    height: 50px;
+    border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 6px;
-    font-size: 12px;
+    padding: 5px;
+    font-size: 11px;
     resize: none;
     box-sizing: border-box;
 }
 
 .examples-hint {
-    font-size: 10px;
+    font-size: 9.5px;
     color: #64748b;
-    line-height: 1.3;
+    line-height: 1.2;
     margin-top: 2px;
 }
 
-/* زر إرسال المعالجة البهيج */
+/* زر إرسال المعالجة المبهج */
 .submit-ai-btn {
     width: 100%;
-    height: 38px;
+    height: 34px;
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: bold;
     cursor: pointer;
     margin-bottom: 8px;
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    transition: transform 0.1s ease;
-}
-
-.submit-ai-btn:active {
-    transform: scale(0.98);
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25);
 }
 
 .extra-tools-row {
     display: flex;
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: 4px;
+    margin-bottom: 8px;
 }
 
 .tool-sub-btn {
     flex: 1;
     background: #f8fafc;
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 11px;
-    padding: 6px;
+    border-radius: 5px;
+    font-size: 10px;
+    padding: 5px;
     cursor: pointer;
     color: #334155;
 }
 
-/* صندوق النتائج التحليلية الفورية */
+/* صندوق النتائج التحليلية */
 .results-box-hidden {
     background: #ffffff;
     border: 2px dashed var(--secondary-color);
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 11px;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 10.5px;
     color: var(--text-main);
+    margin-bottom: 8px;
 }
 
 .results-box-hidden h4 {
-    margin: 0 0 6px 0;
+    margin: 0 0 4px 0;
     color: var(--primary-color);
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .results-box-hidden p {
-    margin: 3px 0;
+    margin: 2px 0;
 }
 
-/* أزرار التصدير الملونة للراحة النفسية والبهجة */
+/* أزرار التصدير الملونة المبهجة */
 .export-buttons-row {
     display: flex;
     gap: 4px;
-    margin-top: 8px;
+    margin-top: 6px;
 }
 
 .export-btn {
     flex: 1;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     color: white;
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: bold;
-    padding: 6px 2px;
+    padding: 5px 2px;
     cursor: pointer;
     text-align: center;
 }
 
-.excel-btn {
-    background: #16a34a;
-}
-
-.gsheets-btn {
-    background: #ca8a04;
-}
-
-.db-btn {
-    background: #475569;
-}
+.excel-btn { background: #16a34a; }
+.gsheets-btn { background: #ca8a04; }
+.db-btn { background: #475569; }
 
 .widget-footer-tag {
     text-align: left;
-    font-size: 10px;
+    font-size: 9.5px;
     color: #94a3b8;
-    margin-top: 6px;
+    margin-top: 4px;
     font-weight: bold;
 }
 
-/* وضع المحاذاة الإنجليزية عند تفعيل اللغة */
-body.lang-en {
-    direction: ltr;
-}
-body.lang-en .widget-footer-tag {
-    text-align: right;
-}
+body.lang-en { direction: ltr; text-align: left; }
+body.lang-en .widget-footer-tag { text-align: right; }
