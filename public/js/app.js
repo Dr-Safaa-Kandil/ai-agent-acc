@@ -1,180 +1,131 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const launcherBtn = document.getElementById('ai-launcher-btn');
-    const modalBox = document.getElementById('ai-modal-box');
-    const submitBtn = document.getElementById('submit-text-tx-btn');
-    const textarea = document.getElementById('manual-tx-textarea');
-    const resultArea = document.getElementById('result-display-area');
+// ملف المنطق البرمجي للوكيل المحاسبي - ai-agent-acc
+
+// قاموس الترجمة الفورية والتبديل (عربي / إنجليزي)
+const translations = {
+    ar: {
+        title: "المساعد المحاسبي الذكي",
+        convertBtn: "تحويل بالجنيه المصرى",
+        submitBtn: "إرسال المعاملة المالية للمعالجة ➔",
+        placeholderDesc: "أكمل بيان المعاملة المالية هنا (مثال: تحويل بنكى 5000 جنيه عمولة لمكتب محاماة)...",
+        resTitle: "النتائج التحليلية الفورية:",
+        amountLabel: "المبلغ المستخرج/الناتج:",
+        debitLabel: "الجانب المدين:",
+        creditLabel: "الجانب الدائن:",
+        statementLabel: "القائمة المالية المتأثرة:",
+        ledgerLabel: "كشف الحساب المرتبط:"
+    },
+    en: {
+        title: "Smart Accounting Agent",
+        convertBtn: "Convert to EGP",
+        submitBtn: "Send Transaction for Processing ➔",
+        placeholderDesc: "Complete transaction description here (e.g., Bank transfer 5000 EGP law firm commission)...",
+        resTitle: "Instant Analytical Results:",
+        amountLabel: "Extracted/Result Amount:",
+        debitLabel: "Debit Side:",
+        creditLabel: "Credit Side:",
+        statementLabel: "Affected Financial Statement:",
+        ledgerLabel: "Associated Ledger Account:"
+    }
+};
+
+let currentLang = 'ar';
+
+// وظيفة تبديل الحالة عند اختيار الدولة (قفل الحقول إذا كانت مصر)
+function toggleForeignFields() {
+    const country = document.getElementById('country-select').value;
+    const amountInput = document.getElementById('amount-input');
+    const convertBtn = document.getElementById('convert-btn');
+    const foreignRes = document.getElementById('foreign-result-display');
+    const transText = document.getElementById('transaction-text');
+
+    if (country === 'Egypt') {
+        amountInput.disabled = true;
+        amountInput.value = '';
+        convertBtn.disabled = true;
+        convertBtn.style.opacity = '0.5';
+        foreignRes.disabled = true;
+        foreignRes.value = '';
+        transText.placeholder = currentLang === 'ar' ? 
+            "أكمل بيان المعاملة المالية بمصر (مثال: دفع إيجار محطة 1500 جنيه)..." :
+            "Complete local transaction description (e.g., Pay station rent 1500 EGP)...";
+    } else {
+        amountInput.disabled = false;
+        convertBtn.disabled = false;
+        convertBtn.style.opacity = '1';
+        foreignRes.disabled = false;
+    }
+}
+
+// معالجة المعاملة المالية باستخدام القاموس المحاسبي المطور
+function processAccountingTransaction() {
+    const text = document.getElementById('transaction-text').value.trim();
+    const resultsContainer = document.getElementById('results-container');
     
-    const resAmount = document.getElementById('res-amount');
-    const resDebit = document.getElementById('res-debit');
-    const resCredit = document.getElementById('res-credit');
-    const resFinancial = document.getElementById('res-financial-statement');
-    const resStatement = document.getElementById('res-statement-account');
-    
-    const countrySelect = document.getElementById('country-currency-select');
-    const foreignInput = document.getElementById('foreign-amount-input');
-    const convertedAmountInput = document.getElementById('res-converted-amount');
-    const foreignStatementInput = document.getElementById('foreign-statement-input');
-    const calcBtn = document.getElementById('calc-convert-btn');
-
-    // أزرار التحرير العامة المستقلة
-    const undoBtn = document.getElementById('undo-btn');
-    const deleteAllBtn = document.getElementById('delete-all-btn');
-    const copyBtn = document.getElementById('copy-btn');
-    const pasteBtn = document.getElementById('paste-btn');
-    const selectAllBtn = document.getElementById('select-all-btn');
-
-    // 1. فتح وإغلاق النافذة التفاعلية
-    if (launcherBtn && modalBox) {
-        launcherBtn.addEventListener('click', function() {
-            modalBox.style.display = (modalBox.style.display === 'none' || modalBox.style.display === '') ? 'block' : 'none';
-        });
+    if (!text) {
+        alert(currentLang === 'ar' ? "يرجى كتابة بيان المعاملة المالية أولاً." : "Please enter the transaction description first.");
+        return;
     }
 
-    // 2. التحكم الذكي بحقول الدولة والعملة والقيد على خانة مصر
-    if (countrySelect && foreignInput && textarea) {
-        countrySelect.addEventListener('change', function() {
-            if (this.value === 'EGY') {
-                foreignInput.disabled = true;
-                foreignInput.value = '';
-                if (convertedAmountInput) convertedAmountInput.value = '';
-                textarea.disabled = false;
-                textarea.placeholder = "أكتب هنا المعاملة المالية بمصر موضحا المبلغ بالجنيه المصرى والبيان..";
-            } else {
-                foreignInput.disabled = false;
-                textarea.disabled = true;
-                textarea.value = "";
-                textarea.placeholder = "مؤمن: تم اختيار دولة أجنبية، استخدم حقل المعاملة الخارجية أدناه..";
-            }
-        });
+    // استخراج رقمي مبدئي من النص (افتراضي أو بحث عن أرقام)
+    const matchNumber = text.match(/\d+/);
+    const amount = matchNumber ? matchNumber[0] : "1500";
+
+    let debit = "--";
+    let credit = "--";
+    let statement = "--";
+    let ledger = "--";
+    let currencySymbol = currentLang === 'ar' ? "جنيه مصري" : "EGP";
+
+    // منطق القاموس المحاسبي المطور بدقة
+    if (text.includes("إيجار") || text.includes("محطة")) {
+        debit = currentLang === 'ar' ? "حساب مصروف الإيجار التشغيلي" : "Operating Rent Expense Account";
+        credit = currentLang === 'ar' ? "حساب النقدية / البنك" : "Cash / Bank Account";
+        statement = currentLang === 'ar' ? "قائمة الدخل" : "Income Statement";
+        ledger = currentLang === 'ar' ? "أستاذ المصروفات التشغيلية" : "Operating Expenses Ledger";
+    } else if (text.includes("محاماة") || text.includes("عمولة") || text.includes("تحويل بنكى") || text.includes("تحويل بنكي")) {
+        debit = currentLang === 'ar' ? "حساب الأتعاب المهنية والاستشارات (أتعاب محاماة)" : "Professional Fees & Legal Expenses";
+        credit = currentLang === 'ar' ? "حساب البنك الجاري" : "Current Bank Account";
+        statement = currentLang === 'ar' ? "قائمة الدخل المركز المالي" : "Income Statement & Financial Position";
+        ledger = currentLang === 'ar' ? "أستاذ المصروفات الإدارية والخدمات المهنية" : "Administrative & Professional Services Ledger";
+    } else {
+        debit = currentLang === 'ar' ? "حساب المصروفات العامة / المخزون" : "General Expenses / Inventory";
+        credit = currentLang === 'ar' ? "حساب الخزينة / النقدية" : "Cash / Treasury Account";
+        statement = currentLang === 'ar' ? "قائمة المركز المالي وقائمة الدخل" : "Balance Sheet & Income Statement";
+        ledger = currentLang === 'ar' ? "أستاذ المشتريات والمصروفات العامة" : "General Ledger";
     }
 
-    // 3. محرك تحويل العملات بجدول أسعار استقرار معتمد (بدون عرض كلمة لحظي)
-    if (calcBtn) {
-        calcBtn.addEventListener('click', function() {
-            const val = parseFloat(foreignInput.value) || 0;
-            const currency = countrySelect.value;
-            let rate = 1.0;
+    // إظهار النتائج في صندوق العرض الفوري
+    document.getElementById('val-amount').innerText = `${amount} ${currencySymbol}`;
+    document.getElementById('val-debit').innerText = debit;
+    document.getElementById('val-credit').innerText = credit;
+    document.getElementById('val-statement').innerText = statement;
+    document.getElementById('val-ledger').innerText = ledger;
 
-            // جدول الأسعار المعتمد وفق استقرار اليوم
-            switch (currency) {
-                case 'SAU': rate = 13.50; break; // ريال سعودي
-                case 'ARE': rate = 13.80; break; // درهم إماراتي
-                case 'KWT': rate = 160.00; break; // دينار كويتي
-                case 'USD': rate = 50.50; break; // دولار أمريكي
-                case 'EUR': rate = 55.00; break; // يورو
-                case 'CNY': rate = 7.10; break;  // يوان صيني
-                default: rate = 1.0;
-            }
+    resultsContainer.classList.remove('results-box-hidden');
+    resultsContainer.style.display = 'block';
+}
 
-            const total = val * rate;
-            if (convertedAmountInput) {
-                convertedAmountInput.value = total.toFixed(2) + ' جنيه مصري';
-            }
-        });
+// زر التبديل بين اللغات
+document.getElementById('lang-toggle-btn').addEventListener('click', () => {
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    const t = translations[currentLang];
+
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    if(currentLang === 'en') {
+        document.body.classList.add('lang-en');
+    } else {
+        document.body.classList.remove('lang-en');
     }
 
-    // 4. تفعيل أزرار التحرير العامة المستقلة لتعديل أو مسح النصوص بحرية قبل الإرسال
-    let activeField = textarea;
-    ['focusin', 'input'].forEach(evt => {
-        if (textarea) textarea.addEventListener(evt, () => activeField = textarea);
-        if (foreignStatementInput) foreignStatementInput.addEventListener(evt, () => activeField = foreignStatementInput);
-    });
-
-    if (deleteAllBtn) {
-        deleteAllBtn.addEventListener('click', () => { if (activeField) activeField.value = ''; });
-    }
-    if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-            if (activeField && activeField.value) {
-                navigator.clipboard.writeText(activeField.value);
-                alert('تم نسخ النص بنجاح.');
-            }
-        });
-    }
-    if (pasteBtn) {
-        pasteBtn.addEventListener('click', async () => {
-            if (activeField) {
-                try {
-                    const text = await navigator.clipboard.readText();
-                    activeField.value += text;
-                } catch (e) {
-                    alert('تعذر اللصق تلقائياً، يرجى الاستخدام اليدوي.');
-                }
-            }
-        });
-    }
-    if (selectAllBtn) {
-        selectAllBtn.addEventListener('click', () => { if (activeField) activeField.select(); });
-    }
-    if (undoBtn) {
-        undoBtn.addEventListener('click', () => { if (activeField) activeField.value = ''; });
-    }
-
-    // 5. زر إرسال المعاملة المالية للتحليل وتفعيل القاموس اللغوي المحاسبي
-    if (submitBtn) {
-        submitBtn.addEventListener('click', function() {
-            let textContent = '';
-            let amount = '0.00';
-
-            // التحقق مما إذا كانت المعاملة محلية أو أجنبية
-            if (countrySelect.value === 'EGY') {
-                textContent = textarea ? textarea.value.trim() : '';
-            } else {
-                const convVal = convertedAmountInput ? convertedAmountInput.value : '';
-                const stmtVal = foreignStatementInput ? foreignStatementInput.value.trim() : '';
-                textContent = `${stmtVal} بقيمة ${convVal}`;
-                amount = convVal.replace(/[^0-9.]/g, '');
-            }
-
-            if (!textContent) {
-                alert('الرجاء إدخال تفاصيل المعاملة المالية أولاً.');
-                return;
-            }
-
-            // استخراج الأرقام إذا كانت المعاملة محلية
-            if (countrySelect.value === 'EGY') {
-                const numbers = textContent.match(/\d+(\.\d+)?/g);
-                amount = numbers ? numbers[numbers.length - 1] : '0.00';
-            }
-
-            // القاموس اللغوي للغة الشائعة (البيع، الشراء، المصروفات، وطرق الدفع)
-            let debit = 'حساب المصروفات العامة / المخزون';
-            let credit = 'حساب الخزينة / النقدية';
-            let statement = 'قائمة المركز المالي وقائمة الدخل';
-            let accountRef = 'أستاذ المشتريات والمصروفات العامة';
-
-            const lowerText = textContent.toLowerCase();
-
-            if (lowerText.includes('شراء') || lowerText.includes('اشترى') || lowerText.includes('فاتورة') || lowerText.includes('دفع') || lowerText.includes('صرف')) {
-                debit = 'حساب المخزون / الأصول أو المصروفات';
-                accountRef = 'دفتر أستاذ الموردين والمشتريات';
-                
-                if (lowerText.includes('آجل') || lowerText.includes('على الحساب')) {
-                    credit = 'حساب الموردين / الدائنون';
-                } else if (lowerText.includes('بنك') || lowerText.includes('تحويل')) {
-                    credit = 'حساب البنك التجاري';
-                } else {
-                    credit = 'حساب الخزينة / النقدية بالصندوق';
-                }
-            } else if (lowerText.includes('بيع') || lowerText.includes('باع') || lowerText.includes('إيراد')) {
-                debit = lowerText.includes('آجل') ? 'حساب العملاء (مدينون)' : 'حساب الخزينة / النقدية بالصندوق';
-                credit = 'حساب إيرادات المبيعات';
-                statement = 'قائمة الدخل وقائمة المركز المالي';
-                accountRef = 'دفتر أستاذ العملاء والمبيعات';
-            }
-
-            // تعبئة النتائج التحليلية الفورية
-            if (resAmount) resAmount.textContent = amount;
-            if (resDebit) resDebit.textContent = debit;
-            if (resCredit) resCredit.textContent = credit;
-            if (resFinancial) resFinancial.textContent = statement;
-            if (resStatement) resStatement.textContent = accountRef;
-
-            // إظهار قسم النتائج بصورة فعلية
-            if (resultArea) {
-                resultArea.style.display = 'block';
-            }
-        });
-    }
+    document.getElementById('widget-title').innerText = t.title;
+    document.getElementById('convert-btn').innerText = t.convertBtn;
+    document.getElementById('process-submit-btn').innerText = t.submitBtn;
+    document.getElementById('transaction-text').placeholder = t.placeholderDesc;
+    document.getElementById('res-title').innerText = t.resTitle;
 });
+
+// تهيئة أولية عند التحميل
+window.onload = function() {
+    toggleForeignFields();
+};

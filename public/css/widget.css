@@ -1,174 +1,261 @@
-/* ضبط النافذة لتناسب ارتفاع وعرض شاشة الموبايل المعتاد بدقة */
-.modal-box {
-    position: fixed;
-    bottom: 70px;
-    left: 20px;
-    width: 390px; 
-    max-height: 72vh; /* تقييد الارتفاع الأقصى ليطابق شاشة الموبايل */
-    overflow-y: auto;  /* شريط تمرير داخلي ناعم عند الحاجة فقط */
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    padding: 10px 12px; /* تقليص الهوامش الداخلية لضغط العناصر رأسياً */
-    z-index: 1001;
-    box-sizing: border-box;
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #10b981;
+    --accent-color: #f59e0b;
+    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --border-color: #cbd5e1;
 }
 
-.modal-header {
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f1f5f9;
+    margin: 0;
+    padding: 10px;
+    direction: rtl;
+}
+
+.accounting-widget-container {
+    max-width: 420px;
+    background: var(--bg-gradient);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 14px;
+    margin: auto;
+    border: 2px solid #e2e8f0;
+}
+
+.widget-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 6px;
-    margin-bottom: 6px;
-    font-weight: bold;
-    color: #1e3a8a;
-    font-size: 13px;
+    background: var(--primary-color);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
 }
 
-.welcome-container {
-    background: #f8fafc;
-    border-right: 4px solid #2563eb;
-    padding: 6px 8px;
-    margin-bottom: 6px;
-    border-radius: 4px;
+.widget-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.brand-tag {
     font-size: 11px;
-    color: #334155;
-    line-height: 1.3;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
 }
 
-.exchange-info-bar {
+.lang-btn {
+    background: var(--accent-color);
+    border: none;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* الصف العلوي المعدل هندسياً */
+.form-row-top {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.country-field {
+    width: 25%;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    padding: 0 4px;
+}
+
+.amount-field {
+    width: 25%;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    padding: 0 4px;
+}
+
+.convert-action-btn {
+    width: 50%;
+    height: 32px;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+/* الصف الفرعي والناتج */
+.form-row-sub {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    gap: 6px;
+}
+
+.foreign-res-field {
+    width: 35%;
+    height: 30px;
     font-size: 11px;
-    color: #64748b;
-    margin-bottom: 6px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
     background: #f1f5f9;
-    padding: 4px 8px;
-    border-radius: 4px;
+    text-align: center;
 }
 
-/* تقليص الارتفاع والهوامش لصف العملات والناتج والأزرار */
-.foreign-currency-row, .foreign-result-row {
+.action-icons-group {
     display: flex;
-    gap: 5px;
-    margin-bottom: 6px;
+    gap: 3px;
 }
 
-.foreign-currency-row select, .foreign-currency-row input, .foreign-currency-row button,
-.foreign-result-row input {
-    padding: 5px 6px;
+.icon-btn {
+    background: #e2e8f0;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+/* صف خانة النص الشاملة */
+.form-row-textarea {
+    margin-bottom: 8px;
+}
+
+.full-desc-field {
+    width: 100%;
+    height: 55px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    padding: 6px;
     font-size: 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 5px;
+    resize: none;
+    box-sizing: border-box;
 }
 
-.whatsapp-editor-box {
-    margin-bottom: 6px;
+.examples-hint {
+    font-size: 10px;
+    color: #64748b;
+    line-height: 1.3;
+    margin-top: 2px;
 }
 
-.editor-toolbar {
+/* زر إرسال المعالجة البهيج */
+.submit-ai-btn {
+    width: 100%;
+    height: 38px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+    transition: transform 0.1s ease;
+}
+
+.submit-ai-btn:active {
+    transform: scale(0.98);
+}
+
+.extra-tools-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.tool-sub-btn {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 11px;
+    padding: 6px;
+    cursor: pointer;
+    color: #334155;
+}
+
+/* صندوق النتائج التحليلية الفورية */
+.results-box-hidden {
+    background: #ffffff;
+    border: 2px dashed var(--secondary-color);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 11px;
+    color: var(--text-main);
+}
+
+.results-box-hidden h4 {
+    margin: 0 0 6px 0;
+    color: var(--primary-color);
+    font-size: 12px;
+}
+
+.results-box-hidden p {
+    margin: 3px 0;
+}
+
+/* أزرار التصدير الملونة للراحة النفسية والبهجة */
+.export-buttons-row {
     display: flex;
     gap: 4px;
-    background: #f1f5f9;
-    padding: 3px;
-    border-radius: 5px;
-    justify-content: space-between;
+    margin-top: 8px;
 }
 
-.editor-toolbar button {
-    background: white;
-    border: 1px solid #cbd5e1;
-    padding: 3px 6px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 11px;
-}
-
-.local-tx-section {
-    background: #fafaf9;
-    border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 6px;
-    margin-bottom: 6px;
-}
-
-.local-tx-section textarea {
-    width: 100%;
-    height: 50px;
-    padding: 5px;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    font-size: 12px;
-    box-sizing: border-box;
-    resize: vertical;
-}
-
-.examples-box {
-    font-size: 10.5px;
-    color: #64748b;
-    margin-top: 3px;
-    line-height: 1.15;
-}
-
-.examples-box p {
-    margin: 1px 0;
-}
-
-.submit-action-row {
-    margin-bottom: 6px;
-}
-
-.send-text-btn {
-    width: 100%;
-    background: #16a34a;
-    color: white;
+.export-btn {
+    flex: 1;
     border: none;
-    padding: 7px;
-    border-radius: 5px;
-    font-size: 12px;
+    border-radius: 6px;
+    color: white;
+    font-size: 10px;
     font-weight: bold;
+    padding: 6px 2px;
     cursor: pointer;
-}
-
-.actions-section {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 6px;
-}
-
-.actions-section button {
-    flex: 1;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    padding: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 10.5px;
-}
-
-.result-area {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 5px;
-    padding: 6px;
-    margin-bottom: 6px;
-}
-
-.persistence-options {
-    display: flex;
-    gap: 5px;
-}
-
-.persistence-options button {
-    flex: 1;
-    background: #475569;
-    color: white;
-    border: none;
-    padding: 5px 2px;
-    border-radius: 5px;
-    font-size: 10.5px;
     text-align: center;
-    cursor: pointer;
-    line-height: 1.15;
+}
+
+.excel-btn {
+    background: #16a34a;
+}
+
+.gsheets-btn {
+    background: #ca8a04;
+}
+
+.db-btn {
+    background: #475569;
+}
+
+.widget-footer-tag {
+    text-align: left;
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 6px;
+    font-weight: bold;
+}
+
+/* وضع المحاذاة الإنجليزية عند تفعيل اللغة */
+body.lang-en {
+    direction: ltr;
+}
+body.lang-en .widget-footer-tag {
+    text-align: right;
 }

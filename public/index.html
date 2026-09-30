@@ -3,109 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الوكيل الذكي للمحاسبة المالية</title>
-    <link rel="stylesheet" href="css/widget.css">
+    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية</title>
+    <link rel="stylesheet" href="widget.css">
 </head>
 <body>
-    <div id="ai-cost-assistant-widget" class="ai-widget-container">
-        <!-- زر إطلاق المساعد المحاسبي -->
-        <button id="ai-launcher-btn" class="launcher-btn">
-            🛍️ <span id="launcher-text">المساعد المحاسبي</span>
-        </button>
-        
-        <!-- النافذة المنسدلة التفاعلية (بمقاس شاشة موبايل عادي مضغوطة ومنظمة) -->
-        <div id="ai-modal-box" class="modal-box" style="display: none;">
-            <div class="modal-header">
-                <span id="header-title">الوكيل الذكي للمحاسبة المالية</span>
-                <button id="lang-toggle-btn">En / Ar</button>
-            </div>
-            
-            <!-- رسالة الترحيب على سطرين -->
-            <div id="welcome-msg-container" class="welcome-container">
-                <p id="welcome-text-line1">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</p>
-                <p id="welcome-text-line2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل العملة</p>
-            </div>
 
-            <!-- شريط التاريخ وبجواره نص سعر صرف العملة (بدون كلمة لحظي) -->
-            <div class="exchange-info-bar">
-                <span id="current-date-display">التاريخ: 2026-09-30</span>
-                <span id="exchange-rate-label">سعر صرف العملة</span>
-            </div>
+    <div class="accounting-widget-container">
+        <!-- شريط العنوان -->
+        <div class="widget-header">
+            <span class="brand-tag">ai-agent-acc</span>
+            <h3 id="widget-title">المساعد المحاسبي الذكي</h3>
+            <button id="lang-toggle-btn" class="lang-btn">En / Ar</button>
+        </div>
 
-            <!-- صف العملات الأجنبية المدمج: الدولة بعملتها، المبلغ المصغر، وزر تحويل ج.م الأوسع -->
-            <div class="foreign-currency-row">
-                <select id="country-currency-select">
-                    <option value="EGY" selected>مصر (جنيه مصري)</option>
-                    <option value="SAU">السعودية (ريال سعودي)</option>
-                    <option value="ARE">الإمارات (درهم إماراتي)</option>
-                    <option value="KWT">الكويت (دينار كويتي)</option>
-                    <option value="USD">الدولار الأمريكي (دولار)</option>
-                    <option value="EUR">اليورو (يورو)</option>
-                    <option value="CNY">اليوان الصيني (يوان)</option>
+        <!-- محتوى النموذج -->
+        <div class="widget-body">
+            <!-- صف العملات والدولة -->
+            <div class="form-row-top">
+                <select id="country-select" class="country-field" onchange="toggleForeignFields()">
+                    <option value="Egypt">مصر (جنيه مصري)</option>
+                    <option value="KSA">السعودية (ريال سعودي)</option>
+                    <option value="UAE">الإمارات (درهم إماراتي)</option>
+                    <option value="USA">الولايات المتحدة (دولار)</option>
                 </select>
-                <input type="number" id="foreign-amount-input" placeholder="المبلغ..." disabled>
-                <button id="calc-convert-btn" title="تحويل ج.م">🧮 تحويل ج.م</button>
+                <input type="number" id="amount-input" class="amount-field" placeholder="المبلغ...">
+                <button id="convert-btn" class="convert-action-btn">تحويل بالجنيه المصرى</button>
             </div>
 
-            <!-- إطار ناتج التحويل وبيان المعاملة الخارجية (خانة البيان أكبر بنسبة 50%) -->
-            <div class="foreign-result-row">
-                <input type="text" id="res-converted-amount" placeholder="ناتج التحويل..." readonly>
-                <input type="text" id="foreign-statement-input" placeholder="أكمل بيان المعاملة المالية بالدولة الأجنبية">
-            </div>
-
-            <!-- صف أزرار التحرير المستقلة (تعمل كأداة عامة لأي نص قبل الإرسال للتحليل) -->
-            <div class="whatsapp-editor-box">
-                <div class="editor-toolbar">
-                    <button title="مسح الكل" id="delete-all-btn">🗑</button>
-                    <button title="تحديد الكل" id="select-all-btn">📌</button>
-                    <button title="نسخ" id="copy-btn">📋</button>
-                    <button title="لصق" id="paste-btn">📋</button>
-                    <button title="التراجع" id="undo-btn">↩️</button>
-                    <button title="استيراد محادثة عالمية" id="whatsapp-import-btn">💬 استيراد</button>
+            <!-- صف العملة الأجنبية المعروضة وواتساب -->
+            <div class="form-row-sub">
+                <input type="text" id="foreign-result-display" class="foreign-res-field" placeholder="0.00 جنيه مصري" readonly>
+                <div class="action-icons-group">
+                    <button class="icon-btn" title="استيراد">📁 استيراد</button>
+                    <button class="icon-btn" title="حفظ">💾</button>
+                    <button class="icon-btn" title="طباعة">🖨️️</button>
+                    <button class="icon-btn" title="نسخ">📋</button>
+                    <button class="icon-btn" title="تثبيت">📌</button>
+                    <button class="icon-btn" title="إعدادات">⚙️</button>
                 </div>
             </div>
 
-            <!-- إطار المعاملة المالية المحلية بمصر والأمثلة المرتبطة -->
-            <div class="local-tx-section">
-                <textarea id="manual-tx-textarea" placeholder="أكتب هنا المعاملة المالية بمصر موضحا المبلغ بالجنيه المصرى والبيان.."></textarea>
-                <div class="examples-box">
-                    <p>مثال 1 لمعاملة مالية : دفع / صرف 500 جنيه لشراء وقود</p>
-                    <p>مثال 2 لمعاملة مالية : شراء مستلزمات مكتبية إدارية 1000 جنيه</p>
+            <!-- خانة نص بيان المعاملة -->
+            <div class="form-row-textarea">
+                <textarea id="transaction-text" class="full-desc-field" placeholder="أكمل بيان المعاملة المالية هنا (مثال: تحويل بنكى 5000 جنيه عمولة لمكتب محاماة)..."></textarea>
+                <div class="examples-hint">
+                    <span id="hint-1">مثال 1 لمعاملة مالية: دفع / صرف 500 جنيه لشراء وقود</span><br>
+                    <span id="hint-2">مثال 2 لمعاملة مالية: شراء مستلزمات مكتبية إدارية 1000 جنيه</span>
                 </div>
             </div>
 
-            <!-- زر إرسال المعاملة المالية للمعالجة (الزر الرئيسي للتحليل) -->
-            <div class="submit-action-row">
-                <button id="submit-text-tx-btn" class="send-text-btn">إرسال المعاملة المالية للمعالجة ➔</button>
+            <!-- زر الإرسال للمعالجة -->
+            <button id="process-submit-btn" class="submit-ai-btn" onclick="processAccountingTransaction()">
+                إرسال المعاملة المالية للمعالجة ➔
+            </button>
+
+            <!-- أدوات إضافية -->
+            <div class="extra-tools-row">
+                <button class="tool-sub-btn">📷 مسح ضوئي</button>
+                <button class="tool-sub-btn">📂 جلب صورة</button>
+                <button class="tool-sub-btn">🎤 تسجيل صوتي</button>
             </div>
 
-            <!-- صف الوسائط (تسجيل صوتي، جلب صورة، مسح ضوئي) -->
-            <div class="actions-section">
-                <button id="record-audio-btn" title="تسجيل صوتي">🎤 تسجيل صوتي</button>
-                <button id="select-image-btn" title="جلب صورة">📁 جلب صورة</button>
-                <button id="scan-doc-btn" title="مسح ضوئي">📷 مسح ضوئي</button>
-                <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
-            </div>
+            <!-- صندوق النتائج التحليلية الفورية -->
+            <div id="results-container" class="results-box-hidden">
+                <h4 id="res-title">النتائج التحليلية الفورية:</h4>
+                <p id="res-amount">المبلغ المستخرج/الناتج: <span id="val-amount">--</span></p>
+                <p id="res-debit">الجانب المدين: <span id="val-debit">--</span></p>
+                <p id="res-credit">الجانب الدائن: <span id="val-credit">--</span></p>
+                <p id="res-statement">القائمة المالية المتأثرة: <span id="val-statement">--</span></p>
+                <p id="res-ledger">كشف الحساب المرتبط: <span id="val-ledger">--</span></p>
 
-            <!-- مساحة النتائج التحليلية الفورية مرصوصة عمودياً -->
-            <div id="result-display-area" class="result-area" style="display: none;">
-                <div class="result-badge">النتائج التحليلية الفورية:</div>
-                <div class="result-row"><strong>المبلغ المستخرج/الناتج:</strong> <span id="res-amount">0.00</span> جنيه</div>
-                <div class="result-row"><strong>الجانب المدين:</strong> <span id="res-debit">--</span></div>
-                <div class="result-row"><strong>الجانب الدائن:</strong> <span id="res-credit">--</span></div>
-                <div class="result-row"><strong>القائمة المالية المتأثرة:</strong> <span id="res-financial-statement">--</span></div>
-                <div class="result-row"><strong>كشف الحساب المرتبط:</strong> <span id="res-statement-account">--</span></div>
+                <!-- أزرار التصدير الملونة والبهيجة -->
+                <div class="export-buttons-row">
+                    <button class="export-btn excel-btn">تصدير إلى Excel 365</button>
+                    <button class="export-btn gsheets-btn">تصدير إلى Google Sheet</button>
+                    <button class="export-btn db-btn">قاعدة بيانات ai-acc</button>
+                </div>
             </div>
+        </div>
 
-            <!-- أزرار التصدير الثلاثة (شبه مربعة على سطرين) -->
-            <div class="persistence-options">
-                <button id="save-live-db">قاعدة بيانات<br><b>ai-acc</b></button>
-                <button id="save-sheets-gas">تصدير إلى<br><b>Google Sheet</b></button>
-                <button id="save-excel-script">تصدير إلى<br><b>Excel 365</b></button>
-            </div>
+        <!-- تذييل النموذج المنسق بالمعرّف -->
+        <div class="widget-footer-tag">
+            <span>ai-agent-acc</span>
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
