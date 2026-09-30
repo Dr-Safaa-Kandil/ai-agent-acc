@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية وقاموس المعالجة</title>
+    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية وقاموس المعالجة المتقدم</title>
     <link rel="stylesheet" href="widget.css">
-    <!-- مكتبات التنسيق والخطوط القياسية المعتمدة -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
-<body class="ai-accounting-body-root">
+<body class="ai-accounting-system-body">
 
     <!-- زر إطلاق المساعد العائم الاحترافي في أسفل اليمين -->
     <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()" aria-label="فتح المساعد المحاسبي الذكي">
@@ -24,7 +23,7 @@
         <div class="widget-header">
             <div class="header-brand-group">
                 <span class="brand-tag">ai-agent-acc</span>
-                <span class="version-tag">v3.5 Professional</span>
+                <span class="version-tag">v3.5 Enterprise</span>
             </div>
             <h3 id="widget-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</h3>
             <div class="header-controls">
@@ -45,7 +44,7 @@
                         <option value="KSA">المملكة العربية السعودية (ريال - SAR)</option>
                         <option value="UAE">دولة الإمارات (درهم - AED)</option>
                         <option value="USA">الولايات المتحدة (دولار - USD)</option>
-                        <option value="Global">دولي / متعدد العملات (IFRS)</option>
+                        <option value="Global">دولي / متعدد العملات (IFRS Compliance)</option>
                     </select>
                     <input type="number" id="amount-input" class="amount-field" placeholder="أدخل المبلغ المالي المراد معالجته...">
                     <button id="convert-btn" class="convert-action-btn" onclick="convertCurrency()">تحويل معياري</button>
@@ -71,11 +70,11 @@
 
             <!-- صندوق إدخال بيان المعاملة المالية وقاموس المعالجة الذكي -->
             <div class="accounting-section-box">
-                <label class="section-label" for="transaction-text">قاموس المعالجة البيان المحاسبي (نصي / تحليل دلالي):</label>
+                <label class="section-label" for="transaction-text">قاموس المعالجة والبيان المحاسبي (نصي / تحليل دلالي):</label>
                 <div class="form-row-textarea">
-                    <textarea id="transaction-text" class="full-desc-field" placeholder="أكمل بيان المعاملة المالية وقاموس المعالجة هنا (مثال: تحويل بنكي 5000 جنيه عمولة لمكتب محاماة، سداد إيجار، شراء أصول)..."></textarea>
+                    <textarea id="transaction-text" class="full-desc-field" placeholder="أكمل بيان المعاملة المالية وقاموس المعالجة هنا (مثال: تحويل بنكي 5000 جنيه عمولة لمكتب محاماة، سداد إيجار محطة، شراء أصول)..."></textarea>
                     <div class="examples-hint">
-                        <span id="hint-1">💡 مثال 1: دفع إيجار محطة 1500 جنيه (ح/ مصروف الإيجار إلى ح/ النقدية بالخزينة)</span><br>
+                        <span id="hint-1">💡 مثال 1: دفع إيجار محطة 1500 جنيه (ح/ مصروف الإيجار التشغيلي إلى ح/ النقدية بالخزينة)</span><br>
                         <span id="hint-2">💡 مثال 2: تحويل بنكي 5000 جنيه أتعاب استشارية قانونية (ح/ الاستشارات المهنية إلى ح/ البنك التجاري)</span>
                     </div>
                 </div>
@@ -106,7 +105,7 @@
             <div id="results-container" class="results-box-hidden" style="display: none;">
                 <div class="results-header-bar">
                     <h4 id="res-title">النتائج التحليلية الفورية ومخرجات قاموس المعالجة المحاسبية:</h4>
-                    <span class="ai-badge-status">تم التحليل بنجاح</span>
+                    <span class="ai-badge-status">تم التحليل بنجاح وامتثال IFRS</span>
                 </div>
                 <div class="results-grid-content">
                     <div class="result-item-row"><strong>المبلغ المحلل والمعتمد:</strong> <span id="val-amount">--</span></div>
@@ -137,7 +136,7 @@
 
         <!-- تذييل النافذة الحقوقية والتقنية -->
         <div class="widget-footer-tag">
-            <span class="footer-text">ai-agent-acc - نظام المحاسبة الذكي المعتمد وقاموس المعالجة الآلية</span>
+            <span class="footer-text">ai-agent-acc - نظام المحاسبة الذكي المعتمد وقاموس المعالجة الآلية (TaaS)</span>
             <span class="security-badge">🔒 آمن وموثق</span>
         </div>
     </div>
