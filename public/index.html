@@ -3,145 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية وقاموس المعالجة المتقدم</title>
+    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية</title>
     <link rel="stylesheet" href="widget.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
 <body class="ai-accounting-system-body">
 
-    <!-- زر إطلاق المساعد العائم الاحترافي في أسفل اليمين -->
-    <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()" aria-label="فتح المساعد المحاسبي الذكي">
-        <span class="launcher-icon">🛍️</span> 
-        <span id="launcher-brand" class="launcher-text">ai-agent-acc</span>
-    </button>
+    <!-- زر المساعد العائم -->
+    <div id="ai-floating-btn" class="launcher-btn" onclick="toggleModal()">
+        <span>ai-agent-acc</span> 🛍️
+    </div>
 
-    <!-- النافذة العائمة الرئيسية للمساعد المحاسبي الشامل -->
-    <div id="ai-modal-box" class="modal-box" style="display: none;" role="dialog" aria-modal="true">
-        
-        <!-- ترويسة النافذة الهندسية -->
+    <!-- نافذة المساعد المنبثقة -->
+    <div id="ai-modal-box" class="modal-box" style="display: none;">
         <div class="widget-header">
-            <div class="header-brand-group">
-                <span class="brand-tag">ai-agent-acc</span>
-                <span class="version-tag">v3.5 Enterprise</span>
-            </div>
-            <h3 id="widget-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</h3>
-            <div class="header-controls">
-                <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLanguage()" title="تبديل اللغة">En / Ar</button>
-                <button id="close-modal-btn" class="close-btn" onclick="toggleModal()" title="إغلاق النافذة">✕</button>
-            </div>
+            <h3>مساعد المحاسبة الذكي (TaaS)</h3>
+            <button onclick="toggleModal()" class="close-btn">✕</button>
         </div>
-
-        <!-- جسم النافذة والعمليات المحاسبية -->
         <div class="widget-body">
-            
-            <!-- قسم اختيار الدولة والعملات والتحويل الفوري المالي -->
-            <div class="accounting-section-box">
-                <label class="section-label" for="country-select">نطاق العملة والبيئة الجغرافية:</label>
-                <div class="form-row-top">
-                    <select id="country-select" class="country-field" onchange="toggleForeignFields()">
-                        <option value="Egypt">مصر (جنيه مصري - EGP)</option>
-                        <option value="KSA">المملكة العربية السعودية (ريال - SAR)</option>
-                        <option value="UAE">دولة الإمارات (درهم - AED)</option>
-                        <option value="USA">الولايات المتحدة (دولار - USD)</option>
-                        <option value="Global">دولي / متعدد العملات (IFRS Compliance)</option>
-                    </select>
-                    <input type="number" id="amount-input" class="amount-field" placeholder="أدخل المبلغ المالي المراد معالجته...">
-                    <button id="convert-btn" class="convert-action-btn" onclick="convertCurrency()">تحويل معياري</button>
-                </div>
+            <div id="results-container" class="results-area">
+                <p>أهلاً بكِ. جاهز لاستقبال العمليات المحاسبية وقاموس المعالجة...</p>
             </div>
-
-            <!-- صف عرض النتائج الناتجة للعملات الأجنبية وأزرار الأدوات الخدمية المتقدمة -->
-            <div class="accounting-section-box">
-                <div class="form-row-sub">
-                    <div class="input-wrapper-flex">
-                        <input type="text" id="foreign-result-display" class="foreign-res-field" placeholder="0.00 EGP (الناتج المقابل المعياري)" readonly>
-                    </div>
-                    <div class="action-icons-group" role="toolbar" aria-label="أدوات المعالجة السريعة">
-                        <button class="icon-btn" onclick="triggerDocumentImport()" title="استيراد المستندات والفواتير">📁</button>
-                        <button class="icon-btn" onclick="saveCurrentState()" title="حفظ البيانات المؤقتة">💾</button>
-                        <button class="icon-btn" onclick="printAccountingStatement()" title="طباعة كشف الحساب">🖨</button>
-                        <button class="icon-btn" onclick="copyResultText()" title="نسخ النتائج للحافظة">📋</button>
-                        <button class="icon-btn" onclick="pinWidgetState()" title="تثبيت الواجهة النشطة">📌</button>
-                        <button class="icon-btn" onclick="openSystemSettings()" title="إعدادات النظام وقاموس القيود">⚙️</button>
-                    </div>
-                </div>
+            <div class="input-area" style="display: flex; gap: 8px; margin-top: 10px;">
+                <input type="text" id="transaction-text" placeholder="اكتب الاستفسار المحاسبي هنا..." style="flex-grow: 1; padding: 8px;">
+                <button onclick="processAccountingTransaction()" style="padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">إرسال</button>
             </div>
-
-            <!-- صندوق إدخال بيان المعاملة المالية وقاموس المعالجة الذكي -->
-            <div class="accounting-section-box">
-                <label class="section-label" for="transaction-text">قاموس المعالجة والبيان المحاسبي (نصي / تحليل دلالي):</label>
-                <div class="form-row-textarea">
-                    <textarea id="transaction-text" class="full-desc-field" placeholder="أكمل بيان المعاملة المالية وقاموس المعالجة هنا (مثال: تحويل بنكي 5000 جنيه عمولة لمكتب محاماة، سداد إيجار محطة، شراء أصول)..."></textarea>
-                    <div class="examples-hint">
-                        <span id="hint-1">💡 مثال 1: دفع إيجار محطة 1500 جنيه (ح/ مصروف الإيجار التشغيلي إلى ح/ النقدية بالخزينة)</span><br>
-                        <span id="hint-2">💡 مثال 2: تحويل بنكي 5000 جنيه أتعاب استشارية قانونية (ح/ الاستشارات المهنية إلى ح/ البنك التجاري)</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- زر إرسال المعالجة والتحليل المحاسبي المزدوج -->
-            <div class="action-submit-wrapper">
-                <button id="process-submit-btn" class="submit-ai-btn" onclick="processAccountingTransaction()">
-                    <span>إرسال المعاملة المالية وقاموس المعالجة للتحليل المزدوج</span>
-                    <span class="btn-arrow-icon">➔</span>
-                </button>
-            </div>
-
-            <!-- صف إدخال الأدوات الذكية المساعدة (مسح ضوئي، صور، صوت) -->
-            <div class="extra-tools-row">
-                <button class="tool-sub-btn" onclick="triggerOCRScan()">
-                    <span class="tool-icon">📷</span> مسح ضوئي للمستند (OCR)
-                </button>
-                <button class="tool-sub-btn" onclick="triggerImageUpload()">
-                    <span class="tool-icon">📂</span> جلب صورة الفاتورة
-                </button>
-                <button class="tool-sub-btn" onclick="triggerVoiceInput()">
-                    <span class="tool-icon">🎤</span> تسجيل صوتي للبيان
-                </button>
-            </div>
-
-            <!-- صندوق النتائج التحليلية الفورية واستخراج القوائم المالية -->
-            <div id="results-container" class="results-box-hidden" style="display: none;">
-                <div class="results-header-bar">
-                    <h4 id="res-title">النتائج التحليلية الفورية ومخرجات قاموس المعالجة المحاسبية:</h4>
-                    <span class="ai-badge-status">تم التحليل بنجاح وامتثال IFRS</span>
-                </div>
-                <div class="results-grid-content">
-                    <div class="result-item-row"><strong>المبلغ المحلل والمعتمد:</strong> <span id="val-amount">--</span></div>
-                    <div class="result-item-row"><strong>الجانب المدين (Debit Account):</strong> <span id="val-debit">--</span></div>
-                    <div class="result-item-row"><strong>الجانب الدائن (Credit Account):</strong> <span id="val-credit">--</span></div>
-                    <div class="result-item-row"><strong>القائمة المالية المرتبطة:</strong> <span id="val-statement">--</span></div>
-                    <div class="result-item-row"><strong>كشف الحساب المرجعي:</strong> <span id="val-ledger">--</span></div>
-                </div>
-
-                <!-- أزرار التصدير الذكي الملونة والمنظمة -->
-                <div class="export-section-wrapper">
-                    <span class="export-label">تصدير وتوثيق القيود المحاسبية:</span>
-                    <div class="export-buttons-row">
-                        <button class="export-btn excel-btn" onclick="exportToExcel365()">
-                            📊 تصدير إلى Excel 365
-                        </button>
-                        <button class="export-btn gsheets-btn" onclick="exportToGoogleSheets()">
-                            📈 مزامنة Google Sheet
-                        </button>
-                        <button class="export-btn db-btn" onclick="saveToSupabaseDB()">
-                            🗄️ ترحيل لقاعدة ai-acc
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- تذييل النافذة الحقوقية والتقنية -->
-        <div class="widget-footer-tag">
-            <span class="footer-text">ai-agent-acc - نظام المحاسبة الذكي المعتمد وقاموس المعالجة الآلية (TaaS)</span>
-            <span class="security-badge">🔒 آمن وموثق</span>
         </div>
     </div>
 
-    <!-- ربط ملف البرمجة ومنطق المعالجة الرئيسي -->
     <script src="app.js"></script>
 </body>
 </html>
