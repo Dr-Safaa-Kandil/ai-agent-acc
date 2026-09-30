@@ -2,7 +2,7 @@
     --primary-color: #4f46e5;
     --secondary-color: #10b981;
     --accent-color: #f59e0b;
-    --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+    --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     --card-bg: #ffffff;
     --text-main: #1e293b;
     --border-color: #cbd5e1;
@@ -10,20 +10,42 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f1f5f9;
+    background-color: transparent;
     margin: 0;
-    padding: 10px;
     direction: rtl;
     text-align: right;
 }
 
-.accounting-widget-container {
-    max-width: 390px; /* ضبط العرض ليكون دقيقاً كشاشة موبايل */
+/* زر المساعد العائم الأسفل */
+.launcher-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    z-index: 9999;
+}
+
+/* النافذة العائمة المضغوطة بمقاس الموبايل */
+.modal-box {
+    position: fixed;
+    bottom: 75px;
+    right: 20px;
+    width: 380px;
+    max-height: 75vh;
+    overflow-y: auto;
     background: var(--bg-gradient);
     border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     padding: 12px;
-    margin: auto;
+    z-index: 10000;
     border: 2px solid #e2e8f0;
     box-sizing: border-box;
 }
@@ -41,12 +63,12 @@ body {
 
 .widget-header h3 {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .brand-tag {
     font-size: 10px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.25);
     padding: 2px 5px;
     border-radius: 4px;
     font-weight: bold;
@@ -63,22 +85,20 @@ body {
     font-size: 11px;
 }
 
-/* الصف العلوي للعملات والدولة وزر التحويل (منضبط تماماً في سطر واحد) */
+/* الصف العلوي المنضبط بالمللي (دولة، مبلغ ضيق، وزر تحويل عريض) */
 .form-row-top {
     display: flex;
     gap: 4px;
     margin-bottom: 8px;
     align-items: center;
-    width: 100%;
 }
 
 .country-field {
-    flex: 1;
+    flex: 1.1;
     height: 30px;
     font-size: 11px;
     border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 0 3px;
     background: #fff;
 }
 
@@ -88,12 +108,12 @@ body {
     font-size: 11px;
     border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 0 3px;
     background: #fff;
+    padding: 0 4px;
 }
 
 .convert-action-btn {
-    flex: 2.2; /* زر التحويل بعرض أكبر 3 أضعاف تقريباً */
+    flex: 2.5; /* 3 أضعاف الاتساع تقريباً */
     height: 30px;
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     color: white;
@@ -105,13 +125,11 @@ body {
     white-space: nowrap;
 }
 
-/* الصف الفرعي والناتج والأيقونات */
 .form-row-sub {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    gap: 4px;
 }
 
 .foreign-res-field {
@@ -138,7 +156,6 @@ body {
     cursor: pointer;
 }
 
-/* خانة نص بيان المعاملة */
 .form-row-textarea {
     margin-bottom: 8px;
 }
@@ -148,7 +165,7 @@ body {
     height: 50px;
     border-radius: 5px;
     border: 1px solid var(--border-color);
-    padding: 5px;
+    padding: 6px;
     font-size: 11px;
     resize: none;
     box-sizing: border-box;
@@ -161,10 +178,10 @@ body {
     margin-top: 2px;
 }
 
-/* زر إرسال المعالجة المبهج */
+/* زر إرسال المعالجة البهيج الملون */
 .submit-ai-btn {
     width: 100%;
-    height: 34px;
+    height: 35px;
     background: linear-gradient(135deg, #10b981, #059669);
     color: white;
     border: none;
@@ -173,7 +190,7 @@ body {
     font-weight: bold;
     cursor: pointer;
     margin-bottom: 8px;
-    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25);
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
 }
 
 .extra-tools-row {
@@ -193,7 +210,6 @@ body {
     color: #334155;
 }
 
-/* صندوق النتائج التحليلية */
 .results-box-hidden {
     background: #ffffff;
     border: 2px dashed var(--secondary-color);
@@ -214,7 +230,6 @@ body {
     margin: 2px 0;
 }
 
-/* أزرار التصدير الملونة المبهجة */
 .export-buttons-row {
     display: flex;
     gap: 4px;
@@ -245,5 +260,8 @@ body {
     font-weight: bold;
 }
 
+/* وضع اللغة الإنجليزية (تعديل الأماكن لليمين واليسار) */
 body.lang-en { direction: ltr; text-align: left; }
+body.lang-en .launcher-btn { right: auto; left: 20px; }
+body.lang-en .modal-box { right: auto; left: 20px; }
 body.lang-en .widget-footer-tag { text-align: right; }

@@ -8,17 +8,21 @@
 </head>
 <body>
 
-    <div class="accounting-widget-container">
-        <!-- شريط العنوان -->
+    <!-- زر إطلاق المساعد العائم في أسفل الصفحة (يمين بالعربية / يسار بالإنجليزية) -->
+    <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()">
+        🛍️ <span id="launcher-brand">ai-agent-acc</span>
+    </button>
+
+    <!-- النافذة العائمة المنسدلة (Modal Box) بمقاس موبايل مضغوط ومنظم -->
+    <div id="ai-modal-box" class="modal-box" style="display: none;">
         <div class="widget-header">
             <span class="brand-tag">ai-agent-acc</span>
             <h3 id="widget-title">المساعد المحاسبي الذكي</h3>
-            <button id="lang-toggle-btn" class="lang-btn">En / Ar</button>
+            <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLanguage()">En / Ar</button>
         </div>
 
-        <!-- محتوى النموذج -->
         <div class="widget-body">
-            <!-- صف العملات والدولة -->
+            <!-- صف العملات والدولة (مرتب بدقة تامة وبدون أي تداخل) -->
             <div class="form-row-top">
                 <select id="country-select" class="country-field" onchange="toggleForeignFields()">
                     <option value="Egypt">مصر (جنيه مصري)</option>
@@ -30,29 +34,29 @@
                 <button id="convert-btn" class="convert-action-btn">تحويل بالجنيه المصرى</button>
             </div>
 
-            <!-- صف العملة الأجنبية المعروضة وواتساب -->
+            <!-- صف العملة الأجنبية الناتج وأدوات التحرير -->
             <div class="form-row-sub">
-                <input type="text" id="foreign-result-display" class="foreign-res-field" placeholder="0.00 جنيه مصري" readonly>
+                <input type="text" id="foreign-result-display" class="foreign-res-field" placeholder="0.00 EGP" readonly>
                 <div class="action-icons-group">
-                    <button class="icon-btn" title="استيراد">📁 استيراد</button>
+                    <button class="icon-btn" title="استيراد">📁</button>
                     <button class="icon-btn" title="حفظ">💾</button>
-                    <button class="icon-btn" title="طباعة">🖨️️</button>
+                    <button class="icon-btn" title="طباعة">🖨</button>
                     <button class="icon-btn" title="نسخ">📋</button>
                     <button class="icon-btn" title="تثبيت">📌</button>
                     <button class="icon-btn" title="إعدادات">⚙️</button>
                 </div>
             </div>
 
-            <!-- خانة نص بيان المعاملة -->
+            <!-- خانة نص بيان المعاملة الشاملة -->
             <div class="form-row-textarea">
                 <textarea id="transaction-text" class="full-desc-field" placeholder="أكمل بيان المعاملة المالية هنا (مثال: تحويل بنكى 5000 جنيه عمولة لمكتب محاماة)..."></textarea>
                 <div class="examples-hint">
-                    <span id="hint-1">مثال 1 لمعاملة مالية: دفع / صرف 500 جنيه لشراء وقود</span><br>
-                    <span id="hint-2">مثال 2 لمعاملة مالية: شراء مستلزمات مكتبية إدارية 1000 جنيه</span>
+                    <span id="hint-1">مثال 1: دفع إيجار محطة 1500 جنيه</span><br>
+                    <span id="hint-2">مثال 2: تحويل بنكي 5000 جنيه أتعاب محاماة</span>
                 </div>
             </div>
 
-            <!-- زر الإرسال للمعالجة -->
+            <!-- زر إرسال المعالجة البهيج -->
             <button id="process-submit-btn" class="submit-ai-btn" onclick="processAccountingTransaction()">
                 إرسال المعاملة المالية للمعالجة ➔
             </button>
@@ -65,24 +69,23 @@
             </div>
 
             <!-- صندوق النتائج التحليلية الفورية -->
-            <div id="results-container" class="results-box-hidden">
+            <div id="results-container" class="results-box-hidden" style="display: none;">
                 <h4 id="res-title">النتائج التحليلية الفورية:</h4>
-                <p id="res-amount">المبلغ المستخرج/الناتج: <span id="val-amount">--</span></p>
-                <p id="res-debit">الجانب المدين: <span id="val-debit">--</span></p>
-                <p id="res-credit">الجانب الدائن: <span id="val-credit">--</span></p>
-                <p id="res-statement">القائمة المالية المتأثرة: <span id="val-statement">--</span></p>
-                <p id="res-ledger">كشف الحساب المرتبط: <span id="val-ledger">--</span></p>
+                <p><strong>المبلغ:</strong> <span id="val-amount">--</span></p>
+                <p><strong>الجانب المدين:</strong> <span id="val-debit">--</span></p>
+                <p><strong>الجانب الدائن:</strong> <span id="val-credit">--</span></p>
+                <p><strong>القائمة المالية:</strong> <span id="val-statement">--</span></p>
+                <p><strong>كشف الحساب:</strong> <span id="val-ledger">--</span></p>
 
-                <!-- أزرار التصدير الملونة والبهيجة -->
+                <!-- أزرار التصدير الملونة البهيجية -->
                 <div class="export-buttons-row">
-                    <button class="export-btn excel-btn">تصدير إلى Excel 365</button>
-                    <button class="export-btn gsheets-btn">تصدير إلى Google Sheet</button>
-                    <button class="export-btn db-btn">قاعدة بيانات ai-acc</button>
+                    <button class="export-btn excel-btn">Excel 365</button>
+                    <button class="export-btn gsheets-btn">Google Sheet</button>
+                    <button class="export-btn db-btn">قاعدة ai-acc</button>
                 </div>
             </div>
         </div>
 
-        <!-- تذييل النموذج المنسق بالمعرّف -->
         <div class="widget-footer-tag">
             <span>ai-agent-acc</span>
         </div>
