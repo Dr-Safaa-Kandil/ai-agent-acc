@@ -8,67 +8,86 @@
 </head>
 <body>
     <div id="ai-cost-assistant-widget" class="ai-widget-container">
-        <!-- زر الإطلاق -->
+        <!-- زر إطلاق المساعد المحاسبي -->
         <button id="ai-launcher-btn" class="launcher-btn">
             🛍️ <span id="launcher-text">المساعد المحاسبي</span>
         </button>
         
-        <!-- النافذة المنسدلة التفاعلية -->
+        <!-- النافذة المنسدلة التفاعلية (معروضة بنسبة الثلثين تقريباً وبدون شريط تمرير رئيسي) -->
         <div id="ai-modal-box" class="modal-box" style="display: none;">
             <div class="modal-header">
                 <span id="header-title">الوكيل الذكي للمحاسبة المالية</span>
                 <button id="lang-toggle-btn">En / Ar</button>
             </div>
             
-            <!-- رسالة الترحيب الإرشادية -->
+            <!-- رسالة الترحيب على سطرين -->
             <div id="welcome-msg-container" class="welcome-container">
-                <p id="welcome-text">مرحباً أنا وكيلك الذكي لتسجيل المعاملات المالية فورياً.. (ادخل المعاملة المالية الخارجية باختيار الدولة ثم كتابة المبلغ والضغط على كائن احسب الناتج)</p>
+                <p id="welcome-text-line1">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</p>
+                <p id="welcome-text-line2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل العملة</p>
             </div>
 
-            <!-- شريط التاريخ وسعر الصرف اللحظي -->
+            <!-- شريط التاريخ وبجواره نص سعر صرف العملة (بدون كلمة لحظي) -->
             <div class="exchange-info-bar">
-                <span id="current-date-display">التاريخ: 2026-09-29</span>
-                <span id="exchange-rate-display">سعر الصرف اللحظي: --</span>
+                <span id="current-date-display">التاريخ: 2026-09-30</span>
+                <span id="exchange-rate-label">سعر صرف العملة</span>
             </div>
 
-            <!-- القائمة المنسدلة لاختيار الدولة -->
-            <div class="controls-section">
+            <!-- صف العملات الأجنبية المدمج: الدولة، المبلغ، زر تحويل ج.م برمز الحاسبة -->
+            <div class="foreign-currency-row">
                 <select id="country-currency-select">
-                    <option value="EGY" selected>مصر (جنيه مصري - بدون سعر صرف)</option>
-                    <option value="SAU">السعودية (ريال سعودي - تحويل لجنيه)</option>
-                    <option value="ARE">الإمارات (درهم إماراتي - تحويل لجنيه)</option>
-                    <option value="USD">الولايات المتحدة (دولار أمريكي - تحويل لجنيه)</option>
+                    <option value="EGY" selected>مصر</option>
+                    <option value="SAU">السعودية</option>
+                    <option value="ARE">الإمارات</option>
+                    <option value="KWT">الكويت</option>
+                    <option value="USD">الدولار الأمريكي</option>
+                    <option value="EUR">اليورو</option>
+                    <option value="CNY">اليوان الصيني</option>
                 </select>
+                <input type="number" id="foreign-amount-input" placeholder="المبلغ..." disabled>
+                <button id="calc-convert-btn" title="تحويل ج.م">🧮 تحويل ج.م</button>
             </div>
 
-            <!-- وحدة الآلة الحاسبة المخصصة للعملات الأجنبية -->
-            <div class="calc-section">
-                <input type="number" id="foreign-amount-input" placeholder="أدخل المبلغ بالعملة الأجنبية..." disabled>
-                <button id="calc-convert-btn">🧮 احسب الناتج بالجنيه المصري</button>
+            <!-- إطار ناتج التحويل وبيان المعاملة الخارجية -->
+            <div class="foreign-result-row">
+                <input type="text" id="res-converted-amount" placeholder="ناتج التحويل بالجنيه..." readonly>
+                <input type="text" id="foreign-statement-input" placeholder="أكمل بيان المعاملة المالية بالدولة الأجنبية">
             </div>
 
-            <!-- محرر النصوص المباشر -->
+            <!-- صف أزرار التحرير المستقلة (تعمل كأداة عامة لأي نص قبل الإرسال للتحليل) -->
             <div class="whatsapp-editor-box">
                 <div class="editor-toolbar">
-                    <button title="التراجع عن آخر كتابة" id="undo-btn">↩️</button>
-                    <button title="حذف كل المحتوى النصي" id="delete-all-btn">🗑️</button>
-                    <button title="نسخ النص" id="copy-btn">📋</button>
-                    <button title="لصق النص" id="paste-btn">📌</button>
-                    <button title="استيراد نص خارجي" id="whatsapp-import-btn">💬 استيراد</button>
+                    <button title="مسح الكل" id="delete-all-btn">🗑</button>
+                    <button title="تحديد الكل" id="select-all-btn">📌</button>
+                    <button title="نسخ" id="copy-btn">📋</button>
+                    <button title="لصق" id="paste-btn">📋</button>
+                    <button title="التراجع" id="undo-btn">↩️</button>
+                    <button title="استيراد محادثة عالمية" id="whatsapp-import-btn">💬 استيراد</button>
                 </div>
-                <textarea id="manual-tx-textarea" placeholder="اكتب أو الصق المعاملة المالية المحلية كاملة بمبلغ الجنيه المصرى هنا وفى حالة المعاملة بدولة أخرى أكمل وصف المعاملة"></textarea>
-                <button id="submit-text-tx-btn" class="send-text-btn">إرسال النص للمعالجة ➔</button>
             </div>
 
-            <!-- أدوات الوسائط والإدخال المستقلة -->
+            <!-- إطار المعاملة المالية المحلية بمصر (مع القيد الذكي لغير مصر) -->
+            <div class="local-tx-section">
+                <textarea id="manual-tx-textarea" placeholder="أكتب هنا المعاملة المالية بمصر موضحا المبلغ بالجنيه المصرى والبيان.."></textarea>
+                <div class="examples-box">
+                    <p>مثال 1 لمعاملة مالية : دفع / صرف 500 جنيه لشراء وقود</p>
+                    <p>مثال 2 لمعاملة مالية : شراء مستلزمات مكتبية إدارية 1000 جنيه</p>
+                </div>
+            </div>
+
+            <!-- زر إرسال المعاملة المالية للمعالجة (الزر الرئيسي للتحليل) -->
+            <div class="submit-action-row">
+                <button id="submit-text-tx-btn" class="send-text-btn">إرسال المعاملة المالية للمعالجة ➔</button>
+            </div>
+
+            <!-- صف الوسائط (تسجيل صوتي، جلب صورة، مسح ضوئي) -->
             <div class="actions-section">
-                <button id="record-audio-btn" title="تسجيل صوتي (مايك)">🎤 تسجيل صوتي</button>
-                <button id="select-image-btn" title="جلب صورة فاتورة من الملفات">📁 جلب صورة</button>
-                <button id="scan-doc-btn" title="التقاط أو مسح ضوئي">📷 مسح ضوئي</button>
+                <button id="record-audio-btn" title="تسجيل صوتي">🎤 تسجيل صوتي</button>
+                <button id="select-image-btn" title="جلب صورة">📁 جلب صورة</button>
+                <button id="scan-doc-btn" title="مسح ضوئي">📷 مسح ضوئي</button>
                 <input type="file" id="hidden-file-input" accept="image/*" style="display: none;">
             </div>
 
-            <!-- قسم النتائج التحليلية الفورية -->
+            <!-- مساحة النتائج التحليلية الفورية مرصوصة عمودياً -->
             <div id="result-display-area" class="result-area" style="display: none;">
                 <div class="result-badge">النتائج التحليلية الفورية:</div>
                 <div class="result-row"><strong>المبلغ المستخرج/الناتج:</strong> <span id="res-amount">0.00</span> جنيه</div>
@@ -78,11 +97,11 @@
                 <div class="result-row"><strong>كشف الحساب المرتبط:</strong> <span id="res-statement-account">--</span></div>
             </div>
 
-            <!-- أزرار الرصد والترحيل في صف واحد بخط مثقل Bold -->
+            <!-- أزرار التصدير الثلاثة (شبه مربعة على سطرين) -->
             <div class="persistence-options">
-                <button id="save-live-db"><b>قاعدة البيانات ai-acc</b></button>
-                <button id="save-sheets-gas"><b>إلى Google Sheet</b></button>
-                <button id="save-excel-script"><b>إلى Excel 365</b></button>
+                <button id="save-live-db">قاعدة بيانات<br><b>ai-acc</b></button>
+                <button id="save-sheets-gas">تصدير إلى<br><b>Google Sheet</b></button>
+                <button id="save-excel-script">تصدير إلى<br><b>Excel 365</b></button>
             </div>
         </div>
     </div>
