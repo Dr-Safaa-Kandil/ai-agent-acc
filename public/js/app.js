@@ -1,6 +1,6 @@
 /**
  * ai-agent-acc - ملف المنطق البرمجي وقاموس المعالجة المحاسبية الشامل
- * الإصدار: 3.9 Enterprise - النسخة الكاملة الشاملة لتحديث الأيقونة وإزالة TaaS والتبديل الفوري والاتجاهات الديناميكية
+ * الإصدار: 4.0 Enterprise - النسخة الكاملة الشاملة للترتيب المكاني، الأيقونة والاتجاهات الديناميكية
  */
 
 // متغيرات النظام العامة
@@ -160,7 +160,7 @@ function processAccountingTransaction() {
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 5. تبديل اللغات والاتجاهات (RTL / LTR) مع ضبط اتجاه الكائنات وترجمة القوائم والأزرار والأيقونة العائمة
+// 5. تبديل اللغات والاتجاهات (RTL / LTR) مع ضبط الترتيب المكاني لصف العملات وترجمة القوائم والأزرار والأيقونة
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
@@ -183,6 +183,7 @@ function toggleLanguage() {
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const transactionText = document.getElementById('transaction-text');
     const examplesText = document.getElementById('examples-text');
+    const foreignCurrencyRow = document.getElementById('foreign-currency-row');
 
     // عناصر أزرار التحرير المستقلة
     const txtSave = document.getElementById('txt-save');
@@ -213,6 +214,11 @@ function toggleLanguage() {
             widgetContainer.style.left = '20px';
         }
         if (widgetTitle) widgetTitle.innerText = "Smart Accounting Assistant";
+
+        // ضبط الترتيب المكاني لصف العملات الأجنبية في الإنجليزية (الدولة أولاً لليسار ثم المبلغ ثم زر التحويل)
+        if (foreignCurrencyRow) {
+            foreignCurrencyRow.style.flexDirection = 'row-reverse';
+        }
 
         if (modalHeaderTitle) modalHeaderTitle.innerText = "Smart Financial Accounting Assistant ai-agent-acc";
         if (convertBtn) convertBtn.innerText = "🧮 Convert";
@@ -257,6 +263,11 @@ function toggleLanguage() {
             widgetContainer.style.right = '20px';
         }
         if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي";
+
+        // ضبط الترتيب المكاني لصف العملات الأجنبية في العربية (الدولة أولاً لليمين ثم المبلغ ثم زر التحويل)
+        if (foreignCurrencyRow) {
+            foreignCurrencyRow.style.flexDirection = 'row';
+        }
 
         if (modalHeaderTitle) modalHeaderTitle.innerText = "الوكيل الذكي للمحاسبة المالية ai-agent-acc";
         if (convertBtn) convertBtn.innerText = "🧮 تحويل";
@@ -317,7 +328,7 @@ function exportToExcel365() { alert(currentLang === 'ar' ? "جاري تجهيز 
 function exportToGoogleSheets() { alert(currentLang === 'ar' ? "جاري مزامنة وترحيل القيود مباشرة إلى Google Sheets..." : "Syncing to Google Sheets..."); }
 function saveToSupabaseDB() { alert(currentLang === 'ar' ? "جاري ترحيل وحفظ المعاملة بنجاح إلى قاعدة البيانات (ai-acc)..." : "Saving to Supabase database..."); }
 
-// تهيئة أولية عند تحميل المستند بالكامل وضبط الموضع الافتراضي للأيقونة على اليمين مع اللغة العربية
+// تهيئة أولية عند تحميل المستند بالكامل وضبط الموضع الافتراضي للأيقونة وترتيب الصف على اليمين مع اللغة العربية
 window.onload = function() {
     toggleForeignFields();
     const modal = document.getElementById('ai-modal-box');
@@ -328,5 +339,9 @@ window.onload = function() {
     if (widgetContainer) {
         widgetContainer.style.right = '20px';
         widgetContainer.style.left = 'auto';
+    }
+    const foreignCurrencyRow = document.getElementById('foreign-currency-row');
+    if (foreignCurrencyRow) {
+        foreignCurrencyRow.style.flexDirection = 'row';
     }
 };

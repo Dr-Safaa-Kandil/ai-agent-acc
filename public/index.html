@@ -10,7 +10,7 @@
     <div id="ai-cost-assistant-widget" class="ai-widget-container">
         <!-- زر إطلاق النافذة العائمة مع المعرف الدقيق للترجمة وتصحيح الحجم والاتجاه -->
         <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 13px;">
-            🛍️ <span id="widget-launcher-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</span>
+            🛍️️ <span id="widget-launcher-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</span>
         </button>
         
         <!-- النافذة المنسدلة التفاعلية متوافقة مع الموبايل وبدون تمرير عرضي -->
@@ -32,10 +32,8 @@
                 <span id="label-exchange-title">سعر صرف العملة للجنيه المصري</span>
             </div>
 
-            <!-- صف العملات الأجنبية المدمج -->
-            <div class="foreign-currency-row" style="display: flex; gap: 8px; align-items: center;">
-                <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري" style="flex: 0 0 auto;">🧮 تحويل</button>
-                <input type="number" id="amount-input" placeholder="المبلغ..." disabled style="flex: 0 0 20%;">
+            <!-- صف العملات الأجنبية المدمج مع التحكم الديناميكي للترتيب -->
+            <div id="foreign-currency-row" class="foreign-currency-row" style="display: flex; gap: 8px; align-items: center;">
                 <select id="country-select" onchange="toggleForeignFields()" style="flex: 1;">
                     <option value="Egypt" selected id="opt-egypt">مصر (EGP)</option>
                     <option value="Kuwait" id="opt-kuwait">الكويت - دينار كويتي (KWD)</option>
@@ -43,6 +41,8 @@
                     <option value="UAE" id="opt-uae">الإمارات (AED)</option>
                     <option value="USA" id="opt-usa">الدولار الأمريكي (USD)</option>
                 </select>
+                <input type="number" id="amount-input" placeholder="المبلغ..." disabled style="flex: 0 0 20%;">
+                <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري" style="flex: 0 0 auto;">🧮 تحويل</button>
             </div>
 
             <!-- إطار ناتج التحويل -->
@@ -61,7 +61,7 @@
                     <button id="btn-save" title="حفظ مؤقت" onclick="saveCurrentState()">💾 <span id="txt-save">حفظ</span></button>
                     <button id="btn-copy" title="نسخ" onclick="copyResultText()">📋 <span id="txt-copy">نسخ</span></button>
                     <button id="btn-pin" title="تثبيت" onclick="pinWidgetState()">📌 <span id="txt-pin">تثبيت</span></button>
-                    <button id="btn-settings" title="الإعدادات" onclick="openSystemSettings()">⚙️️ <span id="txt-settings">إعدادات</span></button>
+                    <button id="btn-settings" title="الإعدادات" onclick="openSystemSettings()">⚙ <span id="txt-settings">إعدادات</span></button>
                     <button id="btn-print" title="طباعة" onclick="printAccountingStatement()">🖨 <span id="txt-print">طباعة</span></button>
                     <button id="btn-import" title="استيراد" onclick="triggerDocumentImport()">💬 <span id="txt-import">استيراد</span></button>
                 </div>
