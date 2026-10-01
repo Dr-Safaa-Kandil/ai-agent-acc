@@ -1,24 +1,18 @@
 /**
  * ai-agent-acc - ملف المنطق البرمجي وقاموس المعالجة المحاسبية الشامل
- * الإصدار: 3.8 Enterprise - النسخة الكاملة الشاملة لتحديث الأيقونة وإزالة TaaS والتبديل الفوري
+ * الإصدار: 4.1 Enterprise - التفعيل التام للاتجاه الأيمن الافتراضي وترجمة الأيقونة والدول والأزرار
  */
 
-// متغيرات النظام العامة
 let currentLang = 'ar';
 
-// 1. فتح وإغلاق النافذة العائمة للمساعد بضمان التفعيل الفوري
+// 1. التحكم بفتح وإغلاق نافذة المساعد
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (!modal) return;
-    
-    if (modal.style.display === 'none' || modal.style.display === '') {
-        modal.style.display = 'block';
-    } else {
-        modal.style.display = 'none';
-    }
+    modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'block' : 'none';
 }
 
-// 2. قفل وتفعيل حقول العملات والتحويل عند اختيار الدولة (مصر تعطل المبلغ والتحويل، وتفعل النسخ)
+// 2. قفل وتفعيل حقول العملات والتحويل عند اختيار الدولة
 function toggleForeignFields() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -30,28 +24,13 @@ function toggleForeignFields() {
     const country = countrySelect.value;
     
     if (country === 'Egypt') {
-        if (amountInput) {
-            amountInput.disabled = true;
-            amountInput.value = '';
-        }
-        if (convertBtn) {
-            convertBtn.disabled = true;
-            convertBtn.style.opacity = '0.4';
-        }
-        if (foreignRes) {
-            foreignRes.disabled = false;
-            foreignRes.value = '';
-        }
-        if (foreignNoteInput) {
-            foreignNoteInput.disabled = true;
-            foreignNoteInput.value = '';
-        }
+        if (amountInput) { amountInput.disabled = true; amountInput.value = ''; }
+        if (convertBtn) { convertBtn.disabled = true; convertBtn.style.opacity = '0.4'; }
+        if (foreignRes) { foreignRes.disabled = false; foreignRes.value = ''; }
+        if (foreignNoteInput) { foreignNoteInput.disabled = true; foreignNoteInput.value = ''; }
     } else {
         if (amountInput) amountInput.disabled = false;
-        if (convertBtn) {
-            convertBtn.disabled = false;
-            convertBtn.style.opacity = '1';
-        }
+        if (convertBtn) { convertBtn.disabled = false; convertBtn.style.opacity = '1'; }
         if (foreignRes) foreignRes.disabled = false;
         if (foreignNoteInput) foreignNoteInput.disabled = false;
     }
@@ -75,25 +54,16 @@ function convertCurrency() {
     let currencyCode = "EGP";
     const country = countrySelect.value;
     
-    if (country === 'Kuwait') {
-        rate = 165.0;
-        currencyCode = "KWD";
-    } else if (country === 'KSA') {
-        rate = 13.5; 
-        currencyCode = "SAR";
-    } else if (country === 'UAE') {
-        rate = 13.8;
-        currencyCode = "AED";
-    } else if (country === 'USA') {
-        rate = 50.5;
-        currencyCode = "USD";
-    }
+    if (country === 'Kuwait') { rate = 165.0; currencyCode = "KWD"; }
+    else if (country === 'KSA') { rate = 13.5; currencyCode = "SAR"; }
+    else if (country === 'UAE') { rate = 13.8; currencyCode = "AED"; }
+    else if (country === 'USA') { rate = 50.5; currencyCode = "USD"; }
     
     const resultVal = (val * rate).toFixed(2);
     foreignRes.value = `${currencyCode} ${resultVal} (${currentLang === 'ar' ? 'معادل لـ' : 'Equivalent to'} ${val})`;
 }
 
-// 4. قاموس المعالجة المحاسبية الذكي وتحليل القيود المزدوجة
+// 4. قاموس المعالجة المحاسبية وتحليل القيود المزدوجة
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -160,7 +130,7 @@ function processAccountingTransaction() {
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 5. تبديل اللغات والاتجاهات (RTL / LTR) مع تحديث اسم الأيقونة والعناوين وإزالة TaaS نهائياً
+// 5. تبديل اللغات والاتجاهات وترجمة الأيقونة والدول والأزرار بدقة تامة
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
@@ -182,6 +152,19 @@ function toggleLanguage() {
     const transactionText = document.getElementById('transaction-text');
     const examplesText = document.getElementById('examples-text');
     
+    const btnVoice = document.getElementById('btn-voice');
+    const btnImage = document.getElementById('btn-image');
+    const btnOcr = document.getElementById('btn-ocr');
+    const btnDb = document.getElementById('btn-db');
+    const btnSheets = document.getElementById('btn-sheets');
+    const btnExcel = document.getElementById('btn-excel');
+
+    const optEgypt = document.getElementById('opt-egypt');
+    const optKuwait = document.getElementById('opt-kuwait');
+    const optKsa = document.getElementById('opt-ksa');
+    const optUae = document.getElementById('opt-uae');
+    const optUsa = document.getElementById('opt-usa');
+
     if (currentLang === 'en') {
         document.body.classList.add('lang-en');
         if (widgetTitle) widgetTitle.innerText = "AI-Agent-ACC";
@@ -198,6 +181,20 @@ function toggleLanguage() {
         if (foreignNoteInput) foreignNoteInput.placeholder = "Complete transaction statement in foreign country";
         if (transactionText) transactionText.placeholder = "Type financial transaction and processing dictionary here...";
         if (examplesText) examplesText.innerText = "Example: Operational rent | Legal consulting fees | Equipment purchase";
+
+        if (optEgypt) optEgypt.innerText = "Egypt (EGP)";
+        if (optKuwait) optKuwait.innerText = "Kuwait (KWD)";
+        if (optKsa) optKsa.innerText = "Saudi Arabia (SAR)";
+        if (optUae) optUae.innerText = "UAE (AED)";
+        if (optUsa) optUsa.innerText = "USA (USD)";
+
+        if (btnVoice) btnVoice.innerText = "🎤 Voice Input";
+        if (btnImage) btnImage.innerText = "🖼️ Upload Image";
+        if (btnOcr) btnOcr.innerText = "📷 OCR Scan";
+        if (btnDb) btnDb.innerText = "💾 Save to DB";
+        if (btnSheets) btnSheets.innerText = "📊 Google Sheets";
+        if (btnExcel) btnExcel.innerText = "📈 Excel 365";
+
     } else {
         document.body.classList.remove('lang-en');
         if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي";
@@ -214,6 +211,19 @@ function toggleLanguage() {
         if (foreignNoteInput) foreignNoteInput.placeholder = "أكمل بيان المعاملة بالدولة الأجنبية";
         if (transactionText) transactionText.placeholder = "أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...";
         if (examplesText) examplesText.innerText = "مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات";
+
+        if (optEgypt) optEgypt.innerText = "مصر (EGP)";
+        if (optKuwait) optKuwait.innerText = "الكويت (KWD)";
+        if (optKsa) optKsa.innerText = "السعودية (SAR)";
+        if (optUae) optUae.innerText = "الإمارات (AED)";
+        if (optUsa) optUsa.innerText = "أمريكا (USD)";
+
+        if (btnVoice) btnVoice.innerText = "🎤 تسجيل صوتي";
+        if (btnImage) btnImage.innerText = "🖼️ جلب صورة";
+        if (btnOcr) btnOcr.innerText = "📷 مسح ضوئي";
+        if (btnDb) btnDb.innerText = "💾 سجل بقاعدة بيانات ai-acc";
+        if (btnSheets) btnSheets.innerText = "📊 سير إلى Google Sheet";
+        if (btnExcel) btnExcel.innerText = "📈 سير إلى Excel 365";
     }
 }
 
@@ -240,11 +250,11 @@ function exportToExcel365() { alert(currentLang === 'ar' ? "جاري تجهيز 
 function exportToGoogleSheets() { alert(currentLang === 'ar' ? "جاري مزامنة وترحيل القيود مباشرة إلى Google Sheets..." : "Syncing to Google Sheets..."); }
 function saveToSupabaseDB() { alert(currentLang === 'ar' ? "جاري ترحيل وحفظ المعاملة بنجاح إلى قاعدة البيانات (ai-acc)..." : "Saving to Supabase database..."); }
 
-// تهيئة أولية عند تحميل المستند بالكامل
+// تهيئة أولية عند التحميل لضمان البدء بالاتجاه الأيمن واللغة العربية
 window.onload = function() {
     toggleForeignFields();
-    const modal = document.getElementById('ai-modal-box');
-    if (modal) {
-        modal.style.display = 'none';
-    }
+    document.documentElement.lang = 'ar';
+    document.documentElement.dir = 'rtl';
+    const widgetTitle = document.getElementById('widget-title');
+    if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي";
 };

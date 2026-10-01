@@ -3,112 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title">ai-agent-acc - الوكيل الذكي للمحاسبة المالية</title>
-    <link rel="stylesheet" href="css/widget.css">
+    <title>ai-agent-acc - الوكيل الذكي للمحاسبة المالية</title>
+    <!-- ربط ملفات التنسيق -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="ai-cost-assistant-widget" class="ai-widget-container">
-        <!-- زر إطلاق النافذة العائمة -->
-        <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()">
-            🛍️ <span id="widget-launcher-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</span>
-        </button>
-        
-        <!-- النافذة المنسدلة التفاعلية متوافقة مع الموبايل وبدون تمرير عرضي -->
-        <div id="ai-modal-box" class="modal-box" style="display: none;">
-            <div class="modal-header">
-                <span id="modal-header-title">الوكيل الذكي للمحاسبة المالية ai-agent-acc</span>
-                <button id="lang-toggle-btn" onclick="toggleLanguage()">En / Ar</button>
-            </div>
-            
-            <!-- رسالة الترحيب -->
-            <div class="welcome-container">
-                <p id="welcome-msg-1">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</p>
-                <p id="welcome-msg-2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري</p>
-            </div>
 
-            <!-- سطر التاريخ والعملة -->
-            <div class="exchange-info-bar">
+    <!-- الواجهة الرئيسية / نموذج المساعد العائم -->
+    <div id="ai-modal-box" class="modal-container" style="display: block;">
+        <div class="modal-header">
+            <span id="modal-header-title">الوكيل الذكي للمحاسبة المالية ai-agent-acc</span>
+            <button id="lang-toggle-btn" onclick="toggleLanguage()">En / Ar</button>
+        </div>
+
+        <div class="modal-body">
+            <p id="welcome-msg-1">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</p>
+            <p id="welcome-msg-2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري</p>
+
+            <div class="row-info">
                 <span id="label-date">التاريخ: 2026-10-01</span>
                 <span id="label-exchange-title">سعر صرف العملة للجنيه المصري</span>
             </div>
 
-            <!-- صف العملات الأجنبية المدمج -->
-            <div class="foreign-currency-row" style="display: flex; gap: 8px; align-items: center;">
-                <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري" style="flex: 0 0 auto;">🧮 تحويل</button>
-                <input type="number" id="amount-input" placeholder="المبلغ..." disabled style="flex: 0 0 20%;">
-                <select id="country-select" onchange="toggleForeignFields()" style="flex: 1;">
-                    <option value="Egypt" selected id="opt-egypt">مصر (EGP)</option>
-                    <option value="Kuwait" id="opt-kuwait">الكويت - دينار كويتي (KWD)</option>
-                    <option value="KSA" id="opt-ksa">السعودية (SAR)</option>
-                    <option value="UAE" id="opt-uae">الإمارات (AED)</option>
-                    <option value="USA" id="opt-usa">الدولار الأمريكي (USD)</option>
+            <div class="input-group">
+                <button id="convert-btn" onclick="convertCurrency()">🧮 تحويل</button>
+                <input type="number" id="amount-input" placeholder="المبلغ...">
+                <select id="country-select" onchange="toggleForeignFields()">
+                    <option id="opt-egypt" value="Egypt">مصر (EGP)</option>
+                    <option id="opt-kuwait" value="Kuwait">الكويت (KWD)</option>
+                    <option id="opt-ksa" value="KSA">السعودية (SAR)</option>
+                    <option id="opt-uae" value="UAE">الإمارات (AED)</option>
+                    <option id="opt-usa" value="USA">أمريكا (USD)</option>
                 </select>
             </div>
 
-            <!-- إطار ناتج التحويل -->
-            <div class="foreign-result-row">
-                <input type="text" id="foreign-result-display" placeholder="ناتج التحويل المعياري..." readonly>
+            <input type="text" id="foreign-result-display" placeholder="ناتج التحويل المعياري...">
+            <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية">
+
+            <div class="toolbar-top">
+                <button onclick="saveCurrentState()">💾 حفظ</button>
+                <button onclick="copyResultText()">📋 نسخ</button>
+                <button onclick="pinWidgetState()">📌 تثبيت</button>
+                <button onclick="openSystemSettings()">⚙️ إعدادات</button>
+                <button onclick="printAccountingStatement()">🖨️ طباعة</button>
+                <button onclick="triggerDocumentImport()">📥 استيراد</button>
             </div>
 
-            <!-- صف كتابة نص بيان المعاملة بالدولة الأجنبية -->
-            <div class="foreign-note-row" style="margin-bottom: 8px;">
-                <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled style="width: 100%; box-sizing: border-box;">
+            <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)..."></textarea>
+            
+            <p id="examples-text" class="examples-note">مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات</p>
+
+            <button id="process-submit-btn" class="submit-btn" onclick="processAccountingTransaction()">
+                <span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>
+            </button>
+
+            <!-- صندوق عرض نتائج القيود المزدوجة -->
+            <div id="results-container" class="results-box" style="display:none;">
+                <h3>📊 نتيجة التحليل المحاسبي المزدوج</h3>
+                <p><strong>المبلغ والعملة:</strong> <span id="val-amount">--</span></p>
+                <p><strong>الطرف المدين:</strong> <span id="val-debit">--</span></p>
+                <p><strong>الطرف الدائن:</strong> <span id="val-credit">--</span></p>
+                <p><strong>القائمة المالية المتأثرة:</strong> <span id="val-statement">--</span></p>
+                <p><strong>حساب الأستاذ الفرعي:</strong> <span id="val-ledger">--</span></p>
+                <p><strong>حساب الأستاذ العام:</strong> <span id="val-account-statement">--</span></p>
             </div>
 
-            <!-- صف أزرار التحرير المستقلة -->
-            <div class="whatsapp-editor-box">
-                <div class="editor-toolbar">
-                    <button id="btn-save" title="حفظ مؤقت" onclick="saveCurrentState()">💾 حفظ</button>
-                    <button id="btn-copy" title="نسخ" onclick="copyResultText()">📋 نسخ</button>
-                    <button id="btn-pin" title="تثبيت" onclick="pinWidgetState()">📌 تثبيت</button>
-                    <button id="btn-settings" title="الإعدادات" onclick="openSystemSettings()">⚙️ إعدادات</button>
-                    <button id="btn-print" title="طباعة" onclick="printAccountingStatement()">🖨 طباعة</button>
-                    <button id="btn-import" title="استيراد" onclick="triggerDocumentImport()">💬 استيراد</button>
-                </div>
+            <div class="toolbar-bottom">
+                <button id="btn-voice" onclick="triggerVoiceInput()">🎤 تسجيل صوتي</button>
+                <button id="btn-image" onclick="triggerImageUpload()">🖼️ جلب صورة</button>
+                <button id="btn-ocr" onclick="triggerOCRScan()">📷 مسح ضوئي</button>
             </div>
 
-            <!-- إطار المعاملة المالية المحلية بمصر أو قاموس المعالجة -->
-            <div class="local-tx-section">
-                <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)..."></textarea>
-                <div class="examples-box">
-                    <p id="examples-text">مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات</p>
-                </div>
-            </div>
-
-            <!-- زر إرسال المعاملة للمعالجة المزدوجة -->
-            <div class="submit-action-row">
-                <button id="process-submit-btn" class="send-text-btn" onclick="processAccountingTransaction()">
-                    <span id="submit-btn-text">إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>
-                </button>
-            </div>
-
-            <!-- صف الوسائط والمسح الضوئي -->
-            <div class="actions-section">
-                <button id="btn-voice" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎤 تسجيل صوتي</button>
-                <button id="btn-image" onclick="triggerImageUpload()" title="جلب صورة">📁 جلب صورة</button>
-                <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 مسح ضوئي</button>
-            </div>
-
-            <!-- مساحة النتائج التحليلية الفورية -->
-            <div id="results-container" class="result-area" style="display: none;">
-                <div id="res-badge" class="result-badge">النتائج التحليلية الفورية وقاموس المعالجة:</div>
-                <div class="result-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">--</span></div>
-                <div class="result-row"><strong id="res-label-debit">الجانب المدين:</strong> <span id="val-debit">--</span></div>
-                <div class="result-row"><strong id="res-label-credit">الجانب الدائن:</strong> <span id="val-credit">--</span></div>
-                <div class="result-row"><strong id="res-label-statement">القائمة المالية المتأثرة:</strong> <span id="val-statement">--</span></div>
-                <div class="result-row"><strong id="res-label-ledger">دفتر الأستاذ المرتبط:</strong> <span id="val-ledger">--</span></div>
-                <div class="result-row" style="color: #1e40af; font-weight: bold;"><strong id="res-label-acc-statement">Account Statement:</strong> <span id="val-account-statement">سجل الأستاذ العام للمعاملات النقدية</span></div>
-            </div>
-
-            <!-- أزرار التصدير الثلاثة متساوية وبخط مثقل Bold -->
-            <div class="persistence-options">
-                <button onclick="saveToSupabaseDB()"><span id="btn-exp-supabase">تسجيل بقاعدة بيانات</span><br><b id="db-name-tag">ai-acc</b></button>
-                <button onclick="exportToGoogleSheets()"><span id="btn-exp-sheets">تصدير إلى</span><br><b>Google Sheet</b></button>
-                <button onclick="exportToExcel365()"><span id="btn-exp-excel">تصدير إلى</span><br><b>Excel 365</b></button>
+            <div class="toolbar-actions">
+                <button id="btn-db" onclick="saveToSupabaseDB()">💾 سجل بقاعدة بيانات ai-acc</button>
+                <button id="btn-sheets" onclick="exportToGoogleSheets()">📊 سير إلى Google Sheet</button>
+                <button id="btn-excel" onclick="exportToExcel365()">📈 سير إلى Excel 365</button>
             </div>
         </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <!-- زر التشغيل العائم السفلي -->
+    <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()">
+        🛍️ <span id="widget-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</span>
+    </button>
+
+    <!-- ربط ملف المنطق البرمجي -->
+    <script src="app.js"></script>
 </body>
 </html>
