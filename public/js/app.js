@@ -1,6 +1,6 @@
 /**
  * ai-agent-acc - ملف المنطق البرمجي وقاموس المعالجة المحاسبية الشامل
- * الإصدار: 3.8 Enterprise - النسخة الكاملة الشاملة لتحديث الأيقونة وإزالة TaaS والتبديل الفوري
+ * الإصدار: 3.9 Enterprise - النسخة الكاملة الشاملة لتحديث الأيقونة وإزالة TaaS والتبديل الفوري والاتجاهات الديناميكية
  */
 
 // متغيرات النظام العامة
@@ -160,18 +160,17 @@ function processAccountingTransaction() {
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 5. تبديل اللغات والاتجاهات (RTL / LTR) مع تحديث اسم الأيقونة والعناوين وإزالة TaaS نهائياً
+// 5. تبديل اللغات والاتجاهات (RTL / LTR) مع ضبط اتجاه الكائنات وترجمة القوائم والأزرار والأيقونة العائمة
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
+    // ضبط اتجاه المستند بالكامل ديناميكياً
     document.documentElement.lang = currentLang;
     document.documentElement.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
 
     const langBtn = document.getElementById('lang-toggle-btn');
-    
-    // دعم كلا المعرفين للأيقونة العائمة لضمان عدم حدوث أي خطأ مهما كان المعرف المستخدم في الـ HTML
-    const widgetTitle = document.getElementById('widget-title') || document.getElementById('widget-launcher-title');
-    
+    const widgetContainer = document.getElementById('ai-cost-assistant-widget');
+    const widgetTitle = document.getElementById('widget-launcher-title');
     const modalHeaderTitle = document.getElementById('modal-header-title');
     const convertBtn = document.getElementById('convert-btn');
     const processBtn = document.getElementById('process-submit-btn');
@@ -184,10 +183,37 @@ function toggleLanguage() {
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const transactionText = document.getElementById('transaction-text');
     const examplesText = document.getElementById('examples-text');
-    
+
+    // عناصر أزرار التحرير المستقلة
+    const txtSave = document.getElementById('txt-save');
+    const txtCopy = document.getElementById('txt-copy');
+    const txtPin = document.getElementById('txt-pin');
+    const txtSettings = document.getElementById('txt-settings');
+    const txtPrint = document.getElementById('txt-print');
+    const txtImport = document.getElementById('txt-import');
+
+    // عناصر أزرار الوسائط والمسح
+    const txtVoice = document.getElementById('txt-voice');
+    const txtImage = document.getElementById('txt-image');
+    const txtOcr = document.getElementById('txt-ocr');
+
+    // خيارات قائمة الدول
+    const optEgypt = document.getElementById('opt-egypt');
+    const optKuwait = document.getElementById('opt-kuwait');
+    const optKsa = document.getElementById('opt-ksa');
+    const optUae = document.getElementById('opt-uae');
+    const optUsa = document.getElementById('opt-usa');
+
     if (currentLang === 'en') {
         document.body.classList.add('lang-en');
-        if (widgetTitle) widgetTitle.innerText = "Smart Accounting Assistant & Processing Dictionary";
+        
+        // ضبط موضع الأيقونة العائمة لليسار وتصغير حجمها والنص بالإنجليزية
+        if (widgetContainer) {
+            widgetContainer.style.right = 'auto';
+            widgetContainer.style.left = '20px';
+        }
+        if (widgetTitle) widgetTitle.innerText = "Smart Accounting Assistant";
+
         if (modalHeaderTitle) modalHeaderTitle.innerText = "Smart Financial Accounting Assistant ai-agent-acc";
         if (convertBtn) convertBtn.innerText = "🧮 Convert";
         if (processBtn) processBtn.innerHTML = `<span>Send Financial Transaction for Dual Analysis</span> <span class="btn-arrow-icon">➔</span>`;
@@ -201,9 +227,37 @@ function toggleLanguage() {
         if (foreignNoteInput) foreignNoteInput.placeholder = "Complete transaction statement in foreign country";
         if (transactionText) transactionText.placeholder = "Type financial transaction and processing dictionary here...";
         if (examplesText) examplesText.innerText = "Example: Operational rent | Legal consulting fees | Equipment purchase";
+
+        // ترجمة أزرار التحرير للإنجليزية
+        if (txtSave) txtSave.innerText = "Save";
+        if (txtCopy) txtCopy.innerText = "Copy";
+        if (txtPin) txtPin.innerText = "Pin";
+        if (txtSettings) txtSettings.innerText = "Settings";
+        if (txtPrint) txtPrint.innerText = "Print";
+        if (txtImport) txtImport.innerText = "Import";
+
+        // ترجمة أزرار الوسائط للإنجليزية
+        if (txtVoice) txtVoice.innerText = "Voice Record";
+        if (txtImage) txtImage.innerText = "Upload Image";
+        if (txtOcr) txtOcr.innerText = "OCR Scan";
+
+        // ترجمة قائمة الدول للإنجليزية
+        if (optEgypt) optEgypt.innerText = "Egypt (EGP)";
+        if (optKuwait) optKuwait.innerText = "Kuwait - Kuwaiti Dinar (KWD)";
+        if (optKsa) optKsa.innerText = "Saudi Arabia (SAR)";
+        if (optUae) optUae.innerText = "UAE (AED)";
+        if (optUsa) optUsa.innerText = "United States (USD)";
+
     } else {
         document.body.classList.remove('lang-en');
-        if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي وقاموس المعالجة الآلية";
+        
+        // ضبط موضع الأيقونة العائمة لليمين وتصغير حجمها والنص بالعربية
+        if (widgetContainer) {
+            widgetContainer.style.left = 'auto';
+            widgetContainer.style.right = '20px';
+        }
+        if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي";
+
         if (modalHeaderTitle) modalHeaderTitle.innerText = "الوكيل الذكي للمحاسبة المالية ai-agent-acc";
         if (convertBtn) convertBtn.innerText = "🧮 تحويل";
         if (processBtn) processBtn.innerHTML = `<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>`;
@@ -217,6 +271,26 @@ function toggleLanguage() {
         if (foreignNoteInput) foreignNoteInput.placeholder = "أكمل بيان المعاملة بالدولة الأجنبية";
         if (transactionText) transactionText.placeholder = "أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...";
         if (examplesText) examplesText.innerText = "مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات";
+
+        // إرجاع أزرار التحرير للعربية
+        if (txtSave) txtSave.innerText = "حفظ";
+        if (txtCopy) txtCopy.innerText = "نسخ";
+        if (txtPin) txtPin.innerText = "تثبيت";
+        if (txtSettings) txtSettings.innerText = "إعدادات";
+        if (txtPrint) txtPrint.innerText = "طباعة";
+        if (txtImport) txtImport.innerText = "استيراد";
+
+        // إرجاع أزرار الوسائط للعربية
+        if (txtVoice) txtVoice.innerText = "تسجيل صوتي";
+        if (txtImage) txtImage.innerText = "جلب صورة";
+        if (txtOcr) txtOcr.innerText = "مسح ضوئي";
+
+        // إرجاع قائمة الدول للعربية
+        if (optEgypt) optEgypt.innerText = "مصر (EGP)";
+        if (optKuwait) optKuwait.innerText = "الكويت - دينار كويتي (KWD)";
+        if (optKsa) optKsa.innerText = "السعودية (SAR)";
+        if (optUae) optUae.innerText = "الإمارات (AED)";
+        if (optUsa) optUsa.innerText = "الدولار الأمريكي (USD)";
     }
 }
 
@@ -243,11 +317,16 @@ function exportToExcel365() { alert(currentLang === 'ar' ? "جاري تجهيز 
 function exportToGoogleSheets() { alert(currentLang === 'ar' ? "جاري مزامنة وترحيل القيود مباشرة إلى Google Sheets..." : "Syncing to Google Sheets..."); }
 function saveToSupabaseDB() { alert(currentLang === 'ar' ? "جاري ترحيل وحفظ المعاملة بنجاح إلى قاعدة البيانات (ai-acc)..." : "Saving to Supabase database..."); }
 
-// تهيئة أولية عند تحميل المستند بالكامل
+// تهيئة أولية عند تحميل المستند بالكامل وضبط الموضع الافتراضي للأيقونة على اليمين مع اللغة العربية
 window.onload = function() {
     toggleForeignFields();
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
         modal.style.display = 'none';
+    }
+    const widgetContainer = document.getElementById('ai-cost-assistant-widget');
+    if (widgetContainer) {
+        widgetContainer.style.right = '20px';
+        widgetContainer.style.left = 'auto';
     }
 };

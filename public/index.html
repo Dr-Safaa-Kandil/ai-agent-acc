@@ -8,8 +8,8 @@
 </head>
 <body>
     <div id="ai-cost-assistant-widget" class="ai-widget-container">
-        <!-- زر إطلاق النافذة العائمة مع المعرف الدقيق للترجمة -->
-        <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()">
+        <!-- زر إطلاق النافذة العائمة مع المعرف الدقيق للترجمة وتصحيح الحجم والاتجاه -->
+        <button id="ai-launcher-btn" class="launcher-btn" onclick="toggleModal()" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 13px;">
             🛍️ <span id="widget-launcher-title">المساعد المحاسبي الذكي وقاموس المعالجة الآلية</span>
         </button>
         
@@ -55,15 +55,15 @@
                 <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled style="width: 100%; box-sizing: border-box;">
             </div>
 
-            <!-- صف أزرار التحرير المستقلة -->
+            <!-- صف أزرار التحرير المستقلة مع معرفات لضمان الترجمة الكاملة -->
             <div class="whatsapp-editor-box">
                 <div class="editor-toolbar">
-                    <button id="btn-save" title="حفظ مؤقت" onclick="saveCurrentState()">💾 حفظ</button>
-                    <button id="btn-copy" title="نسخ" onclick="copyResultText()">📋 نسخ</button>
-                    <button id="btn-pin" title="تثبيت" onclick="pinWidgetState()">📌 تثبيت</button>
-                    <button id="btn-settings" title="الإعدادات" onclick="openSystemSettings()">⚙️ إعدادات</button>
-                    <button id="btn-print" title="طباعة" onclick="printAccountingStatement()">🖨 طباعة</button>
-                    <button id="btn-import" title="استيراد" onclick="triggerDocumentImport()">💬 استيراد</button>
+                    <button id="btn-save" title="حفظ مؤقت" onclick="saveCurrentState()">💾 <span id="txt-save">حفظ</span></button>
+                    <button id="btn-copy" title="نسخ" onclick="copyResultText()">📋 <span id="txt-copy">نسخ</span></button>
+                    <button id="btn-pin" title="تثبيت" onclick="pinWidgetState()">📌 <span id="txt-pin">تثبيت</span></button>
+                    <button id="btn-settings" title="الإعدادات" onclick="openSystemSettings()">⚙️️ <span id="txt-settings">إعدادات</span></button>
+                    <button id="btn-print" title="طباعة" onclick="printAccountingStatement()">🖨 <span id="txt-print">طباعة</span></button>
+                    <button id="btn-import" title="استيراد" onclick="triggerDocumentImport()">💬 <span id="txt-import">استيراد</span></button>
                 </div>
             </div>
 
@@ -82,11 +82,11 @@
                 </button>
             </div>
 
-            <!-- صف الوسائط والمسح الضوئي -->
+            <!-- صف الوسائط والمسح الضوئي مع معرفات للترجمة -->
             <div class="actions-section">
-                <button id="btn-voice" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎤 تسجيل صوتي</button>
-                <button id="btn-image" onclick="triggerImageUpload()" title="جلب صورة">📁 جلب صورة</button>
-                <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 مسح ضوئي</button>
+                <button id="btn-voice" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎤 <span id="txt-voice">تسجيل صوتي</span></button>
+                <button id="btn-image" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
+                <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
             </div>
 
             <!-- مساحة النتائج التحليلية الفورية -->
