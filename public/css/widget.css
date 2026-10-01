@@ -91,35 +91,70 @@
     border-radius: 3px;
 }
 
-/* صف العملات الأجنبية المضغوط بأقل ارتفاع رأسي */
-.foreign-currency-row, .foreign-result-row {
+/* صف العملات الأجنبية المدمج (تعديل الأبعاد ونسبة 1/5 للمبلغ) */
+.foreign-currency-row {
     display: flex;
     gap: 4px;
     margin-bottom: 5px;
+    align-items: center;
 }
 
-.foreign-currency-row select, .foreign-currency-row input, .foreign-currency-row button,
-.foreign-result-row input {
+.foreign-currency-row button {
+    flex: 0 0 auto;
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* أبعاد خانة إدخال المبلغ: خمس مساحة النموذج (1/5) */
+.foreign-currency-row input#amount-input {
+    flex: 0 0 20%;
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11px;
+    text-align: center;
+}
+
+.foreign-currency-row select {
+    flex: 1;
     padding: 4px 6px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 11px;
 }
 
-.foreign-currency-row select { flex: 1.3; }
-.foreign-currency-row input { flex: 1; }
-.foreign-currency-row button {
-    flex: 0.9;
-    background: #0284c7;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
+.foreign-result-row {
+    display: flex;
+    margin-bottom: 5px;
 }
 
 .foreign-result-row input {
     width: 100%;
     background: #f8fafc;
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+/* صف كتابة نص بيان المعاملة بالدولة الأجنبية */
+.foreign-note-row {
+    margin-bottom: 5px;
+}
+
+.foreign-note-row input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11px;
+    background-color: #ffffff;
 }
 
 .whatsapp-editor-box {
@@ -227,6 +262,7 @@
     line-height: 1.2;
 }
 
+/* أزرار التصدير الثلاثة متساوية وبخط مثقل Bold */
 .persistence-options {
     display: flex;
     gap: 4px;
@@ -243,6 +279,14 @@
     text-align: center;
     cursor: pointer;
     line-height: 1.1;
+    font-weight: bold;
+}
+
+/* تنسيق العناصر المعطلة Disabled */
+input:disabled, select:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
 }
 
 /* دعم تبديل لغة الواجهة (En) */

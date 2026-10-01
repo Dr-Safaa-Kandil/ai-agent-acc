@@ -1,6 +1,6 @@
 /**
  * ai-agent-acc - ملف المنطق البرمجي وقاموس المعالجة المحاسبية الشامل
- * الإصدار: 3.5 Enterprise
+ * الإصدار: 3.6 Enterprise
  */
 
 // متغيرات النظام العامة
@@ -18,12 +18,13 @@ function toggleModal() {
     }
 }
 
-// 2. قفل وتفعيل حقول العملات والتحويل عند اختيار الدولة
+// 2. قفل وتفعيل حقول العملات والتحويل وعند اختيار الدولة (مصر تعطل المبلغ والتحويل، وتفعل النسخ)
 function toggleForeignFields() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
     const convertBtn = document.getElementById('convert-btn');
     const foreignRes = document.getElementById('foreign-result-display');
+    const foreignNoteInput = document.getElementById('foreign-note-input');
     
     if (!countrySelect) return;
     const country = countrySelect.value;
@@ -38,8 +39,12 @@ function toggleForeignFields() {
             convertBtn.style.opacity = '0.4';
         }
         if (foreignRes) {
-            foreignRes.disabled = true;
+            foreignRes.disabled = false; // تفعيل لضمان إمكانية نسخ الناتج
             foreignRes.value = '';
+        }
+        if (foreignNoteInput) {
+            foreignNoteInput.disabled = true;
+            foreignNoteInput.value = '';
         }
     } else {
         if (amountInput) amountInput.disabled = false;
@@ -48,10 +53,11 @@ function toggleForeignFields() {
             convertBtn.style.opacity = '1';
         }
         if (foreignRes) foreignRes.disabled = false;
+        if (foreignNoteInput) foreignNoteInput.disabled = false;
     }
 }
 
-// 3. دالة التحويل المعياري للعملات الأجنبية
+// 3. دالة التحويل المعياري للعملات الأجنبية (دعم الكويت والدول الأخرى)
 function convertCurrency() {
     const amountInput = document.getElementById('amount-input');
     const foreignRes = document.getElementById('foreign-result-display');
@@ -69,8 +75,11 @@ function convertCurrency() {
     let currencyCode = "EGP";
     const country = countrySelect.value;
     
-    if (country === 'KSA') {
-        rate = 13.5; // سعر استرشادي تقريبي للصرف
+    if (country === 'Kuwait') {
+        rate = 165.0; // سعر استرشادي تقريبي للدينار الكويتي مقابل الجنيه
+        currencyCode = "دينار كويتي (E)";
+    } else if (country === 'KSA') {
+        rate = 13.5; 
         currencyCode = "SAR";
     } else if (country === 'UAE') {
         rate = 13.8;
@@ -81,26 +90,31 @@ function convertCurrency() {
     }
     
     const resultVal = (val * rate).toFixed(2);
-    foreignRes.value = `${resultVal} EGP (معادل لـ ${val} ${currencyCode})`;
+    foreignRes.value = `${currencyCode} ${resultVal} (معادل لـ ${val})`;
 }
 
 // 4. قاموس المعالجة المحاسبية الذكي وتحليل القيود المزدوجة
 function processAccountingTransaction() {
+    const countrySelect = document.getElementById('country-select');
+    const amountInput = document.getElementById('amount-input');
     const textElement = document.getElementById('transaction-text');
     const resultsContainer = document.getElementById('results-container');
     
-    if (!textElement || !resultsContainer) return;
+    if (!countrySelect || !textElement || !resultsContainer) return;
+    
+    // التحقق الشرطي الفوري عند اختيار مصر وعدم إدخال المبلغ
+    if (countrySelect.value === 'Egypt') {
+        const localAmount = amountInput ? amountInput.value.trim() : "";
+        // التحقق من وجود بيان أو مبلغ
+        const textVal = textElement.value.trim();
+        if (!textVal && !localAmount) {
+            alert("أكمل المعاملة المالية بذكر المبلغ");
+            return;
+        }
+    }
     
     const text = textElement.value.trim();
-    
-    if (!text) {
-        alert("يرجى كتابة بيان المعاملة المالية أولاً في قاموس المعالجة.");
-        return;
-    }
-
-    // استخراج المبلغ المالي من النص تلقائياً إن وجد
-    const matchNumber = text.match(/\d+/);
-    const amount = matchNumber ? matchNumber[0] : "1500";
+    const amount = (amountInput && amountInput.value) ? amountInput.value : "1500";
 
     let debit = "--";
     let credit = "--";
@@ -108,13 +122,13 @@ function processAccountingTransaction() {
     let ledger = "--";
     let currencySymbol = "جنيه مصري (EGP)";
 
-    // مطابقة دقيقة لأولويات وقواعد المعالجة المحاسبية (إيجار، محاماة، أتعاب، تحويل)
-    if (text.includes("إيجار") || text.includes("محطة")) {
-        debit = "حساب مصروف الإيجار التشغيلي";
-        credit = "حساب النقدية / البنك بالخزينة";
-        statement = "قائمة الدخل (Income Statement)";
-        ledger = "أستاذ المصروفات التشغيلية والخدمية";
-    } else if (text.includes("محاماة") || text.includes("عمولة") || text.includes("أتعاب") || text.includes("استشارية") || text.includes("تحويل بنكى")) {
+    // مطابقة دقيقة لقواعد المعالجة المحاسبية
+    if (text.includes("إيجار") || text.includes("محطة") || text.includes("مستلزمات")) {
+        debit = "حساب المصروفات العامة والمتنوعة";
+        credit = "حساب الخزينة الرئيسية / النقدية";
+        statement = "قائمة الدخل وقائمة المركز المالي";
+        ledger = "أستاذ المصروفات العامة";
+    } else if (text.includes("محاماة") || text.includes("عمولة") || text.includes("أتعاب") || text.includes("استشارية")) {
         debit = "حساب الأتعاب المهنية والاستشارات القانونية";
         credit = "حساب البنك التجاري الجاري";
         statement = "قائمة الدخل (Income Statement)";
@@ -125,10 +139,10 @@ function processAccountingTransaction() {
         statement = "قائمة المركز المالي (Balance Sheet)";
         ledger = "أستاذ الأصول الثابتة";
     } else {
-        debit = "حساب المصروفات العامة والمتنوعة";
-        credit = "حساب الخزينة الرئيسية / النقدية";
-        statement = "قائمة الدخل وقائمة المركز المالي";
-        ledger = "أستاذ المصروفات العامة";
+        debit = "حساب مصروف الإيجار التشغيلي";
+        credit = "حساب النقدية / البنك بالخزينة";
+        statement = "قائمة الدخل (Income Statement)";
+        ledger = "أستاذ المصروفات التشغيلية والخدمية";
     }
 
     // تعيين القيم في عناصر الواجهة
@@ -137,19 +151,21 @@ function processAccountingTransaction() {
     const valCreditElem = document.getElementById('val-credit');
     const valStatementElem = document.getElementById('val-statement');
     const valLedgerElem = document.getElementById('val-ledger');
+    const valAccountStatementElem = document.getElementById('val-account-statement');
 
     if (valAmountElem) valAmountElem.innerText = `${amount} ${currencySymbol}`;
     if (valDebitElem) valDebitElem.innerText = debit;
     if (valCreditElem) valCreditElem.innerText = credit;
     if (valStatementElem) valStatementElem.innerText = statement;
     if (valLedgerElem) valLedgerElem.innerText = ledger;
+    if (valAccountStatementElem) valAccountStatementElem.innerText = "سجل الأستاذ العام للمعاملات النقدية";
 
     // إظهار صندوق النتائج التحليلية
     resultsContainer.style.display = 'block';
     resultsContainer.scrollIntoView({ behavior: 'smooth' });
 }
 
-// 5. تبديل اللغة (عربي / إنجليزي) وتغيير الاتجاهات والنصوص
+// 5. تبديل اللغة (عربي / إنجليزي)
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     const langBtn = document.getElementById('lang-toggle-btn');
@@ -159,20 +175,33 @@ function toggleLanguage() {
     
     if(currentLang === 'en') {
         document.body.classList.add('lang-en');
-        if (widgetTitle) widgetTitle.innerText = "Smart Accounting Agent & TaaS Processing";
-        if (convertBtn) convertBtn.innerText = "Standard Convert";
+        if (widgetTitle) widgetTitle.innerText = "Smart Accounting Agent ai-agent-acc";
+        if (convertBtn) convertBtn.innerText = "Convert";
         if (processBtn) processBtn.innerHTML = `<span>Send Transaction for Dual Analysis</span> <span class="btn-arrow-icon">➔</span>`;
         if (langBtn) langBtn.innerText = "Ar / En";
     } else {
         document.body.classList.remove('lang-en');
         if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي وقاموس المعالجة الآلية";
-        if (convertBtn) convertBtn.innerText = "تحويل معياري";
-        if (processBtn) processBtn.innerHTML = `<span>إرسال المعاملة المالية وقاموس المعالجة للتحليل المزدوج</span> <span class="btn-arrow-icon">➔</span>`;
+        if (convertBtn) convertBtn.innerText = "🧮 تحويل";
+        if (processBtn) processBtn.innerHTML = `<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>`;
         if (langBtn) langBtn.innerText = "En / Ar";
     }
 }
 
-// 6. دوال الأداة المساعدة المتقدمة (استيراد، حفظ، طباعة، تصدير)
+// 6. دوال الأداة المساعدة (وظيفة النسخ الصامت بدون إظهار أي تنبيهات Popups)
+function copyResultText() {
+    const resultsContainer = document.getElementById('results-container');
+    if (resultsContainer) {
+        // استخراج رقم المبلغ الناتج بدقة بصمت تام
+        const textToCopy = resultsContainer.innerText.replace(/[^0-9.]/g, '');
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // تنفيذ صامت ومباشر دون استخدام alert لتجنب الإزعاج
+        }).catch(err => {
+            console.error('فشل النسخ الصامت', err);
+        });
+    }
+}
+
 function triggerDocumentImport() {
     alert("جاري فتح نافذة استيراد المستندات والفواتير الرقمية...");
 }
@@ -183,14 +212,6 @@ function saveCurrentState() {
 
 function printAccountingStatement() {
     window.print();
-}
-
-function copyResultText() {
-    const resultsContainer = document.getElementById('results-container');
-    if (resultsContainer) {
-        navigator.clipboard.writeText(resultsContainer.innerText);
-        alert("تم نسخ النتائج التحليلية للحافظة بنجاح!");
-    }
 }
 
 function pinWidgetState() {
