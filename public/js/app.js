@@ -1,6 +1,6 @@
 /**
  * ai-agent-acc - ملف المنطق البرمجي وقاموس المعالجة المحاسبية الشامل
- * الإصدار: 4.0 Enterprise - النسخة الكاملة الشاملة للترتيب المكاني، الأيقونة والاتجاهات الديناميكية
+ * الإصدار: 4.1 Enterprise - النسخة المعدلة لضبط أزرار التحرير ونصوص التحويل بدقة
  */
 
 // متغيرات النظام العامة
@@ -18,7 +18,7 @@ function toggleModal() {
     }
 }
 
-// 2. قفل وتفعيل حقول العملات والتحويل عند اختيار الدولة (مصر تعطل المبلغ والتحويل، وتفعل النسخ)
+// 2. قفل وتفعيل حقول العملات والتحويل عند اختيار الدولة (مصر تعطل المبلغ والتحويل، وتفعل الناتج)
 function toggleForeignFields() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -185,12 +185,9 @@ function toggleLanguage() {
     const examplesText = document.getElementById('examples-text');
     const foreignCurrencyRow = document.getElementById('foreign-currency-row');
 
-    // عناصر أزرار التحرير المستقلة
-    const txtSave = document.getElementById('txt-save');
+    // عناصر أزرار التحرير المستقلة المحدثة
     const txtCopy = document.getElementById('txt-copy');
-    const txtPin = document.getElementById('txt-pin');
-    const txtSettings = document.getElementById('txt-settings');
-    const txtPrint = document.getElementById('txt-print');
+    const txtPaste = document.getElementById('txt-paste');
     const txtImport = document.getElementById('txt-import');
 
     // عناصر أزرار الوسائط والمسح
@@ -208,20 +205,18 @@ function toggleLanguage() {
     if (currentLang === 'en') {
         document.body.classList.add('lang-en');
         
-        // ضبط موضع الأيقونة العائمة لليسار وتصغير حجمها والنص بالإنجليزية
         if (widgetContainer) {
             widgetContainer.style.right = 'auto';
             widgetContainer.style.left = '20px';
         }
         if (widgetTitle) widgetTitle.innerText = "Smart Accounting Assistant";
 
-        // ضبط الترتيب المكاني لصف العملات الأجنبية في الإنجليزية (الدولة أولاً لليسار ثم المبلغ ثم زر التحويل)
         if (foreignCurrencyRow) {
             foreignCurrencyRow.style.flexDirection = 'row-reverse';
         }
 
         if (modalHeaderTitle) modalHeaderTitle.innerText = "Smart Financial Accounting Assistant ai-agent-acc";
-        if (convertBtn) convertBtn.innerText = "🧮 Convert";
+        if (convertBtn) convertBtn.innerText = "🧮 Convert to EGP";
         if (processBtn) processBtn.innerHTML = `<span>Send Financial Transaction for Dual Analysis</span> <span class="btn-arrow-icon">➔</span>`;
         if (langBtn) langBtn.innerText = "Ar / En";
         if (welcomeMsg1) welcomeMsg1.innerText = "Welcome to your smart agent for financial transaction recording";
@@ -229,17 +224,14 @@ function toggleLanguage() {
         if (labelDate) labelDate.innerText = "Date: 2026-10-01";
         if (labelExchange) labelExchange.innerText = "Currency Exchange Rate to EGP";
         if (amountInput) amountInput.placeholder = "Amount...";
-        if (foreignResultDisplay) foreignResultDisplay.placeholder = "Standard conversion result...";
+        if (foreignResultDisplay) foreignResultDisplay.placeholder = "Conversion result to Egyptian Pounds...";
         if (foreignNoteInput) foreignNoteInput.placeholder = "Complete transaction statement in foreign country";
         if (transactionText) transactionText.placeholder = "Type financial transaction and processing dictionary here...";
         if (examplesText) examplesText.innerText = "Example: Operational rent | Legal consulting fees | Equipment purchase";
 
-        // ترجمة أزرار التحرير للإنجليزية
-        if (txtSave) txtSave.innerText = "Save";
+        // ترجمة أزرار التحرير المحدثة للإنجليزية
         if (txtCopy) txtCopy.innerText = "Copy";
-        if (txtPin) txtPin.innerText = "Pin";
-        if (txtSettings) txtSettings.innerText = "Settings";
-        if (txtPrint) txtPrint.innerText = "Print";
+        if (txtPaste) txtPaste.innerText = "Paste";
         if (txtImport) txtImport.innerText = "Import";
 
         // ترجمة أزرار الوسائط للإنجليزية
@@ -257,20 +249,18 @@ function toggleLanguage() {
     } else {
         document.body.classList.remove('lang-en');
         
-        // ضبط موضع الأيقونة العائمة لليمين وتصغير حجمها والنص بالعربية
         if (widgetContainer) {
             widgetContainer.style.left = 'auto';
             widgetContainer.style.right = '20px';
         }
         if (widgetTitle) widgetTitle.innerText = "المساعد المحاسبي الذكي";
 
-        // ضبط الترتيب المكاني لصف العملات الأجنبية في العربية (الدولة أولاً لليمين ثم المبلغ ثم زر التحويل)
         if (foreignCurrencyRow) {
             foreignCurrencyRow.style.flexDirection = 'row';
         }
 
         if (modalHeaderTitle) modalHeaderTitle.innerText = "الوكيل الذكي للمحاسبة المالية ai-agent-acc";
-        if (convertBtn) convertBtn.innerText = "🧮 تحويل";
+        if (convertBtn) convertBtn.innerText = "🧮 تحويل للجنيه المصري";
         if (processBtn) processBtn.innerHTML = `<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>`;
         if (langBtn) langBtn.innerText = "En / Ar";
         if (welcomeMsg1) welcomeMsg1.innerText = "مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية";
@@ -278,17 +268,14 @@ function toggleLanguage() {
         if (labelDate) labelDate.innerText = "التاريخ: 2026-10-01";
         if (labelExchange) labelExchange.innerText = "سعر صرف العملة للجنيه المصري";
         if (amountInput) amountInput.placeholder = "المبلغ...";
-        if (foreignResultDisplay) foreignResultDisplay.placeholder = "ناتج التحويل المعياري...";
+        if (foreignResultDisplay) foreignResultDisplay.placeholder = "ناتج التحويل للجنيه المصري...";
         if (foreignNoteInput) foreignNoteInput.placeholder = "أكمل بيان المعاملة بالدولة الأجنبية";
         if (transactionText) transactionText.placeholder = "أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...";
         if (examplesText) examplesText.innerText = "مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات";
 
-        // إرجاع أزرار التحرير للعربية
-        if (txtSave) txtSave.innerText = "حفظ";
+        // إرجاع أزرار التحرير المحدثة للعربية
         if (txtCopy) txtCopy.innerText = "نسخ";
-        if (txtPin) txtPin.innerText = "تثبيت";
-        if (txtSettings) txtSettings.innerText = "إعدادات";
-        if (txtPrint) txtPrint.innerText = "طباعة";
+        if (txtPaste) txtPaste.innerText = "لصق";
         if (txtImport) txtImport.innerText = "استيراد";
 
         // إرجاع أزرار الوسائط للعربية
@@ -305,7 +292,7 @@ function toggleLanguage() {
     }
 }
 
-// 6. دوال الأدوات المساعدة
+// 6. دوال الأدوات المساعدة المحدثة
 function copyResultText() {
     const resultsContainer = document.getElementById('results-container');
     if (resultsContainer) {
@@ -316,11 +303,16 @@ function copyResultText() {
     }
 }
 
+function pasteWidgetState() {
+    navigator.clipboard.readText().clipText().then(text => {
+        const txText = document.getElementById('transaction-text');
+        if (txText) txText.value = text;
+    }).catch(() => {
+        alert(currentLang === 'ar' ? "يرجى السماح بالصلاحية أو استخدام الاختصار (Ctrl+V) للصق." : "Please allow clipboard access or use Ctrl+V.");
+    });
+}
+
 function triggerDocumentImport() { alert(currentLang === 'ar' ? "جاري فتح نافذة استيراد المستندات والفواتير الرقمية..." : "Opening document import window..."); }
-function saveCurrentState() { alert(currentLang === 'ar' ? "تم حفظ حالة البيانات المؤقتة بنجاح في الذاكرة المحلية." : "Temporary state saved successfully."); }
-function printAccountingStatement() { window.print(); }
-function pinWidgetState() { alert(currentLang === 'ar' ? "تم تثبيت واجهة المساعد النشطة." : "Widget state pinned."); }
-function openSystemSettings() { alert(currentLang === 'ar' ? "فتح إعدادات النظام وقاموس القيود المحاسبية..." : "Opening system settings..."); }
 function triggerOCRScan() { alert(currentLang === 'ar' ? "جاري تفعيل نظام المسح الضوئي (OCR)..." : "Activating OCR scan..."); }
 function triggerImageUpload() { alert(currentLang === 'ar' ? "اختر صورة الفاتورة أو المستند المراد تحليله..." : "Select invoice image..."); }
 function triggerVoiceInput() { alert(currentLang === 'ar' ? "الاستماع الصوتي مفعل... يرجى التحدث." : "Voice listening active..."); }
@@ -328,7 +320,7 @@ function exportToExcel365() { alert(currentLang === 'ar' ? "جاري تجهيز 
 function exportToGoogleSheets() { alert(currentLang === 'ar' ? "جاري مزامنة وترحيل القيود مباشرة إلى Google Sheets..." : "Syncing to Google Sheets..."); }
 function saveToSupabaseDB() { alert(currentLang === 'ar' ? "جاري ترحيل وحفظ المعاملة بنجاح إلى قاعدة البيانات (ai-acc)..." : "Saving to Supabase database..."); }
 
-// تهيئة أولية عند تحميل المستند بالكامل وضبط الموضع الافتراضي للأيقونة وترتيب الصف على اليمين مع اللغة العربية
+// تهيئة أولية عند تحميل المستند بالكامل
 window.onload = function() {
     toggleForeignFields();
     const modal = document.getElementById('ai-modal-box');
