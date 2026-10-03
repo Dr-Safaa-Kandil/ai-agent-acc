@@ -304,7 +304,7 @@ function copyResultText() {
 }
 
 function pasteWidgetState() {
-    navigator.clipboard.readText().clipText().then(text => {
+    navigator.clipboard.readText().then(text => {
         const txText = document.getElementById('transaction-text');
         if (txText) txText.value = text;
     }).catch(() => {
