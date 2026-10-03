@@ -164,7 +164,6 @@ function processAccountingTransaction() {
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
-    // ضبط اتجاه المستند بالكامل ديناميكياً
     document.documentElement.lang = currentLang;
     document.documentElement.dir = (currentLang === 'ar') ? 'rtl' : 'ltr';
 
@@ -185,17 +184,14 @@ function toggleLanguage() {
     const examplesText = document.getElementById('examples-text');
     const foreignCurrencyRow = document.getElementById('foreign-currency-row');
 
-    // عناصر أزرار التحرير المستقلة المحدثة
     const txtCopy = document.getElementById('txt-copy');
     const txtPaste = document.getElementById('txt-paste');
     const txtImport = document.getElementById('txt-import');
 
-    // عناصر أزرار الوسائط والمسح
     const txtVoice = document.getElementById('txt-voice');
     const txtImage = document.getElementById('txt-image');
     const txtOcr = document.getElementById('txt-ocr');
 
-    // خيارات قائمة الدول
     const optEgypt = document.getElementById('opt-egypt');
     const optKuwait = document.getElementById('opt-kuwait');
     const optKsa = document.getElementById('opt-ksa');
@@ -229,17 +225,14 @@ function toggleLanguage() {
         if (transactionText) transactionText.placeholder = "Type financial transaction and processing dictionary here...";
         if (examplesText) examplesText.innerText = "Example: Operational rent | Legal consulting fees | Equipment purchase";
 
-        // ترجمة أزرار التحرير المحدثة للإنجليزية
         if (txtCopy) txtCopy.innerText = "Copy";
         if (txtPaste) txtPaste.innerText = "Paste";
         if (txtImport) txtImport.innerText = "Import";
 
-        // ترجمة أزرار الوسائط للإنجليزية
         if (txtVoice) txtVoice.innerText = "Voice Record";
         if (txtImage) txtImage.innerText = "Upload Image";
         if (txtOcr) txtOcr.innerText = "OCR Scan";
 
-        // ترجمة قائمة الدول للإنجليزية
         if (optEgypt) optEgypt.innerText = "Egypt (EGP)";
         if (optKuwait) optKuwait.innerText = "Kuwait - Kuwaiti Dinar (KWD)";
         if (optKsa) optKsa.innerText = "Saudi Arabia (SAR)";
@@ -273,17 +266,14 @@ function toggleLanguage() {
         if (transactionText) transactionText.placeholder = "أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...";
         if (examplesText) examplesText.innerText = "مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات";
 
-        // إرجاع أزرار التحرير المحدثة للعربية
         if (txtCopy) txtCopy.innerText = "نسخ";
         if (txtPaste) txtPaste.innerText = "لصق";
         if (txtImport) txtImport.innerText = "استيراد";
 
-        // إرجاع أزرار الوسائط للعربية
         if (txtVoice) txtVoice.innerText = "تسجيل صوتي";
         if (txtImage) txtImage.innerText = "جلب صورة";
         if (txtOcr) txtOcr.innerText = "مسح ضوئي";
 
-        // إرجاع قائمة الدول للعربية
         if (optEgypt) optEgypt.innerText = "مصر (EGP)";
         if (optKuwait) optKuwait.innerText = "الكويت - دينار كويتي (KWD)";
         if (optKsa) optKsa.innerText = "السعودية (SAR)";
