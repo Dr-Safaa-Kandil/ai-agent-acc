@@ -23,16 +23,19 @@
     font-weight: bold;
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* ضبط النافذة لتتوافق تماماً مع شاشات الموبايل وبدون تمرير عرضي */
+/* تصغير عرض النافذة بنسبة 20% لتناسب الموبايل بدقة (من 410 إلى 330) */
 .modal-box {
     position: fixed;
     bottom: 65px;
     left: 8px;
     right: 8px;
     width: auto;
-    max-width: 410px;
+    max-width: 330px;
     margin: 0 auto;
     max-height: 85vh;
     overflow-x: hidden;
@@ -49,31 +52,31 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 5px;
-    margin-bottom: 6px;
+    padding-bottom: 4px;
+    margin-bottom: 5px;
     font-weight: bold;
     color: #1e3a8a;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .modal-header button {
     background: #e2e8f0;
     border: none;
-    padding: 2px 6px;
+    padding: 2px 5px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .welcome-container {
     background: #f8fafc;
     border-right: 3px solid #2563eb;
-    padding: 5px 7px;
-    margin-bottom: 6px;
+    padding: 4px 6px;
+    margin-bottom: 5px;
     border-radius: 3px;
-    font-size: 11px;
+    font-size: 10px;
     color: #334155;
-    line-height: 1.25;
+    line-height: 1.2;
 }
 
 .welcome-container p {
@@ -85,85 +88,87 @@
     justify-content: space-between;
     font-size: 10px;
     color: #64748b;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     background: #f1f5f9;
     padding: 3px 6px;
     border-radius: 3px;
 }
 
-/* صف العملات الأجنبية المدمج (تعديل الأبعاد ونسبة 1/5 للمبلغ) */
 .foreign-currency-row {
     display: flex;
     gap: 4px;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     align-items: center;
 }
 
-.foreign-currency-row button {
-    flex: 0 0 auto;
-    background: #0284c7;
-    color: white;
-    border: none;
-    padding: 4px 8px;
+.foreign-currency-row select {
+    flex: 1.5;
+    padding: 4px;
+    border: 1px solid #cbd5e1;
     border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
     font-size: 11px;
 }
 
 .foreign-currency-row input#amount-input {
-    flex: 0 0 20%;
-    padding: 4px 6px;
+    flex: 1;
+    padding: 4px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 11px;
-    text-align: center;
 }
 
-.foreign-currency-row select {
-    flex: 1;
-    padding: 4px 6px;
-    border: 1px solid #cbd5e1;
+.convert-row {
+    margin-bottom: 4px;
+}
+
+.convert-row button {
+    width: 100%;
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 5px;
     border-radius: 4px;
+    font-weight: bold;
     font-size: 11px;
+    cursor: pointer;
 }
 
 .foreign-result-row {
     display: flex;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .foreign-result-row input {
     width: 100%;
     background: #f8fafc;
-    padding: 4px 6px;
+    padding: 4px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 11px;
 }
 
 .foreign-note-row {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .foreign-note-row input {
     width: 100%;
-    padding: 5px;
+    padding: 4px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 10px;
     background-color: #ffffff;
 }
 
 .whatsapp-editor-box {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .editor-toolbar {
     display: flex;
     gap: 3px;
     background: #f1f5f9;
-    padding: 3px;
+    padding: 2px;
     border-radius: 4px;
 }
 
@@ -180,27 +185,16 @@
 
 .local-tx-section textarea {
     width: 100%;
-    height: 40px;
-    padding: 5px;
+    height: 42px;
+    padding: 4px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 11px;
     resize: none;
 }
 
-.examples-box {
-    font-size: 9px;
-    color: #64748b;
-    margin: 2px 0 5px 0;
-    line-height: 1.1;
-}
-
-.examples-box p {
-    margin: 0;
-}
-
 .submit-action-row {
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .send-text-btn {
@@ -208,7 +202,7 @@
     background: #16a34a;
     color: white;
     border: none;
-    padding: 6px;
+    padding: 5px;
     border-radius: 4px;
     font-size: 11px;
     font-weight: bold;
@@ -221,15 +215,15 @@
 
 .actions-section {
     display: flex;
-    gap: 4px;
-    margin-bottom: 6px;
+    gap: 3px;
+    margin-bottom: 4px;
 }
 
 .actions-section button {
     flex: 1;
     background: #f8fafc;
     border: 1px solid #cbd5e1;
-    padding: 5px 2px;
+    padding: 4px 2px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 10px;
@@ -240,14 +234,14 @@
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
-    padding: 6px;
-    margin-bottom: 6px;
+    padding: 5px;
+    margin-bottom: 4px;
 }
 
 .result-badge {
     font-weight: bold;
     color: #b45309;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     border-bottom: 1px dashed #cbd5e1;
     padding-bottom: 2px;
     font-size: 10px;
@@ -262,7 +256,7 @@
 
 .persistence-options {
     display: flex;
-    gap: 4px;
+    gap: 3px;
 }
 
 .persistence-options button {
@@ -270,7 +264,7 @@
     background: #475569;
     color: white;
     border: none;
-    padding: 5px 2px;
+    padding: 4px 2px;
     border-radius: 4px;
     font-size: 9px;
     text-align: center;

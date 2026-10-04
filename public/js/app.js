@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v4.1 Enterprise)
+// ai-agent-acc - app.js (v4.4 Enterprise - Full Professional Integration)
 let isEnglish = false;
 
 function toggleModal() {
@@ -8,15 +8,19 @@ function toggleModal() {
     }
 }
 
-function toggleForeignFields() {
+// دالة التحكم التلقائي بحالة الحقول وسعر الصرف الفعلي بناءً على الدولة المختارة
+function onCountryChange() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
     const convertBtn = document.getElementById('convert-btn');
     const foreignNoteInput = document.getElementById('foreign-note-input');
+    const exchangeRateDisplay = document.getElementById('exchange-rate-display');
 
     if (!countrySelect) return;
 
-    const isEgypt = countrySelect.value === 'Egypt';
+    const val = countrySelect.value;
+    const isEgypt = val === 'Egypt';
+
     if (amountInput) amountInput.disabled = isEgypt;
     if (convertBtn) convertBtn.disabled = isEgypt;
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
@@ -26,6 +30,37 @@ function toggleForeignFields() {
         if (foreignNoteInput) foreignNoteInput.value = '';
         const resultDisplay = document.getElementById('foreign-result-display');
         if (resultDisplay) resultDisplay.value = '';
+        if (exchangeRateDisplay) {
+            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate' : 'سعر صرف العملة';
+        }
+    } else {
+        let currName = '';
+        switch (val) {
+            case 'Kuwait': 
+                currName = isEnglish ? 'KWD (1 KWD = 160 EGP)' : 'دينار كويتي (1 دينار = 160 جنيه)'; 
+                break;
+            case 'KSA': 
+                currName = isEnglish ? 'SAR (1 SAR = 13 EGP)' : 'ريال سعودي (1 ريال = 13 جنيه)'; 
+                break;
+            case 'UAE': 
+                currName = isEnglish ? 'AED (1 AED = 13.3 EGP)' : 'درهم إماراتي (1 درهم = 13.3 جنيه)'; 
+                break;
+            case 'Qatar': 
+                currName = isEnglish ? 'QAR (1 QAR = 13.2 EGP)' : 'ريال قطري (1 ريال = 13.2 جنيه)'; 
+                break;
+            case 'Bahrain': 
+                currName = isEnglish ? 'BHD (1 BHD = 128 EGP)' : 'دينار بحريني (1 دينار = 128 جنيه)'; 
+                break;
+            case 'Oman': 
+                currName = isEnglish ? 'OMR (1 OMR = 125 EGP)' : 'ريال عماني (1 ريال = 125 جنيه)'; 
+                break;
+            case 'USA': 
+                currName = isEnglish ? 'USD (1 USD = 48.5 EGP)' : 'دولار أمريكي (1 دولار = 48.5 جنيه)'; 
+                break;
+        }
+        if (exchangeRateDisplay) {
+            exchangeRateDisplay.innerText = currName;
+        }
     }
 }
 
@@ -49,6 +84,9 @@ function convertCurrency() {
         case 'Kuwait': rate = 160; currencyName = 'KWD'; break;
         case 'KSA': rate = 13; currencyName = 'SAR'; break;
         case 'UAE': rate = 13.3; currencyName = 'AED'; break;
+        case 'Qatar': rate = 13.2; currencyName = 'QAR'; break;
+        case 'Bahrain': rate = 128; currencyName = 'BHD'; break;
+        case 'Oman': rate = 125; currencyName = 'OMR'; break;
         case 'USA': rate = 48.5; currencyName = 'USD'; break;
         default: rate = 1; currencyName = 'EGP';
     }
@@ -151,21 +189,26 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount / Click: Standard Convert';
         document.getElementById('label-date').innerText = 'Date: 2026-10-01';
-        document.getElementById('label-exchange-title').innerText = 'Exchange Rate to Egyptian Pound';
-        document.getElementById('opt-egypt').innerText = 'Egypt (EGP)';
-        document.getElementById('opt-kuwait').innerText = 'Kuwait - Dinar (KWD)';
-        document.getElementById('opt-ksa').innerText = 'Saudi Arabia (SAR)';
-        document.getElementById('opt-uae').innerText = 'UAE (AED)';
-        document.getElementById('opt-usa').innerText = 'USA Dollar (USD)';
-        document.getElementById('convert-btn').innerText = '🧮 Convert to EGP';
+        
+        document.getElementById('opt-egypt').innerText = 'Egypt (EG) - EGP';
+        document.getElementById('opt-ksa').innerText = 'Saudi Arabia (SA) - SAR';
+        document.getElementById('opt-uae').innerText = 'United Arab Emirates (AE) - AED';
+        document.getElementById('opt-kuwait').innerText = 'Kuwait (KW) - KWD';
+        document.getElementById('opt-qatar').innerText = 'Qatar (QA) - QAR';
+        document.getElementById('opt-bahrain').innerText = 'Bahrain (BH) - BHD';
+        document.getElementById('opt-oman').innerText = 'Oman (OM) - OMR';
+        document.getElementById('opt-usa').innerText = 'United States (US) - USD';
+        
+        onCountryChange();
+        
+        document.getElementById('convert-btn').innerText = '🧮 Convert to Egyptian Pound';
         document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Conversion result in EGP...';
-        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note';
+        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
         document.getElementById('txt-copy').innerText = 'Copy';
         document.getElementById('txt-paste').innerText = 'Paste';
         document.getElementById('txt-import').innerText = 'Import';
-        document.getElementById('transaction-text').placeholder = 'Write transaction statement & processing dictionary here...';
-        document.getElementById('examples-text').innerText = 'Example: Operational Rent Expense | Legal Consulting Fees | Equipment Purchase';
+        document.getElementById('transaction-text').placeholder = 'Write transaction statement & processing dictionary here (e.g., station rent 1500)...';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis Before Recording';
         document.getElementById('txt-voice').innerText = 'Voice';
         document.getElementById('txt-image').innerText = 'Image';
@@ -188,21 +231,26 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري';
         document.getElementById('label-date').innerText = 'التاريخ: 2026-10-01';
-        document.getElementById('label-exchange-title').innerText = 'سعر صرف العملة للجنيه المصري';
-        document.getElementById('opt-egypt').innerText = 'مصر (EGP)';
-        document.getElementById('opt-kuwait').innerText = 'الكويت - دينار كويتي (KWD)';
-        document.getElementById('opt-ksa').innerText = 'السعودية (SAR)';
-        document.getElementById('opt-uae').innerText = 'الإمارات (AED)';
-        document.getElementById('opt-usa').innerText = 'الدولار الأمريكي (USD)';
+        
+        document.getElementById('opt-egypt').innerText = 'جمهورية مصر العربية (EG) - EGP';
+        document.getElementById('opt-ksa').innerText = 'المملكة العربية السعودية (SA) - SAR';
+        document.getElementById('opt-uae').innerText = 'دولة الإمارات العربية المتحدة (AE) - AED';
+        document.getElementById('opt-kuwait').innerText = 'دولة الكويت (KW) - KWD';
+        document.getElementById('opt-qatar').innerText = 'دولة قطر (QA) - QAR';
+        document.getElementById('opt-bahrain').innerText = 'مملكة البحرين (BH) - BHD';
+        document.getElementById('opt-oman').innerText = 'سلطنة عمان (OM) - OMR';
+        document.getElementById('opt-usa').innerText = 'الولايات المتحدة الأمريكية (US) - USD';
+        
+        onCountryChange();
+        
         document.getElementById('convert-btn').innerText = '🧮 تحويل للجنيه المصري';
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
-        document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية';
+        document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
         document.getElementById('txt-copy').innerText = 'نسخ';
         document.getElementById('txt-paste').innerText = 'لصق';
         document.getElementById('txt-import').innerText = 'استيراد';
         document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
-        document.getElementById('examples-text').innerText = 'مثال: مصروف إيجار تشغيلي | أتعاب استشارية قانونية | شراء معدات';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
