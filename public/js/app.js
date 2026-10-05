@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v4.8 Enterprise - Streamlined UX & Clean Reset Logic)
+// ai-agent-acc - app.js (v4.9 Enterprise - Dynamic Accounting Analysis & Strict Input Validation)
 let isEnglish = false;
 
 function toggleModal() {
@@ -9,7 +9,7 @@ function toggleModal() {
     }
 }
 
-// دالة التحكم التلقائي بحالة الحقول وسعر الصرف الفعلي مع تفريغ الحقول لتفادي تداخل بيانات المعاملات السابقة
+// التحكم التلقائي بحالة الحقول وتفريغها عند تغيير الدولة لمنع تداخل المعاملات
 function onCountryChange() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -22,7 +22,6 @@ function onCountryChange() {
 
     if (!countrySelect) return;
 
-    // تفريغ الحقول تلقائياً عند تغيير الدولة لمنع بقاء بيانات المعاملة السابقة
     if (amountInput) amountInput.value = '';
     if (foreignNoteInput) foreignNoteInput.value = '';
     if (foreignResultDisplay) foreignResultDisplay.value = '';
@@ -43,27 +42,13 @@ function onCountryChange() {
     } else {
         let currName = '';
         switch (val) {
-            case 'Kuwait': 
-                currName = isEnglish ? 'KWD (1 KWD = 160 EGP)' : 'دينار كويتي (1 دينار = 160 جنيه)'; 
-                break;
-            case 'KSA': 
-                currName = isEnglish ? 'SAR (1 SAR = 13 EGP)' : 'ريال سعودي (1 ريال = 13 جنيه)'; 
-                break;
-            case 'UAE': 
-                currName = isEnglish ? 'AED (1 AED = 13.3 EGP)' : 'درهم إماراتي (1 درهم = 13.3 جنيه)'; 
-                break;
-            case 'Qatar': 
-                currName = isEnglish ? 'QAR (1 QAR = 13.2 EGP)' : 'ريال قطري (1 ريال = 13.2 جنيه)'; 
-                break;
-            case 'Bahrain': 
-                currName = isEnglish ? 'BHD (1 BHD = 128 EGP)' : 'دينار بحريني (1 دينار = 128 جنيه)'; 
-                break;
-            case 'Oman': 
-                currName = isEnglish ? 'OMR (1 OMR = 125 EGP)' : 'ريال عماني (1 ريال = 125 جنيه)'; 
-                break;
-            case 'USA': 
-                currName = isEnglish ? 'USD (1 USD = 48.5 EGP)' : 'دولار أمريكي (1 دولار = 48.5 جنيه)'; 
-                break;
+            case 'Kuwait': currName = isEnglish ? 'KWD (1 KWD = 160 EGP)' : 'دينار كويتي (1 دينار = 160 جنيه)'; break;
+            case 'KSA': currName = isEnglish ? 'SAR (1 SAR = 13 EGP)' : 'ريال سعودي (1 ريال = 13 جنيه)'; break;
+            case 'UAE': currName = isEnglish ? 'AED (1 AED = 13.3 EGP)' : 'درهم إماراتي (1 درهم = 13.3 جنيه)'; break;
+            case 'Qatar': currName = isEnglish ? 'QAR (1 QAR = 13.2 EGP)' : 'ريال قطري (1 ريال = 13.2 جنيه)'; break;
+            case 'Bahrain': currName = isEnglish ? 'BHD (1 BHD = 128 EGP)' : 'دينار بحريني (1 دينار = 128 جنيه)'; break;
+            case 'Oman': currName = isEnglish ? 'OMR (1 OMR = 125 EGP)' : 'ريال عماني (1 ريال = 125 جنيه)'; break;
+            case 'USA': currName = isEnglish ? 'USD (1 USD = 48.5 EGP)' : 'دولار أمريكي (1 دولار = 48.5 جنيه)'; break;
         }
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = currName;
@@ -102,7 +87,6 @@ function convertCurrency() {
     resultDisplay.value = `${val} ${currencyName} = ${converted} EGP`;
 }
 
-// دالة نسخ التحويل بدون إظهار رسائل تأكيد مزعجة
 function copyResultText() {
     const resultDisplay = document.getElementById('foreign-result-display');
     const transactionText = document.getElementById('transaction-text');
@@ -124,7 +108,6 @@ function copyResultText() {
     });
 }
 
-// دالة اللصق بدون رسائل تأكيد
 function pasteWidgetState() {
     navigator.clipboard.readText().then(text => {
         const txArea = document.getElementById('transaction-text');
@@ -140,12 +123,12 @@ function triggerDocumentImport() {
     alert(isEnglish ? 'Importing document or state...' : 'جاري استيراد المستندات أو البيانات...');
 }
 
-// استخراج الرقم الدقيق من النص لتضمينه في خانة المبلغ
 function extractAmountFromText(text) {
     const match = text.match(/\d+(\.\d+)?/);
     return match ? `${match[0]} جنيه` : '3000.00 جنيه';
 }
 
+// دالة التحليل المالي الذكي (تتحقق من محتوى النص وتتغير الأطراف بناءً على طبيعة المعاملة)
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -162,7 +145,16 @@ function processAccountingTransaction() {
             alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً.');
             return;
         }
+        
         finalProcessedText = txArea.value.trim();
+        
+        // التحقق مما إذا كان المستخدم قد أدخل رقماً فقط بدون بيان تفصيلي للمعاملة
+        const isOnlyNumbers = /^[\d\.\s]+$/.test(finalProcessedText);
+        if (isOnlyNumbers) {
+            alert(isEnglish ? 'Please complete the transaction statement with description, not numbers only.' : 'عفواً، يجيب إكمال بيان المعاملة بوضوح وعدم الاكتفاء بالأرقام فقط.');
+            return;
+        }
+
         processedAmount = extractAmountFromText(finalProcessedText);
     } else {
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
@@ -177,12 +169,36 @@ function processAccountingTransaction() {
         finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
+    // تحليل ديناميكي ذكي لأطراف القيد بناءً على الكلمات المفتاحية في البيان
+    let debitSide = 'حـ/ المصروفات التشغيلية / الأصول (محلية)';
+    let creditSide = 'حـ/ النقدية بالخزينة / البنك المركزي';
+    let financialStatement = 'قائمة الدخل / المركز المالي';
+
+    const textLower = finalProcessedText.toLowerCase();
+    if (textLower.includes('إيجار') || textLower.includes('ايجار')) {
+        debitSide = 'حـ/ مصروف الإيجار';
+        creditSide = 'حـ/ النقدية بالخزينة أو البنك';
+        financialStatement = 'قائمة الدخل';
+    } else if (textLower.includes('أتعاب') || textLower.includes('استشارات')) {
+        debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية';
+        creditSide = 'حـ/ البنك المركزي / الحسابات الجارية';
+        financialStatement = 'قائمة الدخل';
+    } else if (textLower.includes('أصول') || textLower.includes('معدات') || textLower.includes('أجهزة')) {
+        debitSide = 'حـ/ الأصول الثابتة والمعدات';
+        creditSide = 'حـ/ النقدية / الموردون';
+        financialStatement = 'قائمة المركز المالي';
+    } else if (!isEgypt) {
+        debitSide = 'حـ/ المصروفات الخارجية والمهمات (أجنبية)';
+        creditSide = 'حـ/ البنك المركزي / النقدية الأجنبية';
+        financialStatement = 'قائمة الدخل / المركز المالي';
+    }
+
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
-        document.getElementById('val-debit').innerText = isEgypt ? 'حـ/ المصروفات التشغيلية / الأصول (محلية)' : 'حـ/ المصروفات الخارجية والمهمات (أجنبية)';
-        document.getElementById('val-credit').innerText = 'حـ/ النقدية بالخزينة / البنك المركزي';
-        document.getElementById('val-statement').innerText = 'قائمة الدخل / المركز المالي';
+        document.getElementById('val-debit').innerText = debitSide;
+        document.getElementById('val-credit').innerText = creditSide;
+        document.getElementById('val-statement').innerText = financialStatement;
     }
 }
 
@@ -240,12 +256,12 @@ function toggleLanguage() {
         document.getElementById('txt-copy').innerText = 'Copy Transfer';
         document.getElementById('txt-paste').innerText = 'Paste';
         document.getElementById('txt-import').innerText = 'Import';
-        document.getElementById('transaction-text').placeholder = 'Write transaction statement & processing dictionary here (e.g., station rent 1500)...';
+        document.getElementById('transaction-text').placeholder = 'Write transaction statement here (e.g., station rent 1500)...';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis Before Recording';
         document.getElementById('txt-voice').innerText = 'Voice';
         document.getElementById('txt-image').innerText = 'Image';
         document.getElementById('txt-ocr').innerText = 'OCR Scan';
-        document.getElementById('res-badge').innerText = 'Instant Analytical Results & Processing Dictionary:';
+        document.getElementById('res-badge').innerText = 'Instant Analytical Results:';
         document.getElementById('res-label-amount').innerText = 'Amount & Value:';
         document.getElementById('res-label-debit').innerText = 'Debit Side:';
         document.getElementById('res-label-credit').innerText = 'Credit Side:';
@@ -281,12 +297,12 @@ function toggleLanguage() {
         document.getElementById('txt-copy').innerText = 'نسخ التحويل';
         document.getElementById('txt-paste').innerText = 'لصق';
         document.getElementById('txt-import').innerText = 'استيراد';
-        document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
+        document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';
-        document.getElementById('res-badge').innerText = 'النتائج التحليلية الفورية وقاموس المعالجة:';
+        document.getElementById('res-badge').innerText = 'النتائج التحليلية الفورية:';
         document.getElementById('res-label-amount').innerText = 'المبلغ والقيمة:';
         document.getElementById('res-label-debit').innerText = 'الجانب المدين:';
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
