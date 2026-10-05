@@ -1,10 +1,22 @@
-// ai-agent-acc - app.js (v4.4 Enterprise - Full Professional Integration)
+// ai-agent-acc - app.js (v4.5 Enterprise - Complete Professional Integration)
 let isEnglish = false;
 
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
-        modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'block' : 'none';
+        const isOpen = (modal.style.display === 'block');
+        modal.style.display = isOpen ? 'none' : 'block';
+        if (!isOpen) {
+            resetWelcomeMessageState();
+        }
+    }
+}
+
+// دالة لإعادة إظهار رسالة الترحيب/الإرشاد للعرض فقط
+function resetWelcomeMessageState() {
+    const welcomeContainer = document.querySelector('.welcome-container');
+    if (welcomeContainer) {
+        welcomeContainer.style.display = 'block';
     }
 }
 
@@ -31,7 +43,7 @@ function onCountryChange() {
         const resultDisplay = document.getElementById('foreign-result-display');
         if (resultDisplay) resultDisplay.value = '';
         if (exchangeRateDisplay) {
-            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate' : 'سعر صرف العملة';
+            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate (Local)' : 'سعر صرف العملة (محلي)';
         }
     } else {
         let currName = '';
@@ -135,27 +147,52 @@ function triggerDocumentImport() {
     alert(isEnglish ? 'Importing document or state...' : 'جاري استيراد المستندات أو البيانات...');
 }
 
+// دالة معالجة وتحليل المعاملة المالية وتأكيد ظهور وإعادة إظهار الرسالة الإرشادية
 function processAccountingTransaction() {
+    const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
+    const foreignResultDisplay = document.getElementById('foreign-result-display');
+    const foreignNoteInput = document.getElementById('foreign-note-input');
     const resultsContainer = document.getElementById('results-container');
-    
-    if (!txArea || !txArea.value.trim()) {
-        alert(isEnglish ? 'Please enter transaction details first.' : 'يرجى كتابة بيان المعاملة المالية أولاً.');
-        return;
+    const welcomeContainer = document.querySelector('.welcome-container');
+
+    const isEgypt = countrySelect && countrySelect.value === 'Egypt';
+    let processedAmount = '1,500.00 EGP';
+
+    if (isEgypt) {
+        if (!txArea || !txArea.value.trim()) {
+            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً.');
+            return;
+        }
+    } else {
+        if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
+            alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً وضغط زر التحويل.');
+            return;
+        }
+        if (!foreignNoteInput || !foreignNoteInput.value.trim()) {
+            alert(isEnglish ? 'Please complete the foreign transaction note.' : 'يرجى إكمال بيان المعاملة بالدولة الأجنبية.');
+            return;
+        }
+        processedAmount = foreignResultDisplay.value;
     }
 
+    // إبقاء الرسالة الإرشادية للعرض فقط وإعادتها بوضوح بعد الضغط على الإرسال
+    if (welcomeContainer) {
+        welcomeContainer.style.display = 'block';
+    }
+
+    // عرض النتائج التحليلية الفورية
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
-        document.getElementById('val-amount').innerText = '1,500.00 EGP';
-        document.getElementById('val-debit').innerText = 'حـ/ المصروفات التشغيلية (الإيجار)';
-        document.getElementById('val-credit').innerText = 'حـ/ النقدية بالخزينة / البنك';
-        document.getElementById('val-statement').innerText = 'قائمة الدخل المركز المالي';
-        document.getElementById('val-ledger').innerText = 'الأستاذ العام - مصروفات الإيجار';
+        document.getElementById('val-amount').innerText = processedAmount;
+        document.getElementById('val-debit').innerText = isEgypt ? 'حـ/ المصروفات التشغيلية / الأصول' : 'حـ/ المصروفات الخارجية والمهمات';
+        document.getElementById('val-credit').innerText = 'حـ/ النقدية بالخزينة / البنك المركزي';
+        document.getElementById('val-statement').innerText = 'قائمة الدخل / المركز المالي';
     }
 }
 
 function triggerVoiceInput() {
-    alert(isEnglish ? 'Voice recording feature activated.' : 'تم تفعيل خاصية التسجيل الصوتي.');
+    alert(isEnglish ? 'Voice recording feature activated.' : 'تم تفعيل خاصية التسجيل الصوتى.');
 }
 
 function triggerImageUpload() {
@@ -167,7 +204,7 @@ function triggerOCRScan() {
 }
 
 function saveToSupabaseDB() {
-    alert(isEnglish ? 'Successfully recorded to Supabase (ai-acc).' : 'تم التسجيل بنجاح في قاعدة بيانات Supabase (ai-acc).');
+    alert(isEnglish ? 'Successfully recorded to Supabase (ai-acc).' : 'تم التسجيل بنجاح فى قاعدة بيانات Supabase (ai-acc).');
 }
 
 function exportToGoogleSheets() {
@@ -218,7 +255,6 @@ function toggleLanguage() {
         document.getElementById('res-label-debit').innerText = 'Debit Side:';
         document.getElementById('res-label-credit').innerText = 'Credit Side:';
         document.getElementById('res-label-statement').innerText = 'Affected Financial Statement:';
-        document.getElementById('res-label-ledger').innerText = 'Associated General Ledger:';
         document.getElementById('res-label-acc-statement').innerText = 'Account Statement:';
         document.getElementById('val-account-statement').innerText = 'General Ledger for Cash Transactions';
         document.getElementById('btn-exp-supabase').innerText = 'Save to Database';
@@ -260,7 +296,6 @@ function toggleLanguage() {
         document.getElementById('res-label-debit').innerText = 'الجانب المدين:';
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
         document.getElementById('res-label-statement').innerText = 'القائمة المالية المتأثرة:';
-        document.getElementById('res-label-ledger').innerText = 'دفتر الأستاذ المرتبط:';
         document.getElementById('res-label-acc-statement').innerText = 'Account Statement:';
         document.getElementById('val-account-statement').innerText = 'سجل الأستاذ العام للمعاملات النقدية';
         document.getElementById('btn-exp-supabase').innerText = 'تسجيل بقاعدة بيانات';
