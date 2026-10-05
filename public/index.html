@@ -29,10 +29,10 @@
                 <p id="welcome-msg-2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري</p>
             </div>
 
-            <!-- سطر التاريخ وسعر الصرف الفعلي -->
+            <!-- سطر التاريخ وسعر الصرف الفعلي بالكسور العشرية -->
             <div class="exchange-info-bar">
                 <span id="label-date">التاريخ: 2026-10-01</span>
-                <span id="exchange-rate-display">سعر صرف العملة</span>
+                <span id="exchange-rate-display">سعر الصرف: 1 ريال = 13.00 جنيه</span>
             </div>
 
             <!-- صف قائمة الدول ومبلغ العملة الأجنبية -->
@@ -55,7 +55,7 @@
                 <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري">🧮 تحويل للجنيه المصري</button>
             </div>
 
-            <!-- إطار ناتج التحويل (بخلفية فاتحة مميزة) -->
+            <!-- إطار ناتج التحويل الصافي تماماً بلا تكرار -->
             <div class="foreign-result-row">
                 <input type="text" id="foreign-result-display" placeholder="ناتج التحويل للجنيه المصري..." readonly>
             </div>
@@ -93,7 +93,7 @@
                 <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
             </div>
 
-            <!-- مساحة النتائج التحليلية الفورية (بدون سطر دفتر الأستاذ) -->
+            <!-- مساحة النتائج التحليلية الفورية -->
             <div id="results-container" class="result-area" style="display: none;">
                 <div id="res-badge" class="result-badge">النتائج التحليلية الفورية وقاموس المعالجة:</div>
                 <div class="result-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">--</span></div>

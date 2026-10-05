@@ -85,12 +85,13 @@
 .exchange-info-bar {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 9.5px;
     color: #64748b;
     margin-bottom: 4px;
     background: #f1f5f9;
     padding: 3px 6px;
     border-radius: 3px;
+    font-weight: bold;
 }
 
 .foreign-currency-row {
@@ -108,7 +109,6 @@
     font-size: 11px;
 }
 
-/* تصغير إطار خانة المبلغ ليظهر كاملاً ومنتظماً */
 .foreign-currency-row input#amount-input {
     flex: 0.8;
     padding: 4px 6px;
@@ -139,7 +139,6 @@
     margin-bottom: 4px;
 }
 
-/* تخصيص خانة ناتج التحويل بلون خلفية فاتح ومميز */
 .foreign-result-row input {
     width: 100%;
     background: #e0f2fe;
@@ -149,6 +148,7 @@
     border: 1px solid #bae6fd;
     border-radius: 4px;
     font-size: 11px;
+    text-align: center;
 }
 
 .foreign-note-row {

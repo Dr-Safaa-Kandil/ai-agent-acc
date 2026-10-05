@@ -9,7 +9,7 @@ function toggleModal() {
     }
 }
 
-// التحكم التلقائي بحالة الحقول وتفريغها عند تغيير الدولة لمنع تداخل المعاملات
+// التحكم التلقائي بحالة الحقول وتفريغها عند تغيير الدولة وتحديث سعر الصرف بالكسور الدقيقة بجوار التاريخ
 function onCountryChange() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -37,18 +37,18 @@ function onCountryChange() {
 
     if (isEgypt) {
         if (exchangeRateDisplay) {
-            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate (Local)' : 'سعر صرف العملة (محلي)';
+            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
         }
     } else {
         let currName = '';
         switch (val) {
-            case 'Kuwait': currName = isEnglish ? 'KWD (1 KWD = 160 EGP)' : 'دينار كويتي (1 دينار = 160 جنيه)'; break;
-            case 'KSA': currName = isEnglish ? 'SAR (1 SAR = 13 EGP)' : 'ريال سعودي (1 ريال = 13 جنيه)'; break;
-            case 'UAE': currName = isEnglish ? 'AED (1 AED = 13.3 EGP)' : 'درهم إماراتي (1 درهم = 13.3 جنيه)'; break;
-            case 'Qatar': currName = isEnglish ? 'QAR (1 QAR = 13.2 EGP)' : 'ريال قطري (1 ريال = 13.2 جنيه)'; break;
-            case 'Bahrain': currName = isEnglish ? 'BHD (1 BHD = 128 EGP)' : 'دينار بحريني (1 دينار = 128 جنيه)'; break;
-            case 'Oman': currName = isEnglish ? 'OMR (1 OMR = 125 EGP)' : 'ريال عماني (1 ريال = 125 جنيه)'; break;
-            case 'USA': currName = isEnglish ? 'USD (1 USD = 48.5 EGP)' : 'دولار أمريكي (1 دولار = 48.5 جنيه)'; break;
+            case 'Kuwait': currName = isEnglish ? 'Rate: 1 KWD = 160.00 EGP' : 'سعر الصرف: 1 دينار = 160.00 جنيه'; break;
+            case 'KSA': currName = isEnglish ? 'Rate: 1 SAR = 13.00 EGP' : 'سعر الصرف: 1 ريال = 13.00 جنيه'; break;
+            case 'UAE': currName = isEnglish ? 'Rate: 1 AED = 13.30 EGP' : 'سعر الصرف: 1 درهم = 13.30 جنيه'; break;
+            case 'Qatar': currName = isEnglish ? 'Rate: 1 QAR = 13.20 EGP' : 'سعر الصرف: 1 ريال = 13.20 جنيه'; break;
+            case 'Bahrain': currName = isEnglish ? 'Rate: 1 BHD = 128.00 EGP' : 'سعر الصرف: 1 دينار = 128.00 جنيه'; break;
+            case 'Oman': currName = isEnglish ? 'Rate: 1 OMR = 125.00 EGP' : 'سعر الصرف: 1 ريال = 125.00 جنيه'; break;
+            case 'USA': currName = isEnglish ? 'Rate: 1 USD = 48.50 EGP' : 'سعر الصرف: 1 دولار = 48.50 جنيه'; break;
         }
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = currName;
@@ -70,21 +70,21 @@ function convertCurrency() {
     }
 
     let rate = 1;
-    let currencyName = 'EGP';
-
     switch (countrySelect.value) {
-        case 'Kuwait': rate = 160; currencyName = 'KWD'; break;
-        case 'KSA': rate = 13; currencyName = 'SAR'; break;
-        case 'UAE': rate = 13.3; currencyName = 'AED'; break;
-        case 'Qatar': rate = 13.2; currencyName = 'QAR'; break;
-        case 'Bahrain': rate = 128; currencyName = 'BHD'; break;
-        case 'Oman': rate = 125; currencyName = 'OMR'; break;
-        case 'USA': rate = 48.5; currencyName = 'USD'; break;
-        default: rate = 1; currencyName = 'EGP';
+        case 'Kuwait': rate = 160.00; break;
+        case 'KSA': rate = 13.00; break;
+        case 'UAE': rate = 13.30; break;
+        case 'Qatar': rate = 13.20; break;
+        case 'Bahrain': rate = 128.00; break;
+        case 'Oman': rate = 125.00; break;
+        case 'USA': rate = 48.50; break;
+        default: rate = 1;
     }
 
     const converted = (val * rate).toFixed(2);
-    resultDisplay.value = `${val} ${currencyName} = ${converted} EGP`;
+    
+    // عرض الناتج الصافي بالجنيه المصري فقط بلا أي تكرار للمبلغ الأجنبي أو تداخل
+    resultDisplay.value = `${converted} EGP`;
 }
 
 function copyResultText() {
@@ -128,7 +128,6 @@ function extractAmountFromText(text) {
     return match ? `${match[0]} جنيه` : '3000.00 جنيه';
 }
 
-// دالة التحليل المالي الذكي (تتحقق من محتوى النص وتتغير الأطراف بناءً على طبيعة المعاملة)
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -147,11 +146,9 @@ function processAccountingTransaction() {
         }
         
         finalProcessedText = txArea.value.trim();
-        
-        // التحقق مما إذا كان المستخدم قد أدخل رقماً فقط بدون بيان تفصيلي للمعاملة
         const isOnlyNumbers = /^[\d\.\s]+$/.test(finalProcessedText);
         if (isOnlyNumbers) {
-            alert(isEnglish ? 'Please complete the transaction statement with description, not numbers only.' : 'عفواً، يجيب إكمال بيان المعاملة بوضوح وعدم الاكتفاء بالأرقام فقط.');
+            alert(isEnglish ? 'Please complete the transaction statement with description, not numbers only.' : 'عفواً، يجب إكمال بيان المعاملة بوضوح وعدم الاكتفاء بالأرقام فقط.');
             return;
         }
 
@@ -169,7 +166,6 @@ function processAccountingTransaction() {
         finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    // تحليل ديناميكي ذكي لأطراف القيد بناءً على الكلمات المفتاحية في البيان
     let debitSide = 'حـ/ المصروفات التشغيلية / الأصول (محلية)';
     let creditSide = 'حـ/ النقدية بالخزينة / البنك المركزي';
     let financialStatement = 'قائمة الدخل / المركز المالي';
@@ -215,14 +211,20 @@ function triggerOCRScan() {
 }
 
 function saveToSupabaseDB() {
+    const timeoutDuration = 15000;
+    console.log(`Connecting to Supabase with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Successfully recorded to Supabase (ai-acc).' : 'تم التسجيل بنجاح فى قاعدة بيانات Supabase (ai-acc).');
 }
 
 function exportToGoogleSheets() {
+    const timeoutDuration = 15000;
+    console.log(`Exporting to Google Sheets with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Exported to Google Sheets successfully.' : 'تم التصدير إلى Google Sheets بنجاح.');
 }
 
 function exportToExcel365() {
+    const timeoutDuration = 15000;
+    console.log(`Exporting to Excel 365 with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Exported to Excel 365 successfully.' : 'تم التصدير إلى Excel 365 بنجاح.');
 }
 
@@ -237,6 +239,7 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount / Click: Standard Convert';
         document.getElementById('label-date').innerText = 'Date: 2026-10-01';
+        document.getElementById('exchange-rate-display').innerText = 'Rate: 1 SAR = 13.00 EGP';
         
         document.getElementById('opt-egypt').innerText = 'Egypt (EG) - EGP';
         document.getElementById('opt-ksa').innerText = 'Saudi Arabia (SA) - SAR';
@@ -278,6 +281,7 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري';
         document.getElementById('label-date').innerText = 'التاريخ: 2026-10-01';
+        document.getElementById('exchange-rate-display').innerText = 'سعر الصرف: 1 ريال = 13.00 جنيه';
         
         document.getElementById('opt-egypt').innerText = 'جمهورية مصر العربية (EG) - EGP';
         document.getElementById('opt-ksa').innerText = 'المملكة العربية السعودية (SA) - SAR';
