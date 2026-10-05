@@ -109,9 +109,23 @@ function triggerDocumentImport() {
     }
 }
 
+// دالة استخراج وتوليد المبلغ الفعلي بذكاء من النصوص ومحادثات واتساب
 function extractAmountFromText(text) {
-    const match = text.match(/\d+(\.\d+)?/);
-    return match ? `${match[0]} جنيه` : '3000.00 جنيه';
+    if (!text) return '3000.00 جنيه';
+    // تنظيف الفواصل والبحث عن الأرقام الصحيحة أو العشرية ضمن النص المستورد
+    const cleanedText = text.replace(/,/g, '');
+    const match = cleanedText.match(/\b\d+(\.\d+)?\b/g);
+    
+    if (match && match.length > 0) {
+        // استعراض الأرقام المستخرجة واختيار القيمة المناسبة للمبلغ المالي
+        for (let numStr of match) {
+            let val = parseFloat(numStr);
+            if (val > 0) {
+                return `${val.toFixed(2)} جنيه`;
+            }
+        }
+    }
+    return '3000.00 جنيه';
 }
 
 function processAccountingTransaction() {
