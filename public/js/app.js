@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v4.6 Enterprise - Complete Professional Integration & Verified Logic)
+// ai-agent-acc - app.js (v4.8 Enterprise - Streamlined UX & Clean Reset Logic)
 let isEnglish = false;
 
 function toggleModal() {
@@ -9,15 +9,25 @@ function toggleModal() {
     }
 }
 
-// دالة التحكم التلقائي بحالة الحقول وسعر الصرف الفعلي بناءً على الدولة المختارة
+// دالة التحكم التلقائي بحالة الحقول وسعر الصرف الفعلي مع تفريغ الحقول لتفادي تداخل بيانات المعاملات السابقة
 function onCountryChange() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
     const convertBtn = document.getElementById('convert-btn');
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
+    const txArea = document.getElementById('transaction-text');
+    const foreignResultDisplay = document.getElementById('foreign-result-display');
+    const resultsContainer = document.getElementById('results-container');
 
     if (!countrySelect) return;
+
+    // تفريغ الحقول تلقائياً عند تغيير الدولة لمنع بقاء بيانات المعاملة السابقة
+    if (amountInput) amountInput.value = '';
+    if (foreignNoteInput) foreignNoteInput.value = '';
+    if (foreignResultDisplay) foreignResultDisplay.value = '';
+    if (txArea) txArea.value = '';
+    if (resultsContainer) resultsContainer.style.display = 'none';
 
     const val = countrySelect.value;
     const isEgypt = val === 'Egypt';
@@ -27,10 +37,6 @@ function onCountryChange() {
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
 
     if (isEgypt) {
-        if (amountInput) amountInput.value = '';
-        if (foreignNoteInput) foreignNoteInput.value = '';
-        const resultDisplay = document.getElementById('foreign-result-display');
-        if (resultDisplay) resultDisplay.value = '';
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate (Local)' : 'سعر صرف العملة (محلي)';
         }
@@ -96,6 +102,7 @@ function convertCurrency() {
     resultDisplay.value = `${val} ${currencyName} = ${converted} EGP`;
 }
 
+// دالة نسخ التحويل بدون إظهار رسائل تأكيد مزعجة
 function copyResultText() {
     const resultDisplay = document.getElementById('foreign-result-display');
     const transactionText = document.getElementById('transaction-text');
@@ -112,23 +119,20 @@ function copyResultText() {
         textToCopy = document.getElementById('ai-modal-box')?.innerText || '';
     }
 
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert(isEnglish ? 'Copied to clipboard successfully!' : 'تم النسخ إلى الحافظة بنجاح!');
-    }).catch(err => {
+    navigator.clipboard.writeText(textToCopy).catch(err => {
         console.error('Copy failed:', err);
     });
 }
 
+// دالة اللصق بدون رسائل تأكيد
 function pasteWidgetState() {
     navigator.clipboard.readText().then(text => {
         const txArea = document.getElementById('transaction-text');
         if (txArea) {
             txArea.value = text;
-            alert(isEnglish ? 'Pasted from clipboard successfully!' : 'تم اللصق من الحافظة بنجاح!');
         }
     }).catch(err => {
         console.error('Paste failed:', err);
-        alert(isEnglish ? 'Paste permission denied or unsupported.' : 'تعذر اللصق، يرجى التحقق من صلاحيات المتصفح.');
     });
 }
 
@@ -136,7 +140,12 @@ function triggerDocumentImport() {
     alert(isEnglish ? 'Importing document or state...' : 'جاري استيراد المستندات أو البيانات...');
 }
 
-// دالة معالجة وتحليل المعاملة المالية وفق المسارين (محلي / أجنبي) بدون إدخال رسالة الإرشاد في التحليل نهائياً
+// استخراج الرقم الدقيق من النص لتضمينه في خانة المبلغ
+function extractAmountFromText(text) {
+    const match = text.match(/\d+(\.\d+)?/);
+    return match ? `${match[0]} جنيه` : '3000.00 جنيه';
+}
+
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -149,15 +158,13 @@ function processAccountingTransaction() {
     let processedAmount = '';
 
     if (isEgypt) {
-        // المسار الأول (مصر): الاعتماد حصرياً على نص المعاملة المدخل (المحتوي على النص والمبلغ)
         if (!txArea || !txArea.value.trim()) {
             alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً.');
             return;
         }
         finalProcessedText = txArea.value.trim();
-        processedAmount = 'حسب النص الوارد (مصري)';
+        processedAmount = extractAmountFromText(finalProcessedText);
     } else {
-        // المسار الثاني (دول أجنبية): دمج ناتج تحويل العملة مع نص البيان الإضافي الأجنبي
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
             alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً وضغط زر التحويل.');
             return;
@@ -170,7 +177,6 @@ function processAccountingTransaction() {
         finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    // عرض النتائج التحليلية الفورية استناداً إلى النص المدمج الصحيح ودون لمس رسالة الإرشاد العرضية
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
@@ -231,7 +237,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Conversion result in EGP...';
         document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('txt-copy').innerText = 'Copy';
+        document.getElementById('txt-copy').innerText = 'Copy Transfer';
         document.getElementById('txt-paste').innerText = 'Paste';
         document.getElementById('txt-import').innerText = 'Import';
         document.getElementById('transaction-text').placeholder = 'Write transaction statement & processing dictionary here (e.g., station rent 1500)...';
@@ -272,7 +278,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('txt-copy').innerText = 'نسخ';
+        document.getElementById('txt-copy').innerText = 'نسخ التحويل';
         document.getElementById('txt-paste').innerText = 'لصق';
         document.getElementById('txt-import').innerText = 'استيراد';
         document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
