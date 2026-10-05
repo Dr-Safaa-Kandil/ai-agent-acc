@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v4.5 Enterprise - Complete Professional Integration)
+// ai-agent-acc - app.js (v4.6 Enterprise - Complete Professional Integration & Verified Logic)
 let isEnglish = false;
 
 function toggleModal() {
@@ -6,17 +6,6 @@ function toggleModal() {
     if (modal) {
         const isOpen = (modal.style.display === 'block');
         modal.style.display = isOpen ? 'none' : 'block';
-        if (!isOpen) {
-            resetWelcomeMessageState();
-        }
-    }
-}
-
-// دالة لإعادة إظهار رسالة الترحيب/الإرشاد للعرض فقط
-function resetWelcomeMessageState() {
-    const welcomeContainer = document.querySelector('.welcome-container');
-    if (welcomeContainer) {
-        welcomeContainer.style.display = 'block';
     }
 }
 
@@ -147,24 +136,28 @@ function triggerDocumentImport() {
     alert(isEnglish ? 'Importing document or state...' : 'جاري استيراد المستندات أو البيانات...');
 }
 
-// دالة معالجة وتحليل المعاملة المالية وتأكيد ظهور وإعادة إظهار الرسالة الإرشادية
+// دالة معالجة وتحليل المعاملة المالية وفق المسارين (محلي / أجنبي) بدون إدخال رسالة الإرشاد في التحليل نهائياً
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
     const foreignResultDisplay = document.getElementById('foreign-result-display');
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const resultsContainer = document.getElementById('results-container');
-    const welcomeContainer = document.querySelector('.welcome-container');
 
     const isEgypt = countrySelect && countrySelect.value === 'Egypt';
-    let processedAmount = '1,500.00 EGP';
+    let finalProcessedText = '';
+    let processedAmount = '';
 
     if (isEgypt) {
+        // المسار الأول (مصر): الاعتماد حصرياً على نص المعاملة المدخل (المحتوي على النص والمبلغ)
         if (!txArea || !txArea.value.trim()) {
             alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً.');
             return;
         }
+        finalProcessedText = txArea.value.trim();
+        processedAmount = 'حسب النص الوارد (مصري)';
     } else {
+        // المسار الثاني (دول أجنبية): دمج ناتج تحويل العملة مع نص البيان الإضافي الأجنبي
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
             alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً وضغط زر التحويل.');
             return;
@@ -174,18 +167,14 @@ function processAccountingTransaction() {
             return;
         }
         processedAmount = foreignResultDisplay.value;
+        finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    // إبقاء الرسالة الإرشادية للعرض فقط وإعادتها بوضوح بعد الضغط على الإرسال
-    if (welcomeContainer) {
-        welcomeContainer.style.display = 'block';
-    }
-
-    // عرض النتائج التحليلية الفورية
+    // عرض النتائج التحليلية الفورية استناداً إلى النص المدمج الصحيح ودون لمس رسالة الإرشاد العرضية
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
-        document.getElementById('val-debit').innerText = isEgypt ? 'حـ/ المصروفات التشغيلية / الأصول' : 'حـ/ المصروفات الخارجية والمهمات';
+        document.getElementById('val-debit').innerText = isEgypt ? 'حـ/ المصروفات التشغيلية / الأصول (محلية)' : 'حـ/ المصروفات الخارجية والمهمات (أجنبية)';
         document.getElementById('val-credit').innerText = 'حـ/ النقدية بالخزينة / البنك المركزي';
         document.getElementById('val-statement').innerText = 'قائمة الدخل / المركز المالي';
     }
