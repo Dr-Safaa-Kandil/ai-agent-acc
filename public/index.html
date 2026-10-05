@@ -65,13 +65,11 @@
                 <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
             </div>
 
-            <!-- صف أزرار التحرير المستقلة -->
-            <div class="whatsapp-editor-box">
-                <div class="editor-toolbar">
-                    <button id="btn-copy" title="نسخ" onclick="copyResultText()">📋 <span id="txt-copy">نسخ</span></button>
-                    <button id="btn-paste" title="لصق" onclick="pasteWidgetState()">📌 <span id="txt-paste">لصق</span></button>
-                    <button id="btn-import" title="استيراد" onclick="triggerDocumentImport()">💬 <span id="txt-import">استيراد</span></button>
-                </div>
+            <!-- زر الاستيراد الرئيسي الكبير في صف مميز -->
+            <div class="import-main-row">
+                <button id="import-main-btn" class="import-big-btn" onclick="triggerDocumentImport()" title="استيراد محادثة نصية">
+                    📥 <span id="txt-import-big">استيراد محادثة نصية من المنصات (واتساب وغيرها)</span>
+                </button>
             </div>
 
             <!-- إطار المعاملة المالية المحلية -->

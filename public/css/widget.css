@@ -164,27 +164,25 @@
     background-color: #ffffff;
 }
 
-.whatsapp-editor-box {
+/* تنسيق زر الاستيراد الكبير المميز */
+.import-main-row {
     margin-bottom: 4px;
 }
 
-.editor-toolbar {
-    display: flex;
-    gap: 3px;
-    background: #f1f5f9;
-    padding: 2px;
+.import-big-btn {
+    width: 100%;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 6px;
     border-radius: 4px;
-}
-
-.editor-toolbar button {
-    flex: 1;
-    background: white;
-    border: 1px solid #cbd5e1;
-    padding: 3px 2px;
-    border-radius: 3px;
+    font-weight: bold;
+    font-size: 11px;
     cursor: pointer;
-    font-size: 10px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
 
 .local-tx-section textarea {
