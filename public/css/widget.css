@@ -293,3 +293,24 @@ body.lang-en .welcome-container {
     border-right: none;
     border-left: 3px solid #2563eb;
 }
+/* === تحسينات إضافية لضمان ظهور النتائج التحليلية بوضوح تام على الجوال === */
+#results-container {
+    background: #eff6ff !important;
+    border: 2px solid #3b82f6 !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    animation: fadeInResult 0.3s ease-in-out;
+}
+
+@keyframes fadeInResult {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#results-container .result-row {
+    padding: 3px 0;
+    border-bottom: 1px dotted #cbd5e1;
+}
+
+#results-container .result-row:last-child {
+    border-bottom: none;
+}

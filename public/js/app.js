@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v5.0 Enterprise - Integrated Platforms Import & Clean Interface)
+// ai-agent-acc - app.js (v5.1 Enterprise - Integrated Platforms & Event Listeners Fix)
 let isEnglish = false;
 
 function toggleModal() {
@@ -112,12 +112,10 @@ function triggerDocumentImport() {
 // دالة استخراج وتوليد المبلغ الفعلي بذكاء من النصوص ومحادثات واتساب
 function extractAmountFromText(text) {
     if (!text) return '3000.00 جنيه';
-    // تنظيف الفواصل والبحث عن الأرقام الصحيحة أو العشرية ضمن النص المستورد
     const cleanedText = text.replace(/,/g, '');
     const match = cleanedText.match(/\b\d+(\.\d+)?\b/g);
     
     if (match && match.length > 0) {
-        // استعراض الأرقام المستخرجة واختيار القيمة المناسبة للمبلغ المالي
         for (let numStr of match) {
             let val = parseFloat(numStr);
             if (val > 0) {
@@ -314,3 +312,24 @@ function toggleLanguage() {
         document.getElementById('btn-exp-excel').innerText = 'تصدير إلى';
     }
 }
+
+// === إضافة مستمعي الأحداث البرمجية (Event Listeners) لضمان تفاعل الأزرار في الجوال والويب ===
+document.addEventListener('DOMContentLoaded', () => {
+    const submitBtn = document.getElementById('submit-btn-text');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            processAccountingTransaction();
+        });
+    }
+
+    const txArea = document.getElementById('transaction-text');
+    if (txArea) {
+        txArea.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                processAccountingTransaction();
+            }
+        });
+    }
+});
