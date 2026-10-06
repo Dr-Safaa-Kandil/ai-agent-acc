@@ -29,10 +29,10 @@
                 <p id="welcome-msg-2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري</p>
             </div>
 
-            <!-- سطر التاريخ وسعر الصرف الفعلي بالكسور العشرية -->
+            <!-- سطر التاريخ وسعر الصرف الفعلي -->
             <div class="exchange-info-bar">
                 <span id="label-date">التاريخ: 2026-10-01</span>
-                <span id="exchange-rate-display">سعر الصرف: 1 ريال = 13.00 جنيه</span>
+                <span id="exchange-rate-display">سعر الصرف: محلي (EGP)</span>
             </div>
 
             <!-- صف قائمة الدول ومبلغ العملة الأجنبية -->
@@ -50,12 +50,12 @@
                 <input type="number" id="amount-input" placeholder="المبلغ..." disabled>
             </div>
 
-            <!-- زر تحويل للجنيه المصري في صف مستقل -->
+            <!-- زر تحويل للجنيه المصري -->
             <div class="convert-row">
                 <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري">🧮 تحويل للجنيه المصري</button>
             </div>
 
-            <!-- إطار ناتج التحويل الصافي تماماً بلا تكرار -->
+            <!-- إطار ناتج التحويل -->
             <div class="foreign-result-row">
                 <input type="text" id="foreign-result-display" placeholder="ناتج التحويل للجنيه المصري..." readonly>
             </div>
@@ -65,7 +65,7 @@
                 <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
             </div>
 
-            <!-- زر الاستيراد الرئيسي الكبير في صف مميز -->
+            <!-- زر الاستيراد الرئيسي -->
             <div class="import-main-row">
                 <button id="import-main-btn" class="import-big-btn" onclick="triggerDocumentImport()" title="استيراد محادثة نصية">
                     📥 <span id="txt-import-big">استيراد محادثة نصية من المنصات (واتساب وغيرها)</span>
@@ -91,13 +91,13 @@
                 <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
             </div>
 
-            <!-- مساحة النتائج التحليلية الفورية المحدثة -->
+            <!-- مساحة النتائج التحليلية الفورية -->
             <div id="results-container" class="result-area" style="display: none;">
                 <div id="res-badge" class="result-badge">النتائج التحليلية الفورية</div>
-                <div class="result-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">--</span></div>
-                <div class="result-row"><strong id="res-label-debit">الجانب المدين:</strong> <span id="val-debit">--</span></div>
-                <div class="result-row"><strong id="res-label-credit">الجانب الدائن:</strong> <span id="val-credit">--</span></div>
-                <div class="result-row"><strong id="res-label-statement">القائمة المالية المتأثرة:</strong> <span id="val-statement">--</span></div>
+                <div class="result-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">---</span></div>
+                <div class="result-row"><strong id="res-label-debit">الجانب المدين:</strong> <span id="val-debit">---</span></div>
+                <div class="result-row"><strong id="res-label-credit">الجانب الدائن:</strong> <span id="val-credit">---</span></div>
+                <div class="result-row"><strong id="res-label-statement">القائمة المالية المتأثرة:</strong> <span id="val-statement">---</span></div>
                 <div class="result-row" style="color: #0d9488; font-weight: bold;"><strong id="res-label-subsidiary">الأستاذ المساعد:</strong> <span id="val-subsidiary-ledger">جدول الأستاذ المساعد المستقل</span></div>
             </div>
 
