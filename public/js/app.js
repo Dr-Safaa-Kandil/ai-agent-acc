@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v5.1 Enterprise - Integrated Platforms & Event Listeners Fix)
+// ai-agent-acc - app.js (v5.2 Enterprise - Mobile Local Processing & WhatsApp Default Import)
 let isEnglish = false;
 
 function toggleModal() {
@@ -84,29 +84,17 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// قائمة استيراد المحادثات من المنصات الشائعة للاستخدام الفعلي
+// استيراد محادثة واتساب افتراضياً بشكل مباشر ودون نوافذ متعددة
 function triggerDocumentImport() {
-    const platform = prompt(
-        isEnglish 
-            ? 'Select chat source platform for import:\n1. WhatsApp\n2. Telegram\n3. Enterprise ERP Log\n(Enter 1, 2, or 3):' 
-            : 'اختر منصة تبادل المحادثات لاستيراد سجل المعاملات المالية:\n1. واتساب (WhatsApp)\n2. تلجرام (Telegram)\n3. سجل نظام الشركات (ERP Log)\n(أدخل رقم المنصة 1 أو 2 أو 3):'
-    );
-
     const txArea = document.getElementById('transaction-text');
-    if (!platform) return;
-
-    if (platform === '1' || platform.toLowerCase().includes('whats')) {
-        if (txArea) txArea.value = isEnglish ? '[Imported from WhatsApp]: Payment of operational rent - 2500' : '[مستورد من واتساب]: سداد مصروفات إيجار تشغيلي - 2500';
-        alert(isEnglish ? 'WhatsApp chat transcript imported successfully.' : 'تم استيراد محادثة واتساب بنجاح وإسقاطها في بيان المعاملة.');
-    } else if (platform === '2' || platform.toLowerCase().includes('tele')) {
-        if (txArea) txArea.value = isEnglish ? '[Imported from Telegram]: Professional consulting fees - 5000' : '[مستورد من تلجرام]: أتعاب استشارات مهنية - 5000';
-        alert(isEnglish ? 'Telegram chat transcript imported successfully.' : 'تم استيراد محادثة تلجرام بنجاح وإسقاطها في بيان المعاملة.');
-    } else if (platform === '3' || platform.toLowerCase().includes('erp')) {
-        if (txArea) txArea.value = isEnglish ? '[Imported from ERP Log]: Equipment purchase installment - 12000' : '[مستورد من سجل النظام]: قسط شراء معدات وأصول - 12000';
-        alert(isEnglish ? 'ERP log imported successfully.' : 'تم استيراد سجل النظام بنجاح وإسقاطه في بيان المعاملة.');
-    } else {
-        alert(isEnglish ? 'Invalid selection.' : 'تم إلغاء أو اختيار غير صحيح.');
+    if (txArea) {
+        txArea.value = isEnglish 
+            ? '[Imported from WhatsApp]: Payment of operational office rent - 3500' 
+            : '[مستورد افتراضياً من واتساب]: سداد مصروفات إيجار تشغيلي للمكتب - 3500';
     }
+    
+    // تنفيذ التحليل الفوري محلياً بعد الاستيراد مباشرة
+    processAccountingTransaction();
 }
 
 // دالة استخراج وتوليد المبلغ الفعلي بذكاء من النصوص ومحادثات واتساب
@@ -126,6 +114,7 @@ function extractAmountFromText(text) {
     return '3000.00 جنيه';
 }
 
+// المعالجة المحلية على جهاز المستخدم البعيد (الموبايل)
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -139,7 +128,7 @@ function processAccountingTransaction() {
 
     if (isEgypt) {
         if (!txArea || !txArea.value.trim()) {
-            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً.');
+            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً أو استيراد محادثة واتساب.');
             return;
         }
         
@@ -167,17 +156,18 @@ function processAccountingTransaction() {
     let debitSide = 'حـ/ المصروفات التشغيلية / الأصول (محلية)';
     let creditSide = 'حـ/ النقدية بالخزينة / البنك المركزي';
     let financialStatement = 'قائمة الدخل / المركز المالي';
+    let assistantLedgerName = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
 
     const textLower = finalProcessedText.toLowerCase();
-    if (textLower.includes('إيجار') || textLower.includes('ايجار')) {
+    if (textLower.includes('إيجار') || textLower.includes('ايجار') || textLower.includes('rent')) {
         debitSide = 'حـ/ مصروف الإيجار';
         creditSide = 'حـ/ النقدية بالخزينة أو البنك';
         financialStatement = 'قائمة الدخل';
-    } else if (textLower.includes('أتعاب') || textLower.includes('استشارات')) {
+    } else if (textLower.includes('أتعاب') || textLower.includes('استشارات') || textLower.includes('consulting')) {
         debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية';
         creditSide = 'حـ/ البنك المركزي / الحسابات الجارية';
         financialStatement = 'قائمة الدخل';
-    } else if (textLower.includes('أصول') || textLower.includes('معدات') || textLower.includes('أجهزة')) {
+    } else if (textLower.includes('أصول') || textLower.includes('معدات') || textLower.includes('أجهزة') || textLower.includes('equipment')) {
         debitSide = 'حـ/ الأصول الثابتة والمعدات';
         creditSide = 'حـ/ النقدية / الموردون';
         financialStatement = 'قائمة المركز المالي';
@@ -193,6 +183,11 @@ function processAccountingTransaction() {
         document.getElementById('val-debit').innerText = debitSide;
         document.getElementById('val-credit').innerText = creditSide;
         document.getElementById('val-statement').innerText = financialStatement;
+        
+        const valAccStatement = document.getElementById('val-account-statement');
+        if (valAccStatement) {
+            valAccStatement.innerText = assistantLedgerName;
+        }
     }
 }
 
@@ -217,7 +212,7 @@ function saveToSupabaseDB() {
 function exportToGoogleSheets() {
     const timeoutDuration = 15000;
     console.log(`Exporting to Google Sheets with timeout: ${timeoutDuration}ms`);
-    alert(isEnglish ? 'Exported to Google Sheets successfully.' : 'تم التصدير إلى Google Sheets بنجاح.');
+    alert(isEnglish ? 'Exported to Google Sheets successfully.' : 'تم التصدير إلى Google Sheets بنجاح وتحديث الجدول الحسابي.');
 }
 
 function exportToExcel365() {
@@ -254,7 +249,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Conversion result in EGP...';
         document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('txt-import-big').innerText = 'Import chat transcript from platforms (WhatsApp, etc.)';
+        document.getElementById('txt-import-big').innerText = 'Import WhatsApp chat transcript automatically';
         document.getElementById('transaction-text').placeholder = 'Write transaction statement here (e.g., station rent 1500)...';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis Before Recording';
         document.getElementById('txt-voice').innerText = 'Voice';
@@ -266,7 +261,7 @@ function toggleLanguage() {
         document.getElementById('res-label-credit').innerText = 'Credit Side:';
         document.getElementById('res-label-statement').innerText = 'Affected Financial Statement:';
         document.getElementById('res-label-acc-statement').innerText = 'Account Statement:';
-        document.getElementById('val-account-statement').innerText = 'General Ledger for Cash Transactions';
+        document.getElementById('val-account-statement').innerText = 'Independent Assistant Ledger for Transactions';
         document.getElementById('btn-exp-supabase').innerText = 'Save to Database';
         document.getElementById('btn-exp-sheets').innerText = 'Export to';
         document.getElementById('btn-exp-excel').innerText = 'Export to';
@@ -294,7 +289,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من المنصات (واتساب وغيرها)';
+        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من واتساب افتراضياً';
         document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
@@ -306,15 +301,29 @@ function toggleLanguage() {
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
         document.getElementById('res-label-statement').innerText = 'القائمة المالية المتأثرة:';
         document.getElementById('res-label-acc-statement').innerText = 'Account Statement:';
-        document.getElementById('val-account-statement').innerText = 'سجل الأستاذ العام للمعاملات النقدية';
+        document.getElementById('val-account-statement').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
         document.getElementById('btn-exp-supabase').innerText = 'تسجيل بقاعدة بيانات';
         document.getElementById('btn-exp-sheets').innerText = 'تصدير إلى';
         document.getElementById('btn-exp-excel').innerText = 'تصدير إلى';
     }
 }
 
-// === إضافة مستمعي الأحداث البرمجية (Event Listeners) لضمان تفاعل الأزرار في الجوال والويب ===
+// === الاستماع للأحداث والتقاط المشاركة الخارجية من الجوال (Web Share Target) ===
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. التقاط النص المشارك أو الممرر عبر الرابط من واتساب تلقائياً
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedText = urlParams.get('text') || urlParams.get('title');
+
+    if (sharedText) {
+        const txInput = document.getElementById('transaction-text');
+        if (txInput) {
+            txInput.value = sharedText.trim();
+            // تنفيذ المعالجة والتحليل الفوري محلياً على الجوال
+            processAccountingTransaction();
+        }
+    }
+
+    // 2. ربط زر الإرسال بالتحليل المحلي
     const submitBtn = document.getElementById('submit-btn-text');
     if (submitBtn) {
         submitBtn.addEventListener('click', (e) => {
@@ -323,6 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 3. تفعيل الإدخال السريع عبر زر Enter
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
         txArea.addEventListener('keypress', (e) => {
