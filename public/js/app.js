@@ -1,7 +1,6 @@
-// ai-agent-acc - app.js (v5.5 Enterprise - Strict Clean State & Zero Mock Data)
+// ai-agent-acc - app.js (v5.7 Enterprise - Clean WhatsApp Paste & Strict State)
 let isEnglish = false;
 
-// دالة فتح/إغلاق النافذة مع إعادة ضبط الذاكرة والحقول بالكامل عند كل فتح
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
@@ -13,7 +12,6 @@ function toggleModal() {
     }
 }
 
-// دالة تصفير وجعل الذاكرة خالية تماماً ومنع أي بيانات وهمية
 function resetApplicationState() {
     const txArea = document.getElementById('transaction-text');
     const amountInput = document.getElementById('amount-input');
@@ -23,10 +21,10 @@ function resetApplicationState() {
     const countrySelect = document.getElementById('country-select');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
 
-    // فرض اختيار مصر كحالة أساسية دائماً عند إعادة الفتح
-    if (countrySelect) countrySelect.value = 'Egypt';
+    if (countrySelect) {
+        countrySelect.value = 'Egypt';
+    }
     
-    // ضبط سعر الصرف ليكون محلياً وخالياً تماماً من أي عملات أجنبية سابقة
     if (exchangeRateDisplay) {
         exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     }
@@ -39,17 +37,20 @@ function resetApplicationState() {
         foreignNoteInput.value = '';
         foreignNoteInput.disabled = true;
     }
+    const convertBtn = document.getElementById('convert-btn');
+    if (convertBtn) {
+        convertBtn.disabled = true;
+    }
+
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
-    // تفريغ حقل النص تماماً لمنع ظهور أي رسائل مستوردة مسبقاً
+    // إفريغ حقل النص تماماً عند البدء لضمان عدم ظهور أي نصوص وهمية
     if (txArea) txArea.value = '';
     
-    // إخفاء بطاقة النتائج تماماً لتفتح على حالة فارغة
     if (resultsContainer) {
         resultsContainer.style.display = 'none';
     }
 
-    // تصفير القيم المعروضة بداخل الكائنات الافتراضية
     const valAmount = document.getElementById('val-amount');
     const valDebit = document.getElementById('val-debit');
     const valCredit = document.getElementById('val-credit');
@@ -58,9 +59,11 @@ function resetApplicationState() {
     
     if (valAmount) valAmount.innerText = '---';
     if (valDebit) valDebit.innerText = '---';
-    if (valCredit) valCredit.innerText = '---';
+    if (valCredit) valDebit.innerText = '---';
     if (valStatement) valStatement.innerText = '---';
-    if (valSubsidiary) valSubsidiary.innerText = '---';
+    if (valSubsidiary) {
+        valSubsidiary.innerText = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
+    }
 }
 
 function onCountryChange() {
@@ -82,7 +85,7 @@ function onCountryChange() {
     if (resultsContainer) resultsContainer.style.display = 'none';
 
     const val = countrySelect.value;
-    const isEgypt = val === 'Egypt';
+    const isEgypt = (val === 'Egypt');
 
     if (amountInput) amountInput.disabled = isEgypt;
     if (convertBtn) convertBtn.disabled = isEgypt;
@@ -102,6 +105,7 @@ function onCountryChange() {
             case 'Bahrain': currName = isEnglish ? 'Rate: 1 BHD = 128.00 EGP' : 'سعر الصرف: 1 دينار = 128.00 جنيه'; break;
             case 'Oman': currName = isEnglish ? 'Rate: 1 OMR = 125.00 EGP' : 'سعر الصرف: 1 ريال = 125.00 جنيه'; break;
             case 'USA': currName = isEnglish ? 'Rate: 1 USD = 48.50 EGP' : 'سعر الصرف: 1 دولار = 48.50 جنيه'; break;
+            default: currName = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
         }
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = currName;
@@ -138,13 +142,14 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// زر الاستيراد: يفرغ الحقل أو يضع تلميحاً نظيفاً بانتظار المستخدم دون تشغيل تحليل تلقائي وهمي
+// تعديل زر الاستيراد ليفرغ الحقل تماماً ويسمح للمستخدم بلصق محادثة واتساب الفعلية نظيفة
 function triggerDocumentImport() {
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
-        txArea.value = isEnglish 
-            ? 'Type or paste imported WhatsApp text here...' 
-            : 'أكتب أو الصق نص محادثة واتساب المراد تحليلها هنا...';
+        txArea.value = ''; // تفريغ تام لإتاحة اللصق الحر
+        txArea.placeholder = isEnglish 
+            ? 'Paste your copied WhatsApp chat text here...' 
+            : 'قم بلصق محادثة واتساب هنا لتحليلها محاسبياً...';
         txArea.focus();
     }
 }
@@ -165,7 +170,6 @@ function extractAmountFromText(text) {
     return '0.00 جنيه';
 }
 
-// المعالجة المحاسبية مع شرط التحقق الإلزامي لمنع أي بيانات فارغة أو وهمية
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -178,26 +182,26 @@ function processAccountingTransaction() {
     let processedAmount = '';
 
     if (isEgypt) {
-        if (!txArea || !txArea.value.trim() || txArea.value.includes('أكتب أو الصق')) {
-            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً قبل الضغط على تحليل.');
+        if (!txArea || !txArea.value.trim() || txArea.value.includes('قم بلصق')) {
+            alert(isEnglish ? 'Please paste or enter transaction text.' : 'يرجى إدخال أو لصق محادثة أو نص المعاملة المالية أولاً.');
             return;
         }
         
         finalProcessedText = txArea.value.trim();
         const isOnlyNumbers = /^[\d\.\s]+$/.test(finalProcessedText);
         if (isOnlyNumbers) {
-            alert(isEnglish ? 'Please complete the transaction statement with description, not numbers only.' : 'عفواً، يجب إكمال بيان المعاملة بوضوح وعدم الاكتفاء بالأرقام فقط.');
+            alert(isEnglish ? 'Please complete the transaction statement with description.' : 'عفواً، يجب أن يحتوي النص على وصف المعاملة وليس أرقاماً فقط.');
             return;
         }
 
         processedAmount = extractAmountFromText(finalProcessedText);
     } else {
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
-            alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً وضغط زر التحويل.');
+            alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً.');
             return;
         }
         if (!foreignNoteInput || !foreignNoteInput.value.trim()) {
-            alert(isEnglish ? 'Please complete the foreign transaction note.' : 'يرجى إكمال بيان المعاملة بالدولة الأجنبية.');
+            alert(isEnglish ? 'Please complete the foreign note.' : 'يرجى إكمال بيان المعاملة الأجنبية.');
             return;
         }
         processedAmount = foreignResultDisplay.value;
@@ -228,7 +232,6 @@ function processAccountingTransaction() {
         financialStatement = 'قائمة الدخل / المركز المالي';
     }
 
-    // إظهار بطاقة النتائج حصرياً عند وجود إدخال حقيقي سليم
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
@@ -299,8 +302,8 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Conversion result in EGP...';
         document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('txt-import-big').innerText = 'Import WhatsApp chat transcript automatically';
-        document.getElementById('transaction-text').placeholder = 'Write transaction statement here (e.g., station rent 1500)...';
+        document.getElementById('txt-import-big').innerText = 'Import WhatsApp chat transcript (Paste text)';
+        document.getElementById('transaction-text').placeholder = 'Write or paste WhatsApp chat text here...';
         document.getElementById('submit-btn-text').innerHTML = '<span>Send Transaction for Analysis Before Recording</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'Voice';
         document.getElementById('txt-image').innerText = 'Image';
@@ -341,8 +344,8 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من المنصات (واتساب وغيرها)';
-        document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
+        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من المنصات (لصق محادثة واتساب)';
+        document.getElementById('transaction-text').placeholder = 'أكتب أو الصق هنا نص محادثة واتساب المراد تحليلها محاسبياً...';
         document.getElementById('submit-btn-text').innerHTML = '<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
@@ -360,7 +363,6 @@ function toggleLanguage() {
     }
 }
 
-// التهيئة عند التحميل الأول للصفحة
 document.addEventListener('DOMContentLoaded', () => {
     resetApplicationState();
 
@@ -373,6 +375,11 @@ document.addEventListener('DOMContentLoaded', () => {
             txInput.value = sharedText.trim();
             processAccountingTransaction();
         }
+    }
+
+    const countrySelect = document.getElementById('country-select');
+    if (countrySelect) {
+        countrySelect.addEventListener('change', onCountryChange);
     }
 
     const submitBtn = document.getElementById('submit-btn-text');
