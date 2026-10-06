@@ -1,7 +1,7 @@
-// ai-agent-acc - app.js (v5.4 Enterprise - Clean State & Strict Validation)
+// ai-agent-acc - app.js (v5.5 Enterprise - Strict Clean State & Zero Mock Data)
 let isEnglish = false;
 
-// دالة فتح/إغلاق النافذة مع إعادة ضبط الذاكرة والحقول عند الفتح
+// دالة فتح/إغلاق النافذة مع إعادة ضبط الذاكرة والحقول بالكامل عند كل فتح
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
@@ -13,7 +13,7 @@ function toggleModal() {
     }
 }
 
-// دالة تصفير وجعل الذاكرة خالية تماماً عند البدء أو إعادة الفتح
+// دالة تصفير وجعل الذاكرة خالية تماماً ومنع أي بيانات وهمية
 function resetApplicationState() {
     const txArea = document.getElementById('transaction-text');
     const amountInput = document.getElementById('amount-input');
@@ -23,10 +23,14 @@ function resetApplicationState() {
     const countrySelect = document.getElementById('country-select');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
 
+    // فرض اختيار مصر كحالة أساسية دائماً عند إعادة الفتح
     if (countrySelect) countrySelect.value = 'Egypt';
+    
+    // ضبط سعر الصرف ليكون محلياً وخالياً تماماً من أي عملات أجنبية سابقة
     if (exchangeRateDisplay) {
         exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     }
+
     if (amountInput) {
         amountInput.value = '';
         amountInput.disabled = true;
@@ -36,6 +40,8 @@ function resetApplicationState() {
         foreignNoteInput.disabled = true;
     }
     if (foreignResultDisplay) foreignResultDisplay.value = '';
+    
+    // تفريغ حقل النص تماماً لمنع ظهور أي رسائل مستوردة مسبقاً
     if (txArea) txArea.value = '';
     
     // إخفاء بطاقة النتائج تماماً لتفتح على حالة فارغة
@@ -43,16 +49,18 @@ function resetApplicationState() {
         resultsContainer.style.display = 'none';
     }
 
-    // تصفير القيم المعروضة بداخل الكائنات الافتراضية إلى شرطة فارغة
+    // تصفير القيم المعروضة بداخل الكائنات الافتراضية
     const valAmount = document.getElementById('val-amount');
     const valDebit = document.getElementById('val-debit');
     const valCredit = document.getElementById('val-credit');
     const valStatement = document.getElementById('val-statement');
+    const valSubsidiary = document.getElementById('val-subsidiary-ledger');
     
     if (valAmount) valAmount.innerText = '---';
     if (valDebit) valDebit.innerText = '---';
     if (valCredit) valCredit.innerText = '---';
     if (valStatement) valStatement.innerText = '---';
+    if (valSubsidiary) valSubsidiary.innerText = '---';
 }
 
 function onCountryChange() {
@@ -130,19 +138,19 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// استيراد محادثة واتساب افتراضياً وتفعيل التحليل الفوري
+// زر الاستيراد: يفرغ الحقل أو يضع تلميحاً نظيفاً بانتظار المستخدم دون تشغيل تحليل تلقائي وهمي
 function triggerDocumentImport() {
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
         txArea.value = isEnglish 
-            ? '[Imported from WhatsApp]: Payment of operational office rent - 3500' 
-            : '[مستورد افتراضياً من واتساب]: سداد مصروفات إيجار تشغيلي للمكتب - 3500';
+            ? 'Type or paste imported WhatsApp text here...' 
+            : 'أكتب أو الصق نص محادثة واتساب المراد تحليلها هنا...';
+        txArea.focus();
     }
-    processAccountingTransaction();
 }
 
 function extractAmountFromText(text) {
-    if (!text) return '3000.00 جنيه';
+    if (!text) return '0.00 جنيه';
     const cleanedText = text.replace(/,/g, '');
     const match = cleanedText.match(/\b\d+(\.\d+)?\b/g);
     
@@ -154,10 +162,10 @@ function extractAmountFromText(text) {
             }
         }
     }
-    return '3000.00 جنيه';
+    return '0.00 جنيه';
 }
 
-// المعالجة المحاسبية مع التحقق الإلزامي لمنع إرسال النصوص الفارغة
+// المعالجة المحاسبية مع شرط التحقق الإلزامي لمنع أي بيانات فارغة أو وهمية
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -170,8 +178,8 @@ function processAccountingTransaction() {
     let processedAmount = '';
 
     if (isEgypt) {
-        if (!txArea || !txArea.value.trim()) {
-            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً أو استيراد محادثة واتساب.');
+        if (!txArea || !txArea.value.trim() || txArea.value.includes('أكتب أو الصق')) {
+            alert(isEnglish ? 'Please enter transaction text and amount.' : 'يرجى كتابة بيان المعاملة المالية والمبلغ أولاً قبل الضغط على تحليل.');
             return;
         }
         
@@ -220,7 +228,7 @@ function processAccountingTransaction() {
         financialStatement = 'قائمة الدخل / المركز المالي';
     }
 
-    // إظهار بطاقة النتائج وتعبئتها بالتحليل الجديد وتمرير الشاشة تلقائياً على الموبايل
+    // إظهار بطاقة النتائج حصرياً عند وجود إدخال حقيقي سليم
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
@@ -333,8 +341,8 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من واتساب افتراضياً';
-        document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
+        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من المنصات (واتساب وغيرها)';
+        document.getElementById('transaction-text').placeholder = 'أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)...';
         document.getElementById('submit-btn-text').innerHTML = '<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
