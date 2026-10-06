@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v5.7 Enterprise - Clean WhatsApp Paste & Strict State)
+// ai-agent-acc - app.js (v5.8 Enterprise - Absolute Zero Mock Data & Hard Clean)
 let isEnglish = false;
 
 function toggleModal() {
@@ -21,10 +21,12 @@ function resetApplicationState() {
     const countrySelect = document.getElementById('country-select');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
 
+    // 1. فرض مصر كدولة أساسية دائماً
     if (countrySelect) {
         countrySelect.value = 'Egypt';
     }
     
+    // 2. تصفير سعر الصرف ليكون محلياً حصرياً
     if (exchangeRateDisplay) {
         exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     }
@@ -44,8 +46,11 @@ function resetApplicationState() {
 
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
-    // إفريغ حقل النص تماماً عند البدء لضمان عدم ظهور أي نصوص وهمية
-    if (txArea) txArea.value = '';
+    // 3. تصفير حقل النص تماماً ومنع أي نص قديم
+    if (txArea) {
+        txArea.value = '';
+        txArea.placeholder = isEnglish ? 'Type or paste WhatsApp chat text here...' : 'أكتب أو الصق نص محادثة واتساب هنا لتحليلها محاسبياً...';
+    }
     
     if (resultsContainer) {
         resultsContainer.style.display = 'none';
@@ -142,14 +147,12 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// تعديل زر الاستيراد ليفرغ الحقل تماماً ويسمح للمستخدم بلصق محادثة واتساب الفعلية نظيفة
+// زر الاستيراد: يفرغ الحقل تماماً ويجعله جاهزاً لل لصق الحر
 function triggerDocumentImport() {
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
-        txArea.value = ''; // تفريغ تام لإتاحة اللصق الحر
-        txArea.placeholder = isEnglish 
-            ? 'Paste your copied WhatsApp chat text here...' 
-            : 'قم بلصق محادثة واتساب هنا لتحليلها محاسبياً...';
+        txArea.value = '';
+        txArea.placeholder = isEnglish ? 'Paste WhatsApp chat transcript here...' : 'قم بلصق محادثة واتساب هنا لتحليلها محاسبياً...';
         txArea.focus();
     }
 }
@@ -350,7 +353,7 @@ function toggleLanguage() {
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';
-        document.getElementById('res-badge').innerText = 'النتائج التحليلية الفورية:';
+        document.getElementById('res-badge').innerText, 'النتائج التحليلية الفورية:';
         document.getElementById('res-label-amount').innerText = 'المبلغ والقيمة:';
         document.getElementById('res-label-debit').innerText = 'الجانب المدين:';
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
@@ -358,24 +361,14 @@ function toggleLanguage() {
         document.getElementById('res-label-subsidiary').innerText = 'الأستاذ المساعد:';
         document.getElementById('val-subsidiary-ledger').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
         document.getElementById('btn-exp-supabase').innerText = 'تسجيل بقاعدة بيانات';
-        document.getElementById('btn-exp-sheets').innerText = 'تصدير إلى';
+        document.getElementById('btn-exp-sheets').innerText, 'تصدير إلى';
         document.getElementById('btn-exp-excel').innerText = 'تصدير إلى';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // تم إزالة قراءة الـ sharedText تماماً لتجنب جلب أي بيانات وهمية مخزنة
     resetApplicationState();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedText = urlParams.get('text') || urlParams.get('title');
-
-    if (sharedText) {
-        const txInput = document.getElementById('transaction-text');
-        if (txInput) {
-            txInput.value = sharedText.trim();
-            processAccountingTransaction();
-        }
-    }
 
     const countrySelect = document.getElementById('country-select');
     if (countrySelect) {
