@@ -77,7 +77,7 @@
                 <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)..."></textarea>
             </div>
 
-            <!-- زر إرسال المعاملة للمعالجة (تم توحيد ID ليتوافق تماماً مع الجافاسكريبت) -->
+            <!-- زر إرسال المعاملة للمعالجة -->
             <div class="submit-action-row">
                 <button id="submit-btn-text" class="send-text-btn" onclick="processAccountingTransaction()">
                     <span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>
@@ -91,14 +91,14 @@
                 <button id="btn-ocr" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
             </div>
 
-            <!-- مساحة النتائج التحليلية الفورية المعدلة -->
+            <!-- مساحة النتائج التحليلية الفورية المحدثة -->
             <div id="results-container" class="result-area" style="display: none;">
                 <div id="res-badge" class="result-badge">النتائج التحليلية الفورية</div>
                 <div class="result-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">--</span></div>
                 <div class="result-row"><strong id="res-label-debit">الجانب المدين:</strong> <span id="val-debit">--</span></div>
                 <div class="result-row"><strong id="res-label-credit">الجانب الدائن:</strong> <span id="val-credit">--</span></div>
                 <div class="result-row"><strong id="res-label-statement">القائمة المالية المتأثرة:</strong> <span id="val-statement">--</span></div>
-                <div class="result-row" style="color: #1e40af; font-weight: bold;"><strong id="res-label-acc-statement">Account Statement:</strong> <span id="val-account-statement">سجل الأستاذ العام للمعاملات النقدية</span></div>
+                <div class="result-row" style="color: #0d9488; font-weight: bold;"><strong id="res-label-subsidiary">الأستاذ المساعد:</strong> <span id="val-subsidiary-ledger">جدول الأستاذ المساعد المستقل</span></div>
             </div>
 
             <!-- أزرار التصدير الثلاثة -->

@@ -164,14 +164,14 @@
     background-color: #ffffff;
 }
 
-/* تنسيق زر الاستيراد الكبير المميز */
+/* زر الاستيراد الرئيسي الكبير - تم تحديثه إلى الأزرق الفيروزي الفاتح المميز */
 .import-main-row {
     margin-bottom: 4px;
 }
 
 .import-big-btn {
     width: 100%;
-    background: #7c3aed;
+    background: #0ea5e9;
     color: white;
     border: none;
     padding: 6px;
@@ -183,6 +183,10 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
+}
+
+.import-big-btn:hover {
+    background: #0284c7;
 }
 
 .local-tx-section textarea {
@@ -199,9 +203,10 @@
     margin-bottom: 4px;
 }
 
+/* زر إرسال المعاملة - تم تحديثه إلى اللون الرمادي الاحترافي */
 .send-text-btn {
     width: 100%;
-    background: #16a34a;
+    background: #64748b;
     color: white;
     border: none;
     padding: 5px;
@@ -213,6 +218,10 @@
     justify-content: center;
     align-items: center;
     gap: 4px;
+}
+
+.send-text-btn:hover {
+    background: #475569;
 }
 
 .actions-section {
@@ -293,7 +302,7 @@ body.lang-en .welcome-container {
     border-right: none;
     border-left: 3px solid #2563eb;
 }
-/* === تحسينات إضافية لضمان ظهور النتائج التحليلية بوضوح تام على الجوال === */
+
 #results-container {
     background: #eff6ff !important;
     border: 2px solid #3b82f6 !important;
