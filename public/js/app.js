@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v5.8 Enterprise - Absolute Zero Mock Data & Hard Clean)
+// ai-agent-acc - app.js (v5.9 Final Clean Exchange Rate for Egypt)
 let isEnglish = false;
 
 function toggleModal() {
@@ -21,12 +21,12 @@ function resetApplicationState() {
     const countrySelect = document.getElementById('country-select');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
 
-    // 1. فرض مصر كدولة أساسية دائماً
+    // 1. فرض مصر كدولة أساسية دائماً عند التحميل أو الإغلاق
     if (countrySelect) {
         countrySelect.value = 'Egypt';
     }
     
-    // 2. تصفير سعر الصرف ليكون محلياً حصرياً
+    // 2. ضبط خانة سعر الصرف لمصر لتكون محلية بحتة وبدون أرقام صرف أجنبية
     if (exchangeRateDisplay) {
         exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     }
@@ -46,7 +46,7 @@ function resetApplicationState() {
 
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
-    // 3. تصفير حقل النص تماماً ومنع أي نص قديم
+    // 3. تفريغ حقل النص تماماً ليكون جاهزاً للصق الحر
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = isEnglish ? 'Type or paste WhatsApp chat text here...' : 'أكتب أو الصق نص محادثة واتساب هنا لتحليلها محاسبياً...';
@@ -64,7 +64,7 @@ function resetApplicationState() {
     
     if (valAmount) valAmount.innerText = '---';
     if (valDebit) valDebit.innerText = '---';
-    if (valCredit) valDebit.innerText = '---';
+    if (valCredit) valCredit.innerText = '---';
     if (valStatement) valStatement.innerText = '---';
     if (valSubsidiary) {
         valSubsidiary.innerText = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
@@ -86,7 +86,6 @@ function onCountryChange() {
     if (amountInput) amountInput.value = '';
     if (foreignNoteInput) foreignNoteInput.value = '';
     if (foreignResultDisplay) foreignResultDisplay.value = '';
-    if (txArea) txArea.value = '';
     if (resultsContainer) resultsContainer.style.display = 'none';
 
     const val = countrySelect.value;
@@ -96,6 +95,7 @@ function onCountryChange() {
     if (convertBtn) convertBtn.disabled = isEgypt;
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
 
+    // الشرط الدقيق: إذا كانت مصر، يظهر المسمى المحلي فقط بلا أرقام صرف أجنبية
     if (isEgypt) {
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
@@ -147,7 +147,6 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// زر الاستيراد: يفرغ الحقل تماماً ويجعله جاهزاً لل لصق الحر
 function triggerDocumentImport() {
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
@@ -353,7 +352,7 @@ function toggleLanguage() {
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';
-        document.getElementById('res-badge').innerText, 'النتائج التحليلية الفورية:';
+        document.getElementById('res-badge').innerText = 'النتائج التحليلية الفورية:';
         document.getElementById('res-label-amount').innerText = 'المبلغ والقيمة:';
         document.getElementById('res-label-debit').innerText = 'الجانب المدين:';
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
@@ -361,13 +360,12 @@ function toggleLanguage() {
         document.getElementById('res-label-subsidiary').innerText = 'الأستاذ المساعد:';
         document.getElementById('val-subsidiary-ledger').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
         document.getElementById('btn-exp-supabase').innerText = 'تسجيل بقاعدة بيانات';
-        document.getElementById('btn-exp-sheets').innerText, 'تصدير إلى';
+        document.getElementById('btn-exp-sheets').innerText = 'تصدير إلى';
         document.getElementById('btn-exp-excel').innerText = 'تصدير إلى';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // تم إزالة قراءة الـ sharedText تماماً لتجنب جلب أي بيانات وهمية مخزنة
     resetApplicationState();
 
     const countrySelect = document.getElementById('country-select');

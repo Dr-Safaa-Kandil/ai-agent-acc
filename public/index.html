@@ -35,7 +35,7 @@
                 <span id="exchange-rate-display">سعر الصرف: محلي (EGP)</span>
             </div>
 
-            <!-- صف قائمة الدول ومبلغ العملة الأجنبية -->
+            <!-- صف قائمة الدول ومبلغ العملة الأجنبية (بدون قيم ثابتة) -->
             <div id="foreign-currency-row" class="foreign-currency-row">
                 <select id="country-select" onchange="onCountryChange()">
                     <option value="Egypt" selected id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
@@ -65,14 +65,14 @@
                 <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
             </div>
 
-            <!-- زر الاستيراد الرئيسي -->
+            <!-- زر الاستيراد الرئيسي (بلا تأثير معطل لحين ربطه بالحدث) -->
             <div class="import-main-row">
-                <button id="import-main-btn" class="import-big-btn" onclick="triggerDocumentImport()" title="استيراد محادثة نصية">
+                <button id="import-main-btn" class="import-big-btn" onclick="return false;" title="استيراد محادثة نصية">
                     📥 <span id="txt-import-big">استيراد محادثة نصية من المنصات (واتساب وغيرها)</span>
                 </button>
             </div>
 
-            <!-- إطار المعاملة المالية المحلية -->
+            <!-- إطار المعاملة المالية المحلية (فارغ تماماً من أي نصوص افتراضية) -->
             <div class="local-tx-section">
                 <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)..."></textarea>
             </div>
