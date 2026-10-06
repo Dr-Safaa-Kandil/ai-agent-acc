@@ -1,12 +1,55 @@
-// ai-agent-acc - app.js (v5.2 Enterprise - Mobile Local Processing & WhatsApp Default Import)
+// ai-agent-acc - app.js (v5.3 Enterprise - Clean State & Mobile Fix)
 let isEnglish = false;
 
+// دالة فتح/إغلاق النافذة مع إعادة ضبط الذاكرة والحقول عند الفتح
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
         const isOpen = (modal.style.display === 'block');
+        if (!isOpen) {
+            // إذا كانت النافذة ستُفتح، قم بتفريغ الحقول وبدء ذاكرة خالية نظيفة
+            resetApplicationState();
+        }
         modal.style.display = isOpen ? 'none' : 'block';
     }
+}
+
+// دالة تصفير وجعل الذاكرة خالية تماماً
+function resetApplicationState() {
+    const txArea = document.getElementById('transaction-text');
+    const amountInput = document.getElementById('amount-input');
+    const foreignNoteInput = document.getElementById('foreign-note-input');
+    const foreignResultDisplay = document.getElementById('foreign-result-display');
+    const resultsContainer = document.getElementById('results-container');
+    const countrySelect = document.getElementById('country-select');
+
+    if (countrySelect) countrySelect.value = 'Egypt';
+    if (amountInput) {
+        amountInput.value = '';
+        amountInput.disabled = true;
+    }
+    if (foreignNoteInput) {
+        foreignNoteInput.value = '';
+        foreignNoteInput.disabled = true;
+    }
+    if (foreignResultDisplay) foreignResultDisplay.value = '';
+    if (txArea) txArea.value = '';
+    
+    // إخفاء بطاقة النتائج تماماً لتفتح على حالة خالية
+    if (resultsContainer) {
+        resultsContainer.style.display = 'none';
+    }
+
+    // تصفير القيم المعروضة بداخل الكائنات الافتراضية
+    const valAmount = document.getElementById('val-amount');
+    const valDebit = document.getElementById('val-debit');
+    const valCredit = document.getElementById('val-credit');
+    const valStatement = document.getElementById('val-statement');
+    
+    if (valAmount) valAmount.innerText = '---';
+    if (valDebit) valDebit.innerText = '---';
+    if (valCredit) valCredit.innerText = '---';
+    if (valStatement) valStatement.innerText = '---';
 }
 
 function onCountryChange() {
@@ -84,7 +127,7 @@ function convertCurrency() {
     resultDisplay.value = `${converted} EGP`;
 }
 
-// استيراد محادثة واتساب افتراضياً بشكل مباشر ودون نوافذ متعددة
+// استيراد محادثة واتساب افتراضياً وتفعيل التحليل الفوري
 function triggerDocumentImport() {
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
@@ -92,12 +135,9 @@ function triggerDocumentImport() {
             ? '[Imported from WhatsApp]: Payment of operational office rent - 3500' 
             : '[مستورد افتراضياً من واتساب]: سداد مصروفات إيجار تشغيلي للمكتب - 3500';
     }
-    
-    // تنفيذ التحليل الفوري محلياً بعد الاستيراد مباشرة
     processAccountingTransaction();
 }
 
-// دالة استخراج وتوليد المبلغ الفعلي بذكاء من النصوص ومحادثات واتساب
 function extractAmountFromText(text) {
     if (!text) return '3000.00 جنيه';
     const cleanedText = text.replace(/,/g, '');
@@ -114,7 +154,7 @@ function extractAmountFromText(text) {
     return '3000.00 جنيه';
 }
 
-// المعالجة المحلية على جهاز المستخدم البعيد (الموبايل)
+// المعالجة المحلية على الموبايل وإظهار النتائج الجديدة حصرياً
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -177,6 +217,7 @@ function processAccountingTransaction() {
         financialStatement = 'قائمة الدخل / المركز المالي';
     }
 
+    // إظهار بطاقة النتائج وتعبئتها بالتحليل الجديد وتمرير الشاشة تلقائياً على الموبايل
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
         document.getElementById('val-amount').innerText = processedAmount;
@@ -188,6 +229,8 @@ function processAccountingTransaction() {
         if (valAccStatement) {
             valAccStatement.innerText = assistantLedgerName;
         }
+
+        resultsContainer.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
@@ -204,20 +247,14 @@ function triggerOCRScan() {
 }
 
 function saveToSupabaseDB() {
-    const timeoutDuration = 15000;
-    console.log(`Connecting to Supabase with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Successfully recorded to Supabase (ai-acc).' : 'تم التسجيل بنجاح فى قاعدة بيانات Supabase (ai-acc).');
 }
 
 function exportToGoogleSheets() {
-    const timeoutDuration = 15000;
-    console.log(`Exporting to Google Sheets with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Exported to Google Sheets successfully.' : 'تم التصدير إلى Google Sheets بنجاح وتحديث الجدول الحسابي.');
 }
 
 function exportToExcel365() {
-    const timeoutDuration = 15000;
-    console.log(`Exporting to Excel 365 with timeout: ${timeoutDuration}ms`);
     alert(isEnglish ? 'Exported to Excel 365 successfully.' : 'تم التصدير إلى Excel 365 بنجاح.');
 }
 
@@ -232,7 +269,7 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount / Click: Standard Convert';
         document.getElementById('label-date').innerText = 'Date: 2026-10-01';
-        document.getElementById('exchange-rate-display').innerText = 'Rate: 1 SAR = 13.00 EGP';
+        document.getElementById('exchange-rate-display').innerText = 'Rate: Local (EGP)';
         
         document.getElementById('opt-egypt').innerText = 'Egypt (EG) - EGP';
         document.getElementById('opt-ksa').innerText = 'Saudi Arabia (SA) - SAR';
@@ -242,8 +279,6 @@ function toggleLanguage() {
         document.getElementById('opt-bahrain').innerText = 'Bahrain (BH) - BHD';
         document.getElementById('opt-oman').innerText = 'Oman (OM) - OMR';
         document.getElementById('opt-usa').innerText = 'United States (US) - USD';
-        
-        onCountryChange();
         
         document.getElementById('convert-btn').innerText = '🧮 Convert to Egyptian Pound';
         document.getElementById('amount-input').placeholder = 'Amount...';
@@ -272,7 +307,7 @@ function toggleLanguage() {
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري';
         document.getElementById('label-date').innerText = 'التاريخ: 2026-10-01';
-        document.getElementById('exchange-rate-display').innerText = 'سعر الصرف: 1 ريال = 13.00 جنيه';
+        document.getElementById('exchange-rate-display').innerText = 'سعر الصرف: محلي (EGP)';
         
         document.getElementById('opt-egypt').innerText = 'جمهورية مصر العربية (EG) - EGP';
         document.getElementById('opt-ksa').innerText = 'المملكة العربية السعودية (SA) - SAR';
@@ -282,8 +317,6 @@ function toggleLanguage() {
         document.getElementById('opt-bahrain').innerText = 'مملكة البحرين (BH) - BHD';
         document.getElementById('opt-oman').innerText = 'سلطنة عمان (OM) - OMR';
         document.getElementById('opt-usa').innerText = 'الولايات المتحدة الأمريكية (US) - USD';
-        
-        onCountryChange();
         
         document.getElementById('convert-btn').innerText = '🧮 تحويل للجنيه المصري';
         document.getElementById('amount-input').placeholder = 'المبلغ...';
@@ -308,9 +341,12 @@ function toggleLanguage() {
     }
 }
 
-// === الاستماع للأحداث والتقاط المشاركة الخارجية من الجوال (Web Share Target) ===
+// === تهيئة الحالة الأولى للذاكرة الخالية عند فتح الصفحة والربط التفاعلي ===
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. التقاط النص المشارك أو الممرر عبر الرابط من واتساب تلقائياً
+    // تصفير التطبيق عند التحميل الأول
+    resetApplicationState();
+
+    // التقاط النص المشارك عبر Web Share Target إن وجد
     const urlParams = new URLSearchParams(window.location.search);
     const sharedText = urlParams.get('text') || urlParams.get('title');
 
@@ -318,12 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const txInput = document.getElementById('transaction-text');
         if (txInput) {
             txInput.value = sharedText.trim();
-            // تنفيذ المعالجة والتحليل الفوري محلياً على الجوال
             processAccountingTransaction();
         }
     }
 
-    // 2. ربط زر الإرسال بالتحليل المحلي
+    // ربط زر الإرسال للتحليل
     const submitBtn = document.getElementById('submit-btn-text');
     if (submitBtn) {
         submitBtn.addEventListener('click', (e) => {
@@ -332,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. تفعيل الإدخال السريع عبر زر Enter
+    // دعم مفتاح الإدخال السريع
     const txArea = document.getElementById('transaction-text');
     if (txArea) {
         txArea.addEventListener('keypress', (e) => {
