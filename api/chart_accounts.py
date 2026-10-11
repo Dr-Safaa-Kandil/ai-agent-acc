@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+@app.get("/")
 @app.get("/api/chart_accounts")
 def get_chart_of_accounts():
     """
