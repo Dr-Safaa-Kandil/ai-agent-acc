@@ -1,5 +1,6 @@
-// ai-agent-acc - app.js (v6.0 Fully Optimized & Cleaned)
+// ai-agent-acc - app.js (v7.0 Integrated & Fully Optimized)
 let isEnglish = false;
+let currentMode = 'user';
 
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
@@ -12,6 +13,15 @@ function toggleModal() {
     }
 }
 
+function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-icon-btn').forEach(btn => btn.classList.remove('active-mode'));
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active-mode');
+    }
+    console.log(`تم تفعيل النمط التخصصي بنجاح: ${mode}`);
+}
+
 function resetApplicationState() {
     const txArea = document.getElementById('transaction-text');
     const amountInput = document.getElementById('amount-input');
@@ -22,13 +32,11 @@ function resetApplicationState() {
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
     const dynamicDateDisplay = document.getElementById('dynamic-date-display');
 
-    // 1. تحديث تاريخ اليوم ديناميكياً
     const today = new Date().toISOString().split('T')[0];
     if (dynamicDateDisplay) {
         dynamicDateDisplay.innerText = today;
     }
 
-    // 2. فرض مصر كدولة أساسية دائماً عند التحميل أو الإغلاق
     if (countrySelect) {
         countrySelect.value = 'Egypt';
     }
@@ -48,10 +56,11 @@ function resetApplicationState() {
 
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
-    // 3. تفريغ حقل النص تماماً ليكون جاهزاً للصق الحر
     if (txArea) {
         txArea.value = '';
-        txArea.placeholder = isEnglish ? 'Type or paste WhatsApp chat text here...' : 'أكتب أو الصق نص محادثة واتساب هنا لتحليلها محاسبياً...';
+        txArea.placeholder = isEnglish 
+            ? `[ Option 1 - Local Site in Egypt ]\n📌 Please enter transaction statement here...\n\n[ Option 2 - Foreign Work & Travel ]\n🌐 Complete foreign transaction note here.` 
+            : `[ الخيار الأول - للموقع المحلي بمصر ]\n📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...\n\n[ الخيار الثاني - العمل الخارجي وعند السفر ]\n🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري.`;
     }
     
     if (resultsContainer) {
@@ -78,7 +87,6 @@ function onCountryChange() {
     const amountInput = document.getElementById('amount-input');
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
-    const txArea = document.getElementById('transaction-text');
     const foreignResultDisplay = document.getElementById('foreign-result-display');
     const resultsContainer = document.getElementById('results-container');
 
@@ -117,7 +125,6 @@ function onCountryChange() {
     }
 }
 
-// التحويل الفوري واللحظي بدون الحاجة لضغط زر
 function convertCurrencyRealtime() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
@@ -201,8 +208,8 @@ function processAccountingTransaction() {
         finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    let debitSide = 'حـ/ المصروفات التشغيلية / الأصول (محلية)';
-    let creditSide = 'حـ/ النقدية بالخزينة / البنك المركزي';
+    let debitSide = 'حـ/ مصروفات النشاط والنثريات العامة';
+    let creditSide = 'حـ/ خزينة النقدية بالصندوق / البنك';
     let financialStatement = 'قائمة الدخل / المركز المالي';
     let assistantLedgerName = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
 
@@ -290,7 +297,7 @@ function toggleLanguage() {
     if (isEnglish) {
         body.classList.add('lang-en');
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
-        document.getElementById('modal-header-title').innerText = 'ai-agent-acc Financial Accounting Agent';
+        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc Financial Accounting Agent';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount for Real-time Conversion';
         
@@ -311,7 +318,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Real-time conversion result in EGP...';
         document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('transaction-text').placeholder = 'Write or paste WhatsApp chat text here...';
+        document.getElementById('transaction-text').placeholder = `[ Option 1 - Local Site in Egypt ]\n📌 Please enter transaction statement here...\n\n[ Option 2 - Foreign Work & Travel ]\n🌐 Complete foreign transaction note here.`;
         document.getElementById('submit-btn-text').innerHTML = '<span>Send Transaction for Analysis Before Recording</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'Voice';
         document.getElementById('txt-image').innerText = 'Image';
@@ -323,13 +330,13 @@ function toggleLanguage() {
         document.getElementById('res-label-statement').innerText = 'Affected Financial Statement:';
         document.getElementById('res-label-subsidiary').innerText = 'Assistant Ledger:';
         document.getElementById('val-subsidiary-ledger').innerText = 'Independent Assistant Ledger for Transactions';
-        document.getElementById('btn-exp-supabase').innerText = 'Save to Database';
-        document.getElementById('btn-exp-sheets').innerText = 'Export to';
-        document.getElementById('btn-exp-excel').innerText = 'Export to';
+        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
+        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
+        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
     } else {
         body.classList.remove('lang-en');
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
-        document.getElementById('modal-header-title').innerText = 'الوكيل الذكي للمحاسبة المالية ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي - ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ لتحويله فورياً';
         
@@ -350,7 +357,7 @@ function toggleLanguage() {
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل الفوري للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('transaction-text').placeholder = 'أكتب أو الصق هنا نص محادثة واتساب المراد تحليلها محاسبياً...';
+        document.getElementById('transaction-text').placeholder = `[ الخيار الأول - للموقع المحلي بمصر ]\n📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...\n\n[ الخيار الثاني - العمل الخارجي وعند السفر ]\n🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري.`;
         document.getElementById('submit-btn-text').innerHTML = '<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
         document.getElementById('txt-image').innerText = 'جلب صورة';
@@ -362,9 +369,9 @@ function toggleLanguage() {
         document.getElementById('res-label-statement').innerText = 'القائمة المالية المتأثرة:';
         document.getElementById('res-label-subsidiary').innerText = 'الأستاذ المساعد:';
         document.getElementById('val-subsidiary-ledger').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
-        document.getElementById('btn-exp-supabase').innerText = 'تسجيل بقاعدة بيانات';
-        document.getElementById('btn-exp-sheets').innerText = 'تصدير إلى';
-        document.getElementById('btn-exp-excel').innerText = 'تصدير إلى';
+        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
+        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
+        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
     }
 }
 
@@ -376,7 +383,6 @@ document.addEventListener('DOMContentLoaded', () => {
         countrySelect.addEventListener('change', onCountryChange);
     }
 
-    // ربط حقل المبلغ الأجنبي بالتحويل اللحظي التلقائي عند الكتابة
     const amountInput = document.getElementById('amount-input');
     if (amountInput) {
         amountInput.addEventListener('input', convertCurrencyRealtime);
