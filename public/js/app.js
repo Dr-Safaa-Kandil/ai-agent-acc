@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v5.9 Final Clean Exchange Rate for Egypt)
+// ai-agent-acc - app.js (v6.0 Fully Optimized & Cleaned)
 let isEnglish = false;
 
 function toggleModal() {
@@ -20,13 +20,19 @@ function resetApplicationState() {
     const resultsContainer = document.getElementById('results-container');
     const countrySelect = document.getElementById('country-select');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
+    const dynamicDateDisplay = document.getElementById('dynamic-date-display');
 
-    // 1. فرض مصر كدولة أساسية دائماً عند التحميل أو الإغلاق
+    // 1. تحديث تاريخ اليوم ديناميكياً
+    const today = new Date().toISOString().split('T')[0];
+    if (dynamicDateDisplay) {
+        dynamicDateDisplay.innerText = today;
+    }
+
+    // 2. فرض مصر كدولة أساسية دائماً عند التحميل أو الإغلاق
     if (countrySelect) {
         countrySelect.value = 'Egypt';
     }
     
-    // 2. ضبط خانة سعر الصرف لمصر لتكون محلية بحتة وبدون أرقام صرف أجنبية
     if (exchangeRateDisplay) {
         exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     }
@@ -38,10 +44,6 @@ function resetApplicationState() {
     if (foreignNoteInput) {
         foreignNoteInput.value = '';
         foreignNoteInput.disabled = true;
-    }
-    const convertBtn = document.getElementById('convert-btn');
-    if (convertBtn) {
-        convertBtn.disabled = true;
     }
 
     if (foreignResultDisplay) foreignResultDisplay.value = '';
@@ -74,7 +76,6 @@ function resetApplicationState() {
 function onCountryChange() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
-    const convertBtn = document.getElementById('convert-btn');
     const foreignNoteInput = document.getElementById('foreign-note-input');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
     const txArea = document.getElementById('transaction-text');
@@ -92,10 +93,8 @@ function onCountryChange() {
     const isEgypt = (val === 'Egypt');
 
     if (amountInput) amountInput.disabled = isEgypt;
-    if (convertBtn) convertBtn.disabled = isEgypt;
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
 
-    // الشرط الدقيق: إذا كانت مصر، يظهر المسمى المحلي فقط بلا أرقام صرف أجنبية
     if (isEgypt) {
         if (exchangeRateDisplay) {
             exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
@@ -118,7 +117,8 @@ function onCountryChange() {
     }
 }
 
-function convertCurrency() {
+// التحويل الفوري واللحظي بدون الحاجة لضغط زر
+function convertCurrencyRealtime() {
     const countrySelect = document.getElementById('country-select');
     const amountInput = document.getElementById('amount-input');
     const resultDisplay = document.getElementById('foreign-result-display');
@@ -127,7 +127,7 @@ function convertCurrency() {
 
     const val = parseFloat(amountInput.value);
     if (isNaN(val) || val <= 0) {
-        alert(isEnglish ? 'Please enter a valid amount.' : 'يرجى إدخال مبلغ صحيح.');
+        resultDisplay.value = '';
         return;
     }
 
@@ -145,15 +145,6 @@ function convertCurrency() {
 
     const converted = (val * rate).toFixed(2);
     resultDisplay.value = `${converted} EGP`;
-}
-
-function triggerDocumentImport() {
-    const txArea = document.getElementById('transaction-text');
-    if (txArea) {
-        txArea.value = '';
-        txArea.placeholder = isEnglish ? 'Paste WhatsApp chat transcript here...' : 'قم بلصق محادثة واتساب هنا لتحليلها محاسبياً...';
-        txArea.focus();
-    }
 }
 
 function extractAmountFromText(text) {
@@ -184,7 +175,7 @@ function processAccountingTransaction() {
     let processedAmount = '';
 
     if (isEgypt) {
-        if (!txArea || !txArea.value.trim() || txArea.value.includes('قم بلصق')) {
+        if (!txArea || !txArea.value.trim()) {
             alert(isEnglish ? 'Please paste or enter transaction text.' : 'يرجى إدخال أو لصق محادثة أو نص المعاملة المالية أولاً.');
             return;
         }
@@ -199,7 +190,7 @@ function processAccountingTransaction() {
         processedAmount = extractAmountFromText(finalProcessedText);
     } else {
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
-            alert(isEnglish ? 'Please convert the foreign amount first.' : 'يرجى إجراء تحويل العملة الأجنبية أولاً.');
+            alert(isEnglish ? 'Please enter a valid foreign amount first.' : 'يرجى إدخال المبلغ الأجنبي ليتم تحويله فورياً أولاً.');
             return;
         }
         if (!foreignNoteInput || !foreignNoteInput.value.trim()) {
@@ -251,15 +242,33 @@ function processAccountingTransaction() {
 }
 
 function triggerVoiceInput() {
-    alert(isEnglish ? 'Voice recording feature activated.' : 'تم تفعيل خاصية التسجيل الصوتى.');
+    const txArea = document.getElementById('transaction-text');
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert(isEnglish ? 'Voice recording not supported.' : 'متصفحك لا يدعم الإدخال الصوتي المباشر.');
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ar-EG';
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        if (txArea) {
+            txArea.value = transcript;
+        }
+    };
+
+    recognition.start();
 }
 
 function triggerImageUpload() {
-    alert(isEnglish ? 'Image upload dialog opened.' : 'تم فتح نافذة اختيار الصور والمستندات.');
+    alert(isEnglish ? 'Image upload dialog opened.' : 'تم فتح نافذة اختيار الصور والمستندات لاستخراج النص (OCR).');
 }
 
 function triggerOCRScan() {
-    alert(isEnglish ? 'OCR scanning initiated.' : 'جاري إجراء المسح الضوئي للنص المستهدف.');
+    alert(isEnglish ? 'OCR scanning initiated.' : 'جاري إجراء المسح الضوئي المستندي المعالج للصور.');
 }
 
 function saveToSupabaseDB() {
@@ -283,8 +292,7 @@ function toggleLanguage() {
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
         document.getElementById('modal-header-title').innerText = 'ai-agent-acc Financial Accounting Agent';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
-        document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount / Click: Standard Convert';
-        document.getElementById('label-date').innerText = 'Date: 2026-10-01';
+        document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount for Real-time Conversion';
         
         const countrySelect = document.getElementById('country-select');
         if (countrySelect && countrySelect.value === 'Egypt') {
@@ -300,11 +308,9 @@ function toggleLanguage() {
         document.getElementById('opt-oman').innerText = 'Oman (OM) - OMR';
         document.getElementById('opt-usa').innerText = 'United States (US) - USD';
         
-        document.getElementById('convert-btn').innerText = '🧮 Convert to Egyptian Pound';
         document.getElementById('amount-input').placeholder = 'Amount...';
-        document.getElementById('foreign-result-display').placeholder = 'Conversion result in EGP...';
+        document.getElementById('foreign-result-display').placeholder = 'Real-time conversion result in EGP...';
         document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('txt-import-big').innerText = 'Import WhatsApp chat transcript (Paste text)';
         document.getElementById('transaction-text').placeholder = 'Write or paste WhatsApp chat text here...';
         document.getElementById('submit-btn-text').innerHTML = '<span>Send Transaction for Analysis Before Recording</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'Voice';
@@ -325,8 +331,7 @@ function toggleLanguage() {
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
         document.getElementById('modal-header-title').innerText = 'الوكيل الذكي للمحاسبة المالية ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
-        document.getElementById('welcome-msg-2').innerText = 'اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري';
-        document.getElementById('label-date').innerText = 'التاريخ: 2026-10-01';
+        document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ لتحويله فورياً';
         
         const countrySelect = document.getElementById('country-select');
         if (countrySelect && countrySelect.value === 'Egypt') {
@@ -342,11 +347,9 @@ function toggleLanguage() {
         document.getElementById('opt-oman').innerText = 'سلطنة عمان (OM) - OMR';
         document.getElementById('opt-usa').innerText = 'الولايات المتحدة الأمريكية (US) - USD';
         
-        document.getElementById('convert-btn').innerText = '🧮 تحويل للجنيه المصري';
         document.getElementById('amount-input').placeholder = 'المبلغ...';
-        document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه المصري...';
+        document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل الفوري للجنيه المصري...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('txt-import-big').innerText = 'استيراد محادثة نصية من المنصات (لصق محادثة واتساب)';
         document.getElementById('transaction-text').placeholder = 'أكتب أو الصق هنا نص محادثة واتساب المراد تحليلها محاسبياً...';
         document.getElementById('submit-btn-text').innerHTML = '<span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
@@ -371,6 +374,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const countrySelect = document.getElementById('country-select');
     if (countrySelect) {
         countrySelect.addEventListener('change', onCountryChange);
+    }
+
+    // ربط حقل المبلغ الأجنبي بالتحويل اللحظي التلقائي عند الكتابة
+    const amountInput = document.getElementById('amount-input');
+    if (amountInput) {
+        amountInput.addEventListener('input', convertCurrencyRealtime);
     }
 
     const submitBtn = document.getElementById('submit-btn-text');

@@ -26,18 +26,18 @@
             <!-- رسالة الترحيب / الإرشاد -->
             <div class="welcome-container">
                 <p id="welcome-msg-1">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</p>
-                <p id="welcome-msg-2">اختر: الدولة / ادخل: المبلغ / اضغط: تحويل معياري</p>
+                <p id="welcome-msg-2">اختر الدولة / أدخل المبلغ لتحويله فورياً</p>
             </div>
 
-            <!-- سطر التاريخ وسعر الصرف الفعلي -->
+            <!-- سطر التاريخ وسعر الصرف الحي -->
             <div class="exchange-info-bar">
-                <span id="label-date">التاريخ: 2026-10-01</span>
-                <span id="exchange-rate-display">سعر الصرف: محلي (EGP)</span>
+                <span id="label-date">التاريخ: <span id="dynamic-date-display">2026-10-11</span></span>
+                <span id="exchange-rate-display">سعر الصرف: حي ومباشر</span>
             </div>
 
-            <!-- صف قائمة الدول ومبلغ العملة الأجنبية (بدون قيم ثابتة) -->
+            <!-- صف قائمة الدول ومبلغ العملة الأجنبية والتحويل الفوري اللحظي -->
             <div id="foreign-currency-row" class="foreign-currency-row">
-                <select id="country-select" onchange="onCountryChange()">
+                <select id="country-select" onchange="updateLiveExchangeRate()">
                     <option value="Egypt" selected id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
                     <option value="KSA" id="opt-ksa">المملكة العربية السعودية (SA) - SAR</option>
                     <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة (AE) - AED</option>
@@ -47,44 +47,30 @@
                     <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
                     <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
                 </select>
-                <input type="number" id="amount-input" placeholder="المبلغ..." disabled>
+                <input type="number" id="amount-input" placeholder="المبلغ..." oninput="calculateRealtimeConversion()">
             </div>
 
-            <!-- زر تحويل للجنيه المصري -->
-            <div class="convert-row">
-                <button id="convert-btn" class="action-btn" onclick="convertCurrency()" disabled title="تحويل معياري">🧮 تحويل للجنيه المصري</button>
-            </div>
-
-            <!-- إطار ناتج التحويل -->
+            <!-- إطار ناتج التحويل الفوري (يظهر تلقائياً بدون أزرار زائدة) -->
             <div class="foreign-result-row">
-                <input type="text" id="foreign-result-display" placeholder="ناتج التحويل للجنيه المصري..." readonly>
+                <input type="text" id="foreign-result-display" placeholder="ناتج التحويل الفوري للجنيه المصري..." readonly>
             </div>
 
-            <!-- صف كتابة بيان المعاملة بالدولة الأجنبية -->
-            <div class="foreign-note-row">
-                <input type="text" id="foreign-note-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
-            </div>
-
-            <!-- زر الاستيراد الرئيسي (بلا تأثير معطل لحين ربطه بالحدث) -->
-            <div class="import-main-row">
-                <button id="import-main-btn" class="import-big-btn" onclick="return false;" title="استيراد محادثة نصية">
-                    📥 <span id="txt-import-big">استيراد محادثة نصية من المنصات (واتساب وغيرها)</span>
-                </button>
-            </div>
-
-            <!-- إطار المعاملة المالية المحلية (فارغ تماماً من أي نصوص افتراضية) -->
+            <!-- حقل إدخال موحد ومرن للبيان، لصق المحادثات، ومعاينة الفواتير -->
             <div class="local-tx-section">
-                <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة المالية وقاموس المعالجة (مثال: دفع إيجار محطة 1500 أو أتعاب محاماة)..."></textarea>
+                <textarea id="transaction-text" placeholder="أكتب هنا بيان المعاملة، أو الصق محادثة واتساب مباشرة للتحليل..."></textarea>
+                <div id="image-preview-container" style="display: none; margin-top: 8px; text-align: center;">
+                    <img id="uploaded-receipt-preview" src="" alt="معاينة المستند أو الفاتورة" style="max-height: 120px; border-radius: 6px;" />
+                </div>
             </div>
 
-            <!-- زر إرسال المعاملة للمعالجة -->
+            <!-- زر إرسال المعاملة للمعالجة والتحليل -->
             <div class="submit-action-row">
                 <button id="submit-btn-text" class="send-text-btn" onclick="processAccountingTransaction()">
                     <span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>
                 </button>
             </div>
 
-            <!-- صف الوسائط والمسح الضوئي -->
+            <!-- صف الوسائط، التسجيل الصوتي، والمسح الضوئي -->
             <div class="actions-section">
                 <button id="btn-voice" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎤 <span id="txt-voice">تسجيل صوتي</span></button>
                 <button id="btn-image" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
