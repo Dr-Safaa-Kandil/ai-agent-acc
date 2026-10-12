@@ -1,3 +1,5 @@
 # تجاهل ملفات البيئة المحلية والمفاتيح الحساسة
 .env
 google-ai-studio-test.py
+.vercel
+.env*
