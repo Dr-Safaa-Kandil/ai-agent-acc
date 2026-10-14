@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="modal-header-title">الوكيل الذكي للمحاسبة المالية ai-agent-acc</title>
+    <title id="modal-header-title">ai-agent-acc</title>
     <link rel="stylesheet" href="widget.css">
 </head>
 <body>
@@ -17,11 +17,10 @@
     <!-- نافذة النموذج -->
     <div id="ai-modal-box" class="modal-container hidden">
         
-        <!-- شريط العنوان العلوي -->
+        <!-- شريط العنوان العلوي (نظيف وبدون تكرار) -->
         <div class="modal-header">
             <div class="header-title-group">
-                <span class="main-name" id="modal-header-title-text">المساعد المحاسبي الذكي - ai-agent-acc</span>
-                <span class="sub-code">ai-agent-acc</span>
+                <span class="main-name" id="modal-header-title-text">ai-agent-acc</span>
             </div>
             <div class="header-controls">
                 <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()">EN</button>
@@ -79,14 +78,14 @@
                 </div>
             </div>
 
-            <!-- أزرار الوسائط (مثقلة الوضوح) -->
+            <!-- أزرار الوسائط -->
             <div class="row-media-buttons-full">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
                 <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()">📷 <span id="txt-ocr">مسح ضوئي</span></button>
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- مسرح العمليات (خانة النص خالية تماماً) -->
+            <!-- مسرح العمليات -->
             <div class="workspace-container">
                 <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
                 <div class="workspace-instruction-line"><span>📁</span> <span id="ins-2">يمكنك إدخال صورة المستند المالى الموثق للمعاملة</span></div>

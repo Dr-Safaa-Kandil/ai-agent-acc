@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v8.4 Full & Uncompressed Version)
+// ai-agent-acc - app.js (v8.9 Perfect Layout & Translation Synchronization)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
@@ -77,7 +77,6 @@ function resetApplicationState() {
     }
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
-    // إفراغ خانة النص الرئيسية تماماً وعدم وضع أي مثال وهمي
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = '';
@@ -214,17 +213,10 @@ function processAccountingTransaction() {
         finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    let debitSide = 'حـ/ مصروفات النشاط والنثريات العامة';
-    let creditSide = 'حـ/ خزينة النقدية بالصندوق / البنك';
-    let financialStatement = 'قائمة الدخل / المركز المالي';
+    let debitSide = isEnglish ? 'Debit: Fixed Assets & Office Equipment' : 'حـ/ الأصول الثابتة والمعدات المكتبية';
+    let creditSide = isEnglish ? 'Credit: Cash in Safe / Bank' : 'حـ/ خزينة النقدية بالصندوق / البنك';
+    let financialStatement = isEnglish ? 'Financial Position' : 'المركز المالي';
     let assistantLedgerName = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
-
-    const textLower = finalProcessedText.toLowerCase();
-    if (textLower.includes('حاسب') || textLower.includes('أصول') || textLower.includes('equipment')) {
-        debitSide = 'حـ/ الأصول الثابتة والمعدات المكتبية'; 
-        creditSide = 'حـ/ خزينة النقدية بالصندوق / البنك'; 
-        financialStatement = 'المركز المالي';
-    }
 
     if (resultsContainer) {
         resultsContainer.style.display = 'block';
@@ -246,63 +238,102 @@ function exportToExcel365() { alert(isEnglish ? 'Exported to Excel.' : 'تم ا�
 
 function toggleLanguage() {
     isEnglish = !isEnglish;
+    const htmlRoot = document.getElementById('htmlRoot');
     const body = document.body;
     const langBtn = document.getElementById('langToggleBtn');
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
     const countrySelect = document.getElementById('country-select');
-    
-    if (exchangeRateDisplay) {
-        if (!countrySelect || countrySelect.value === 'Egypt') {
-            exchangeRateDisplay.innerText = isEnglish ? 'Unit Exchange Rate in Local' : 'سعر صرف الوحدة بالجنيه';
-        }
-    }
 
     if (isEnglish) {
+        htmlRoot.setAttribute('dir', 'ltr');
+        htmlRoot.setAttribute('lang', 'en');
         body.classList.add('lang-en');
         if (langBtn) langBtn.innerText = 'ع';
+        
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
-        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc Financial Accounting Agent';
+        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select Country / Enter Amount to Convert';
+        if (exchangeRateDisplay && (!countrySelect || countrySelect.value === 'Egypt')) {
+            exchangeRateDisplay.innerText = 'Unit Exchange Rate in Local';
+        }
         document.getElementById('lbl-mode-user').innerText = 'User';
-        document.getElementById('lbl-mode-auditor').innerText = 'Accounting Auditor';
-        document.getElementById('lbl-mode-manager').innerText = 'Financial Planner';
+        document.getElementById('lbl-mode-auditor').innerText = 'Auditor';
+        document.getElementById('lbl-mode-manager').innerText = 'Planner';
+        
+        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction statement';
+        document.getElementById('amount-input').placeholder = 'Amount...';
         document.getElementById('foreign-result-display').placeholder = 'Conversion to EGP...';
-        document.getElementById('transaction-text').placeholder = '';
+        
+        document.getElementById('ins-1').innerText = 'Enter financial transaction including amount and payment method';
+        document.getElementById('ins-2').innerText = 'You can upload a document image of the transaction';
+        document.getElementById('ins-3').innerText = 'Or send a voice recording explaining the transaction';
+        
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
         document.getElementById('clear-btn-text').innerText = 'Clear All';
         document.getElementById('txt-image').innerText = 'Image';
         document.getElementById('txt-ocr').innerText = 'OCR';
         document.getElementById('txt-voice').innerText = 'Voice';
+        
         document.getElementById('res-badge').innerText = 'Instant Analytical Results:';
         document.getElementById('res-label-amount').innerText = 'Amount:';
         document.getElementById('res-label-debit').innerText = 'Debit:';
         document.getElementById('res-label-credit').innerText = 'Credit:';
         document.getElementById('res-label-statement').innerText = 'Statement:';
         document.getElementById('res-label-subsidiary').innerText = 'Ledger:';
+        document.getElementById('val-subsidiary-ledger').innerText = 'Independent Assistant Ledger for Transactions';
+        
+        document.getElementById('exp-sup-l1').innerText = 'Register to DB';
+        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
+        document.getElementById('exp-sh-l1').innerText = 'Export to';
+        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
+        document.getElementById('exp-ex-l1').innerText = 'Export to';
+        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
     } else {
+        htmlRoot.setAttribute('dir', 'rtl');
+        htmlRoot.setAttribute('lang', 'ar');
         body.classList.remove('lang-en');
         if (langBtn) langBtn.innerText = 'EN';
+        
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
-        document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي - ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'إختر الدولة / أدخل المبلغ لعرض ناتج التحويل';
+        if (exchangeRateDisplay && (!countrySelect || countrySelect.value === 'Egypt')) {
+            exchangeRateDisplay.innerText = 'سعر صرف الوحدة بالجنيه';
+        }
         document.getElementById('lbl-mode-user').innerText = 'المستخدم';
         document.getElementById('lbl-mode-auditor').innerText = 'المراجع';
         document.getElementById('lbl-mode-manager').innerText = 'المخطط المالي';
+        
+        document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية';
+        document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل...';
-        document.getElementById('transaction-text').placeholder = '';
+        
+        document.getElementById('ins-1').innerText = 'أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق';
+        document.getElementById('ins-2').innerText = 'يمكنك إدخال صورة المستند المالى الموثق للمعاملة';
+        document.getElementById('ins-3').innerText = 'أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية';
+        
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
         document.getElementById('clear-btn-text').innerText = 'مسح الكل';
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
+        
         document.getElementById('res-badge').innerText = 'النتائج التحليلية الفورية:';
         document.getElementById('res-label-amount').innerText = 'المبلغ والقيمة:';
         document.getElementById('res-label-debit').innerText = 'الجانب المدين:';
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
         document.getElementById('res-label-statement').innerText = 'القائمة المالية المتأثرة:';
         document.getElementById('res-label-subsidiary').innerText = 'الأستاذ المساعد:';
+        document.getElementById('val-subsidiary-ledger').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
+        
+        document.getElementById('exp-sup-l1').innerText = 'تسجيل بقاعدة بيانات';
+        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
+        document.getElementById('exp-sh-l1').innerText = 'تصدير إلى';
+        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
+        document.getElementById('exp-ex-l1').innerText = 'تصدير إلى';
+        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
     }
 }
 
