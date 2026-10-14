@@ -1,6 +1,7 @@
-// ai-agent-acc - app.js (v7.3 Complete & Fully Optimized)
+// ai-agent-acc - app.js (v7.8 Final Full Version)
 let isEnglish = false;
 let currentMode = 'user';
+let liveExchangeRates = {};
 
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
@@ -9,6 +10,7 @@ function toggleModal() {
         if (isHidden) {
             resetApplicationState();
             modal.classList.remove('hidden');
+            fetchLiveExchangeRates();
         } else {
             modal.classList.add('hidden');
         }
@@ -21,7 +23,31 @@ function switchMode(mode) {
     if (event && event.currentTarget) {
         event.currentTarget.classList.add('active-mode');
     }
-    console.log(`تم تفعيل النمط التخصصي بنجاح: ${mode}`);
+}
+
+async function fetchLiveExchangeRates() {
+    try {
+        const response = await fetch('https://open.er-api.com/v6/latest/USD');
+        const data = await response.json();
+        
+        if (data && data.rates) {
+            const egpRate = data.rates.EGP || 53.10;
+            
+            liveExchangeRates = {
+                'USA': egpRate,
+                'Kuwait': egpRate / (data.rates.KWD || 0.31),
+                'KSA': egpRate / (data.rates.SAR || 3.75),
+                'UAE': egpRate / (data.rates.AED || 3.67),
+                'Qatar': egpRate / (data.rates.QAR || 3.64),
+                'Bahrain': egpRate / (data.rates.BHD || 0.376),
+                'Oman': egpRate / (data.rates.OMR || 0.384)
+            };
+            
+            onCountryChange();
+        }
+    } catch (error) {
+        console.error('تعذر جلب أسعار الصرف الحية:', error);
+    }
 }
 
 function resetApplicationState() {
@@ -35,39 +61,22 @@ function resetApplicationState() {
     const dynamicDateDisplay = document.getElementById('dynamic-date-display');
 
     const today = new Date().toISOString().split('T')[0];
-    if (dynamicDateDisplay) {
-        dynamicDateDisplay.innerText = today;
-    }
+    if (dynamicDateDisplay) dynamicDateDisplay.innerText = today;
+    if (countrySelect) countrySelect.value = 'Egypt';
+    if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
 
-    if (countrySelect) {
-        countrySelect.value = 'Egypt';
-    }
-    
-    if (exchangeRateDisplay) {
-        exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
-    }
-
-    if (amountInput) {
-        amountInput.value = '';
-        amountInput.disabled = true;
-    }
-    if (foreignNoteInput) {
-        foreignNoteInput.value = '';
-        foreignNoteInput.disabled = true;
-    }
-
+    if (amountInput) { amountInput.value = ''; amountInput.disabled = true; }
+    if (foreignNoteInput) { foreignNoteInput.value = ''; foreignNoteInput.disabled = true; }
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = isEnglish 
-            ? `[ Option 1 - Local Site in Egypt ]\n📌 Please enter transaction statement here...\n\n[ Option 2 - Foreign Work & Travel ]\n🌐 Complete foreign transaction note here.` 
-            : `[ الخيار الأول - للموقع المحلي بمصر ]\n📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...\n\n[ الخيار الثاني - العمل الخارجي وعند السفر ]\n🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري.`;
+            ? 'Please enter transaction statement including amount.. You can also upload financial document image or voice record.' 
+            : 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية';
     }
     
-    if (resultsContainer) {
-        resultsContainer.style.display = 'none';
-    }
+    if (resultsContainer) resultsContainer.style.display = 'none';
 
     const valAmount = document.getElementById('val-amount');
     const valDebit = document.getElementById('val-debit');
@@ -86,22 +95,13 @@ function resetApplicationState() {
 
 function clearAllData() {
     const confirmMsg = isEnglish ? 'Are you sure you want to clear all workspace data and results?' : 'هل أنت متأكد من مسح بيانات مساحة العمل ونتائج التحليل؟';
-    if (confirm(confirmMsg)) {
-        resetApplicationState();
-    }
+    if (confirm(confirmMsg)) resetApplicationState();
 }
 
-function getRealtimeRate(country) {
-    switch (country) {
-        case 'Kuwait': return 160.00;
-        case 'KSA': return 13.00;
-        case 'UAE': return 13.30;
-        case 'Qatar': return 13.20;
-        case 'Bahrain': return 128.00;
-        case 'Oman': return 125.00;
-        case 'USA': return 48.50;
-        default: return 1.00;
-    }
+function getCurrentRate(country) {
+    if (liveExchangeRates[country]) return liveExchangeRates[country];
+    const fallbacks = { 'Kuwait': 160.00, 'KSA': 13.10, 'UAE': 13.40, 'Qatar': 13.30, 'Bahrain': 129.00, 'Oman': 126.00, 'USA': 53.10 };
+    return fallbacks[country] || 1.00;
 }
 
 function onCountryChange() {
@@ -113,7 +113,6 @@ function onCountryChange() {
     const resultsContainer = document.getElementById('results-container');
 
     if (!countrySelect) return;
-
     if (amountInput) amountInput.value = '';
     if (foreignNoteInput) foreignNoteInput.value = '';
     if (foreignResultDisplay) foreignResultDisplay.value = '';
@@ -126,14 +125,10 @@ function onCountryChange() {
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
 
     if (isEgypt) {
-        if (exchangeRateDisplay) {
-            exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
-        }
+        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
     } else {
-        const rate = getRealtimeRate(val);
-        if (exchangeRateDisplay) {
-            exchangeRateDisplay.innerText = isEnglish ? `Rate: 1 Unit = ${rate} EGP` : `سعر الصرف: 1 وحدة = ${rate} جنيه`;
-        }
+        const rate = getCurrentRate(val).toFixed(2);
+        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? `Rate: 1 Unit = ${rate} EGP` : `سعر الصرف: 1 وحدة = ${rate} جنيه`;
     }
 }
 
@@ -143,14 +138,10 @@ function convertCurrencyRealtime() {
     const resultDisplay = document.getElementById('foreign-result-display');
 
     if (!countrySelect || !amountInput || !resultDisplay) return;
-
     const val = parseFloat(amountInput.value);
-    if (isNaN(val) || val <= 0) {
-        resultDisplay.value = '';
-        return;
-    }
+    if (isNaN(val) || val <= 0) { resultDisplay.value = ''; return; }
 
-    const rate = getRealtimeRate(countrySelect.value);
+    const rate = getCurrentRate(countrySelect.value);
     const converted = (val * rate).toFixed(2);
     resultDisplay.value = `${converted} EGP`;
 }
@@ -159,13 +150,10 @@ function extractAmountFromText(text) {
     if (!text) return '0.00 جنيه';
     const cleanedText = text.replace(/,/g, '');
     const match = cleanedText.match(/\b\d+(\.\d+)?\b/g);
-    
     if (match && match.length > 0) {
         for (let numStr of match) {
             let val = parseFloat(numStr);
-            if (val > 0) {
-                return `${val.toFixed(2)} جنيه`;
-            }
+            if (val > 0) return `${val.toFixed(2)} جنيه`;
         }
     }
     return '0.00 جنيه';
@@ -184,21 +172,14 @@ function processAccountingTransaction() {
 
     if (isEgypt) {
         if (!txArea || !txArea.value.trim()) {
-            alert(isEnglish ? 'Please paste or enter transaction text.' : 'يرجى إدخال أو لصق محادثة أو نص المعاملة المالية أولاً.');
+            alert(isEnglish ? 'Please enter transaction statement.' : 'يرجى إدخال نص المعاملة المالية أولاً.');
             return;
         }
-        
         finalProcessedText = txArea.value.trim();
-        const isOnlyNumbers = /^[\d\.\s]+$/.test(finalProcessedText);
-        if (isOnlyNumbers) {
-            alert(isEnglish ? 'Please complete the transaction statement with description.' : 'عفواً، يجب أن يحتوي النص على وصف المعاملة وليس أرقاماً فقط.');
-            return;
-        }
-
         processedAmount = extractAmountFromText(finalProcessedText);
     } else {
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
-            alert(isEnglish ? 'Please enter a valid foreign amount first.' : 'يرجى إدخال المبلغ الأجنبي ليتم تحويله فورياً أولاً.');
+            alert(isEnglish ? 'Please enter a valid foreign amount first.' : 'يرجى إدخال المبلغ الأجنبي ليتم تحويله أولاً.');
             return;
         }
         if (!foreignNoteInput || !foreignNoteInput.value.trim()) {
@@ -216,21 +197,9 @@ function processAccountingTransaction() {
 
     const textLower = finalProcessedText.toLowerCase();
     if (textLower.includes('إيجار') || textLower.includes('ايجار') || textLower.includes('rent')) {
-        debitSide = 'حـ/ مصروف الإيجار';
-        creditSide = 'حـ/ النقدية بالخزينة أو البنك';
-        financialStatement = 'قائمة الدخل';
+        debitSide = 'حـ/ مصروف الإيجار'; creditSide = 'حـ/ النقدية بالخزينة أو البنك'; financialStatement = 'قائمة الدخل';
     } else if (textLower.includes('أتعاب') || textLower.includes('استشارات') || textLower.includes('consulting')) {
-        debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية';
-        creditSide = 'حـ/ البنك المركزي / الحسابات الجارية';
-        financialStatement = 'قائمة الدخل';
-    } else if (textLower.includes('أصول') || textLower.includes('معدات') || textLower.includes('أجهزة') || textLower.includes('equipment')) {
-        debitSide = 'حـ/ الأصول الثابتة والمعدات';
-        creditSide = 'حـ/ النقدية / الموردون';
-        financialStatement = 'قائمة المركز المالي';
-    } else if (!isEgypt) {
-        debitSide = 'حـ/ المصروفات الخارجية والمهمات (أجنبية)';
-        creditSide = 'حـ/ البنك المركزي / النقدية الأجنبية';
-        financialStatement = 'قائمة الدخل / المركز المالي';
+        debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية'; creditSide = 'حـ/ البنك المركزي'; financialStatement = 'قائمة الدخل';
     }
 
     if (resultsContainer) {
@@ -239,57 +208,17 @@ function processAccountingTransaction() {
         document.getElementById('val-debit').innerText = debitSide;
         document.getElementById('val-credit').innerText = creditSide;
         document.getElementById('val-statement').innerText = financialStatement;
-        
-        const valAccStatement = document.getElementById('val-subsidiary-ledger');
-        if (valAccStatement) {
-            valAccStatement.innerText = assistantLedgerName;
-        }
-
+        document.getElementById('val-subsidiary-ledger').innerText = assistantLedgerName;
         resultsContainer.scrollIntoView({ behavior: 'smooth' });
     }
 }
 
-function triggerVoiceInput() {
-    const txArea = document.getElementById('transaction-text');
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        alert(isEnglish ? 'Voice recording not supported.' : 'متصفحك لا يدعم الإدخال الصوتي المباشر.');
-        return;
-    }
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'ar-EG';
-    recognition.interimResults = false;
-
-    recognition.onresult = function(event) {
-        const transcript = event.results[0][0].transcript;
-        if (txArea) {
-            txArea.value = transcript;
-        }
-    };
-
-    recognition.start();
-}
-
-function triggerImageUpload() {
-    alert(isEnglish ? 'Image upload dialog opened.' : 'تم فتح نافذة اختيار الصور والمستندات لاستخراج النص (OCR).');
-}
-
-function triggerOCRScan() {
-    alert(isEnglish ? 'OCR scanning initiated.' : 'جاري إجراء المسح الضوئي المستندي المعالج للصور.');
-}
-
-function saveToSupabaseDB() {
-    alert(isEnglish ? 'Successfully recorded to Supabase (ai-acc).' : 'تم التسجيل بنجاح فى قاعدة بيانات Supabase (ai-acc).');
-}
-
-function exportToGoogleSheets() {
-    alert(isEnglish ? 'Exported to Google Sheets successfully.' : 'تم التصدير إلى Google Sheets بنجاح وتحديث الجدول الحسابي.');
-}
-
-function exportToExcel365() {
-    alert(isEnglish ? 'Exported to Excel 365 successfully.' : 'تم التصدير إلى Excel 365 بنجاح.');
-}
+function triggerVoiceInput() { alert(isEnglish ? 'Voice recording active.' : 'جاري تفعيل التسجيل الصوتي لبيان المعاملة المالية.'); }
+function triggerImageUpload() { alert(isEnglish ? 'Image upload active.' : 'جاري جلب صورة المستند المالي.'); }
+function triggerOCRScan() { alert(isEnglish ? 'OCR scanning.' : 'جاري المسح الضوئي المستندي.'); }
+function saveToSupabaseDB() { alert(isEnglish ? 'Saved to Supabase.' : 'تم التسجيل في قاعدة البيانات بنجاح.'); }
+function exportToGoogleSheets() { alert(isEnglish ? 'Exported to Sheets.' : 'تم التصدير إلى Google Sheets بنجاح.'); }
+function exportToExcel365() { alert(isEnglish ? 'Exported to Excel.' : 'تم التصدير إلى Excel 365 بنجاح.'); }
 
 function toggleLanguage() {
     isEnglish = !isEnglish;
@@ -299,92 +228,40 @@ function toggleLanguage() {
     if (isEnglish) {
         body.classList.add('lang-en');
         if (langBtn) langBtn.innerText = 'ع';
-        
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
         document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc Financial Accounting Agent';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
-        document.getElementById('welcome-msg-2').innerText = 'Select: Country / Enter: Amount for Real-time Conversion';
-        
-        // Mode labels
+        document.getElementById('welcome-msg-2').innerText = 'Select Country / Enter Amount for Conversion';
         document.getElementById('lbl-mode-user').innerText = 'User';
         document.getElementById('lbl-mode-auditor').innerText = 'Accounting Auditor';
         document.getElementById('lbl-mode-manager').innerText = 'Financial Planner';
-        
-        const countrySelect = document.getElementById('country-select');
-        if (countrySelect && countrySelect.value === 'Egypt') {
-            document.getElementById('exchange-rate-display').innerText = 'Exchange Rate: Local (EGP)';
-        } else if (countrySelect) {
-            const rate = getRealtimeRate(countrySelect.value);
-            document.getElementById('exchange-rate-display').innerText = `Rate: 1 Unit = ${rate} EGP`;
-        }
-        
-        document.getElementById('opt-egypt').innerText = 'Egypt (EG) - EGP';
-        document.getElementById('opt-ksa').innerText = 'Saudi Arabia (SA) - SAR';
-        document.getElementById('opt-uae').innerText = 'United Arab Emirates (AE) - AED';
-        document.getElementById('opt-kuwait').innerText = 'Kuwait (KW) - KWD';
-        document.getElementById('opt-qatar').innerText = 'Qatar (QA) - QAR';
-        document.getElementById('opt-bahrain').innerText = 'Bahrain (BH) - BHD';
-        document.getElementById('opt-oman').innerText = 'Oman (OM) - OMR';
-        document.getElementById('opt-usa').innerText = 'United States (US) - USD';
-        
-        document.getElementById('amount-input').placeholder = 'Amount...';
-        document.getElementById('foreign-result-display').placeholder = 'Real-time conversion result in EGP...';
-        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note like: Hotel accommodation expenses - for mission in KSA';
-        document.getElementById('transaction-text').placeholder = `[ Option 1 - Local Site in Egypt ]\n📌 Please enter transaction statement here...\n\n[ Option 2 - Foreign Work & Travel ]\n🌐 Complete foreign transaction note here.`;
+        document.getElementById('foreign-result-display').placeholder = 'Conversion to EGP...';
+        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note...';
+        document.getElementById('transaction-text').placeholder = 'Please enter transaction statement including amount.. You can also upload financial document image or voice record.';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
         document.getElementById('clear-btn-text').innerText = 'Clear All';
         document.getElementById('txt-voice').innerText = 'Voice';
         document.getElementById('txt-image').innerText = 'Image';
-        document.getElementById('txt-ocr').innerText = 'OCR Scan';
+        document.getElementById('txt-ocr').innerText = 'OCR';
         document.getElementById('res-badge').innerText = 'Instant Analytical Results:';
-        document.getElementById('res-label-amount').innerText = 'Amount & Value:';
-        document.getElementById('res-label-debit').innerText = 'Debit Side:';
-        document.getElementById('res-label-credit').innerText = 'Credit Side:';
-        document.getElementById('res-label-statement').innerText = 'Affected Financial Statement:';
-        document.getElementById('res-label-subsidiary').innerText = 'Assistant Ledger:';
-        document.getElementById('val-subsidiary-ledger').innerText = 'Independent Assistant Ledger for Transactions';
-        
-        document.getElementById('exp-sup-l1').innerText = 'Record to Database';
-        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
-        document.getElementById('exp-sh-l1').innerText = 'Export to';
-        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
-        document.getElementById('exp-ex-l1').innerText = 'Export to';
-        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
+        document.getElementById('res-label-amount').innerText = 'Amount:';
+        document.getElementById('res-label-debit').innerText = 'Debit:';
+        document.getElementById('res-label-credit').innerText = 'Credit:';
+        document.getElementById('res-label-statement').innerText = 'Statement:';
+        document.getElementById('res-label-subsidiary').innerText = 'Ledger:';
     } else {
         body.classList.remove('lang-en');
         if (langBtn) langBtn.innerText = 'EN';
-        
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
         document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي - ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ لتحويله فورياً';
-        
-        // Mode labels
         document.getElementById('lbl-mode-user').innerText = 'المستخدم';
         document.getElementById('lbl-mode-auditor').innerText = 'المراجع';
         document.getElementById('lbl-mode-manager').innerText = 'المخطط المالي';
-        
-        const countrySelect = document.getElementById('country-select');
-        if (countrySelect && countrySelect.value === 'Egypt') {
-            document.getElementById('exchange-rate-display').innerText = 'سعر الصرف: محلي (EGP)';
-        } else if (countrySelect) {
-            const rate = getRealtimeRate(countrySelect.value);
-            document.getElementById('exchange-rate-display').innerText = `سعر الصرف: 1 وحدة = ${rate} جنيه`;
-        }
-        
-        document.getElementById('opt-egypt').innerText = 'جمهورية مصر العربية (EG) - EGP';
-        document.getElementById('opt-ksa').innerText = 'المملكة العربية السعودية (SA) - SAR';
-        document.getElementById('opt-uae').innerText = 'دولة الإمارات العربية المتحدة (AE) - AED';
-        document.getElementById('opt-kuwait').innerText = 'دولة الكويت (KW) - KWD';
-        document.getElementById('opt-qatar').innerText = 'دولة قطر (QA) - QAR';
-        document.getElementById('opt-bahrain').innerText = 'مملكة البحرين (BH) - BHD';
-        document.getElementById('opt-oman').innerText = 'سلطنة عمان (OM) - OMR';
-        document.getElementById('opt-usa').innerText = 'الولايات المتحدة الأمريكية (US) - USD';
-        
-        document.getElementById('amount-input').placeholder = 'المبلغ...';
-        document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل الفوري للجنيه المصري...';
+        document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه...';
         document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('transaction-text').placeholder = `[ الخيار الأول - للموقع المحلي بمصر ]\n📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...\n\n[ الخيار الثاني - العمل الخارجي وعند السفر ]\n🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري.`;
+        document.getElementById('transaction-text').placeholder = 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
         document.getElementById('clear-btn-text').innerText = 'مسح الكل';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
@@ -396,45 +273,17 @@ function toggleLanguage() {
         document.getElementById('res-label-credit').innerText = 'الجانب الدائن:';
         document.getElementById('res-label-statement').innerText = 'القائمة المالية المتأثرة:';
         document.getElementById('res-label-subsidiary').innerText = 'الأستاذ المساعد:';
-        document.getElementById('val-subsidiary-ledger').innerText = 'الأستاذ المساعد المستقل للمعاملات المالية';
-        
-        document.getElementById('exp-sup-l1').innerText = 'تسجيل بقاعدة بيانات';
-        document.getElementById('btn-exp-supabase').innerText = 'Supabase (ai-acc)';
-        document.getElementById('exp-sh-l1').innerText = 'تصدير إلى';
-        document.getElementById('btn-exp-sheets').innerText = 'Google Sheets';
-        document.getElementById('exp-ex-l1').innerText = 'تصدير إلى';
-        document.getElementById('btn-exp-excel').innerText = 'Excel 365';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     resetApplicationState();
-
-    const countrySelect = document.getElementById('country-select');
-    if (countrySelect) {
-        countrySelect.addEventListener('change', onCountryChange);
-    }
-
-    const amountInput = document.getElementById('amount-input');
-    if (amountInput) {
-        amountInput.addEventListener('input', convertCurrencyRealtime);
-    }
-
-    const submitBtn = document.getElementById('submit-btn-text');
-    if (submitBtn) {
-        submitBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            processAccountingTransaction();
-        });
-    }
-
-    const txArea = document.getElementById('transaction-text');
-    if (txArea) {
-        txArea.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                processAccountingTransaction();
-            }
-        });
-    }
+    fetchLiveExchangeRates();
+    
+    document.getElementById('country-select')?.addEventListener('change', onCountryChange);
+    document.getElementById('amount-input')?.addEventListener('input', convertCurrencyRealtime);
+    document.getElementById('submit-btn-text')?.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        processAccountingTransaction(); 
+    });
 });

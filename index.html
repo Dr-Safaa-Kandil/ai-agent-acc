@@ -35,7 +35,7 @@
                 👤 <span class="mode-lbl" id="lbl-mode-user" data-ar="المستخدم" data-en="User">المستخدم</span>
             </button>
             <button class="mode-icon-btn" onclick="switchMode('auditor')" title="المراجع المحاسبي الخبير">
-                🔍 <span class="mode-lbl" id="lbl-mode-auditor" data-ar="المراجع" data-en="Auditing Auditor">المراجع</span>
+                🔍 <span class="mode-lbl" id="lbl-mode-auditor" data-ar="المراجع" data-en="Accounting Auditor">المراجع</span>
             </button>
             <button class="mode-icon-btn" onclick="switchMode('manager')" title="المخطط المالي الاستراتيجي">
                 📊 <span class="mode-lbl" id="lbl-mode-manager" data-ar="المخطط المالي" data-en="Financial Planner">المخطط المالي</span>
@@ -74,7 +74,7 @@
 
             <!-- صف عرض قيمة التحويل الفوري وجانبها خانة بيان المعاملة الأجنبية -->
             <div class="row-conversion-note">
-                <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل الفوري للجنيه المصري..." readonly>
+                <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل للجنيه..." readonly>
                 <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
             </div>
 
@@ -87,7 +87,7 @@
 
             <!-- مسرح العمل (خانة النص الموحدة) -->
             <div class="workspace-container">
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="[ الخيار الأول - للموقع المحلي بمصر ]&#10;📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...&#10;&#10;[ الخيار الثاني - العمل الخارجي وعند السفر ]&#10;🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري."></textarea>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية"></textarea>
             </div>
 
             <!-- صف زر التحليل وزر مسح الكل -->
