@@ -14,7 +14,7 @@
         <div class="widget-title" id="widget-launcher-title">المساعد المحاسبي الذكي</div>
     </div>
 
-    <!-- نافذة النموذج (مع إزالة العرض الثابت display: none للسماح لملف التحكم بإدارتها ديناميكياً) -->
+    <!-- نافذة النموذج -->
     <div id="ai-modal-box" class="modal-container hidden">
         
         <!-- شريط العنوان العلوي -->
@@ -32,13 +32,13 @@
         <!-- شريط أزرار أنماط الواجهة الثلاثة -->
         <div class="modes-toolbar">
             <button class="mode-icon-btn active-mode" onclick="switchMode('user')" title="عزيزي المستخدم العادى">
-                👤 <span class="mode-lbl" data-ar="المستخدم" data-en="User">المستخدم</span>
+                👤 <span class="mode-lbl" id="lbl-mode-user" data-ar="المستخدم" data-en="User">المستخدم</span>
             </button>
             <button class="mode-icon-btn" onclick="switchMode('auditor')" title="المراجع المحاسبي الخبير">
-                🔍 <span class="mode-lbl" data-ar="المراجع" data-en="Auditor">المراجع</span>
+                🔍 <span class="mode-lbl" id="lbl-mode-auditor" data-ar="المراجع" data-en="Auditing Auditor">المراجع</span>
             </button>
-            <button class="mode-icon-btn" onclick="switchMode('manager')" title="المدير المالي الاستراتيجي">
-                📊 <span class="mode-lbl" data-ar="المدير" data-en="Manager">المدير</span>
+            <button class="mode-icon-btn" onclick="switchMode('manager')" title="المخطط المالي الاستراتيجي">
+                📊 <span class="mode-lbl" id="lbl-mode-manager" data-ar="المخطط المالي" data-en="Financial Planner">المخطط المالي</span>
             </button>
         </div>
 
@@ -51,14 +51,14 @@
                 <div id="welcome-msg-2" style="font-size: 10px; color: #555;">اختر الدولة / أدخل المبلغ لتحويله فورياً</div>
             </div>
 
-            <!-- صف التاريخ وسعر العملة والتحويل -->
+            <!-- صف التاريخ وسعر العملة -->
             <div class="row-date-currency">
                 <div class="date-box" id="dynamic-date-display"></div>
                 <div class="currency-rate-box" id="exchange-rate-display">سعر الصرف: محلي (EGP)</div>
             </div>
 
-            <!-- صف الاختيارات الثلاثة (الدولة - المبلغ - القيمة المحولة) -->
-            <div class="row-inputs-grid">
+            <!-- صف الاختيارات (الدولة - المبلغ) -->
+            <div class="row-inputs-grid-dual">
                 <select id="country-select" class="compact-select" onchange="onCountryChange()">
                     <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
                     <option value="KSA" id="opt-ksa">المملكة العربية السعودية (SA) - SAR</option>
@@ -70,11 +70,13 @@
                     <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
                 </select>
                 <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
-                <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل الفوري للجنيه المصري..." readonly>
             </div>
 
-            <!-- حقل ملاحظات المعاملة الخارجية -->
-            <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled style="width: 100%;">
+            <!-- صف عرض قيمة التحويل الفوري وجانبها خانة بيان المعاملة الأجنبية -->
+            <div class="row-conversion-note">
+                <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل الفوري للجنيه المصري..." readonly>
+                <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
+            </div>
 
             <!-- صف الأزرار الوسائطية الملونة -->
             <div class="row-media-buttons">
@@ -85,13 +87,14 @@
 
             <!-- مسرح العمل (خانة النص الموحدة) -->
             <div class="workspace-container">
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="أكتب أو الصق هنا نص محادثة واتساب المراد تحليلها محاسبياً..."></textarea>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="[ الخيار الأول - للموقع المحلي بمصر ]&#10;📌 فضلاً أدخل هنا بيان المعاملة المالية بمصر، شاملاً المبلغ بالكتابة أو النسخ واللصق لمحادثة...&#10;&#10;[ الخيار الثاني - العمل الخارجي وعند السفر ]&#10;🌐 أكمل هنا بيان المعاملة المالية بالدولة الأجنبية، بعد أن أدخلت المبلغ وتم تحويله للجنيه المصري."></textarea>
             </div>
 
-            <!-- زر تحليل العملية المالية -->
-            <button id="submit-btn-text" class="analyze-btn">
-                <span>إرسال المعاملة المالية للتحليل قبل التسجيل/ الرصد</span> <span class="btn-arrow-icon">➔</span>
-            </button>
+            <!-- صف زر التحليل وزر مسح الكل -->
+            <div class="row-action-buttons">
+                <button id="submit-btn-text" class="analyze-btn">إرسال المعاملة المالية للتحليل</button>
+                <button id="clear-btn-text" class="clear-all-btn" onclick="clearAllData()">مسح الكل</button>
+            </div>
 
             <!-- قسم نتائج التحليل المحاسبي -->
             <div id="results-container" class="analysis-result-section" style="display: none;">
@@ -108,15 +111,15 @@
         <!-- الأزرار الثلاثة الأخيرة للتصدير -->
         <div class="modal-footer-export">
             <button class="export-btn" onclick="saveToSupabaseDB()">
-                <span class="line-1">تسجيل بقاعدة بيانات</span>
+                <span class="line-1" id="exp-sup-l1">تسجيل بقاعدة بيانات</span>
                 <span class="line-2" id="btn-exp-supabase">Supabase (ai-acc)</span>
             </button>
             <button class="export-btn" onclick="exportToGoogleSheets()">
-                <span class="line-1">تصدير إلى</span>
+                <span class="line-1" id="exp-sh-l1">تصدير إلى</span>
                 <span class="line-2" id="btn-exp-sheets">Google Sheets</span>
             </button>
             <button class="export-btn" onclick="exportToExcel365()">
-                <span class="line-1">تصدير إلى</span>
+                <span class="line-1" id="exp-ex-l1">تصدير إلى</span>
                 <span class="line-2" id="btn-exp-excel">Excel 365</span>
             </button>
         </div>
