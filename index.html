@@ -51,15 +51,15 @@
                 <div class="date-box" id="dynamic-date-display"></div>
             </div>
 
-            <!-- الصف الثاني: التعليمات وبجوارها سعر صرف الوحدة في نفس السطر -->
+            <!-- الصف الثاني: التعليمات المحدثة ممتدة حتى سعر الصرف -->
             <div class="row-instruction-currency">
-                <div id="welcome-msg-2" class="instruction-text-mini">اختر الدولة / أدخل المبلغ لتحويله فورياً</div>
+                <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل اللحظى</div>
                 <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة = محلي (EGP)</div>
             </div>
 
-            <!-- صف الإدخال المتناسق بشبكة أعمدة دقيقة -->
+            <!-- شبكة الأعمدة المتناسقة بدقة -->
             <div class="row-structured-grid">
-                <!-- العمود الأيمن: الدولة، ناتج التحويل، والوسائط -->
+                <!-- العمود الأيمن: الدولة وتحتها بيان المعاملة الأجنبية -->
                 <div class="col-right-group">
                     <select id="country-select" class="compact-select" onchange="onCountryChange()">
                         <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
@@ -71,26 +71,27 @@
                         <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
                         <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
                     </select>
-                    <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل للجنيه..." readonly>
-                    
-                    <div class="row-media-buttons">
-                        <button class="media-btn folder-btn" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
-                        <button class="media-btn scan-btn" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
-                        <button class="media-btn mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
-                    </div>
+                    <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
                 </div>
 
-                <!-- العمود الأيسر: المبلغ وبيان المعاملة الأجنبية -->
+                <!-- العمود الأيسر: المبلغ وتحته ناتج التحويل باللون الأبيض -->
                 <div class="col-left-group">
                     <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
-                    <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
+                    <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
                 </div>
             </div>
 
-            <!-- مسرح العمل منظم في 3 سطور إرشادية واضحة -->
+            <!-- صف أزرار الوسائط متساوية وممتدة بالخط المثقل الواضح -->
+            <div class="row-media-buttons-full">
+                <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
+                <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
+                <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
+            </div>
+
+            <!-- مسرح العمل منظم في 3 سطور (حذف كلمة فضلا من السطر الأول، وخانة النص خالية تماماً) -->
             <div class="workspace-container">
                 <div class="workspace-instruction-line">
-                    <span>📝</span> فضلاً أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق
+                    <span>📝</span> أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق
                 </div>
                 <div class="workspace-instruction-line">
                     <span>📁</span> يمكنك إدخال صورة المستند المالى الموثق للمعاملة
@@ -98,7 +99,7 @@
                 <div class="workspace-instruction-line">
                     <span>🎙️</span> أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية
                 </div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً"></textarea>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder=""></textarea>
             </div>
 
             <!-- صف زر التحليل وزر مسح الكل -->
