@@ -1,7 +1,8 @@
-// ai-agent-acc - app.js (v8.10 File Upload & Soft UI Integration)
+// ai-agent-acc - app.js (v8.11 Complete Full & Verified Implementation)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
+let pendingActionType = null;
 
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
@@ -80,6 +81,7 @@ function resetApplicationState() {
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = '';
+        txArea.disabled = false;
     }
     
     if (resultsContainer) resultsContainer.style.display = 'none';
@@ -99,9 +101,55 @@ function resetApplicationState() {
     }
 }
 
-function clearAllData() {
-    const confirmMsg = isEnglish ? 'Are you sure you want to clear all workspace data and results?' : 'هل أنت متأكد من مسح بيانات مساحة العمل ونتائج التحليل؟';
-    if (confirm(confirmMsg)) resetApplicationState();
+function confirmNewTransaction() {
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmMsg = document.getElementById('confirm-msg-text');
+    if (confirmMsg) {
+        confirmMsg.innerText = isEnglish ? 'Previous transaction data will be cleared. Do you want to proceed?' : 'سيجرى حذف بيانات المعاملة السابقة، هل تريد المتابعة؟';
+    }
+    pendingActionType = 'new_transaction';
+    if (confirmModal) confirmModal.classList.remove('hidden');
+}
+
+function handleActionWithConfirmation(actionType) {
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmMsg = document.getElementById('confirm-msg-text');
+    if (confirmMsg) {
+        confirmMsg.innerText = isEnglish ? 'Previous transaction data will be cleared or overwritten. Proceed?' : 'سيجرى حذف بيانات المعاملة السابقة أو تحديثها، هل تريد المتابعة؟';
+    }
+    pendingActionType = actionType;
+    if (confirmModal) confirmModal.classList.remove('hidden');
+}
+
+function closeConfirmModal() {
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) confirmModal.classList.add('hidden');
+    pendingActionType = null;
+}
+
+function executeConfirmedAction() {
+    const action = pendingActionType;
+    closeConfirmModal();
+
+    if (action === 'new_transaction') {
+        resetApplicationState();
+    } else if (action === 'submit') {
+        processAccountingTransaction();
+    } else if (action === 'supabase') {
+        saveToSupabaseDB();
+    } else if (action === 'sheets') {
+        exportToGoogleSheets();
+    } else if (action === 'excel') {
+        exportToExcel365();
+    }
+}
+
+function checkForeignRestriction(e) {
+    const countrySelect = document.getElementById('country-select');
+    if (countrySelect && countrySelect.value !== 'Egypt') {
+        e.preventDefault();
+        alert(isEnglish ? 'Please click "New Transaction" first before entering a new transaction for a foreign country.' : 'يلزم الضغط أولاً على زر "معاملة مالية جديدة" قبل إدخال معاملة جديدة.');
+    }
 }
 
 function getCurrentRate(country) {
@@ -117,6 +165,7 @@ function onCountryChange() {
     const exchangeRateDisplay = document.getElementById('exchange-rate-display');
     const foreignResultDisplay = document.getElementById('foreign-result-display');
     const resultsContainer = document.getElementById('results-container');
+    const txArea = document.getElementById('transaction-text');
 
     if (!countrySelect) return;
     if (amountInput) amountInput.value = '';
@@ -129,6 +178,10 @@ function onCountryChange() {
 
     if (amountInput) amountInput.disabled = isEgypt;
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
+    
+    if (txArea) {
+        txArea.disabled = !isEgypt;
+    }
 
     if (isEgypt) {
         if (exchangeRateDisplay) {
@@ -229,12 +282,9 @@ function processAccountingTransaction() {
     }
 }
 
-// دالة تفعيل جلب الصورة (من اللاب توب أو الموبايل)
 function triggerImageUpload() {
     const fileInput = document.getElementById('hidden-file-input');
-    if (fileInput) {
-        fileInput.click();
-    }
+    if (fileInput) fileInput.click();
 }
 
 function handleFileSelected(event) {
@@ -270,7 +320,7 @@ function toggleLanguage() {
         if (langBtn) langBtn.innerText = 'ع';
         
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
-        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'Smart Accounting Assistant - ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         document.getElementById('welcome-msg-2').innerText = 'Select Country / Enter Amount to Convert';
         if (exchangeRateDisplay && (!countrySelect || countrySelect.value === 'Egypt')) {
@@ -285,11 +335,9 @@ function toggleLanguage() {
         document.getElementById('foreign-result-display').placeholder = 'Conversion to EGP...';
         
         document.getElementById('ins-1').innerText = 'Enter financial transaction including amount and payment method';
-        document.getElementById('ins-2').innerText = 'You can upload a document image of the transaction';
-        document.getElementById('ins-3').innerText = 'Or send a voice recording explaining the transaction';
-        
+        document.getElementById('new-trans-btn-text').innerText = 'New Financial Transaction';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
-        document.getElementById('clear-btn-text').innerText = 'Clear All';
+        
         document.getElementById('txt-image').innerText = 'Image';
         document.getElementById('txt-ocr').innerText = 'OCR';
         document.getElementById('txt-voice').innerText = 'Voice';
@@ -315,7 +363,7 @@ function toggleLanguage() {
         if (langBtn) langBtn.innerText = 'EN';
         
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
-        document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي - ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         document.getElementById('welcome-msg-2').innerText = 'إختر الدولة / أدخل المبلغ لعرض ناتج التحويل';
         if (exchangeRateDisplay && (!countrySelect || countrySelect.value === 'Egypt')) {
@@ -330,11 +378,9 @@ function toggleLanguage() {
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل...';
         
         document.getElementById('ins-1').innerText = 'أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق';
-        document.getElementById('ins-2').innerText = 'يمكنك إدخال صورة المستند المالى الموثق للمعاملة';
-        document.getElementById('ins-3').innerText = 'أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية';
-        
+        document.getElementById('new-trans-btn-text').innerText = 'معاملة مالية جديدة';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
-        document.getElementById('clear-btn-text').innerText = 'مسح الكل';
+        
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
@@ -362,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('country-select')?.addEventListener('change', onCountryChange);
     document.getElementById('amount-input')?.addEventListener('input', convertCurrencyRealtime);
+    
     document.getElementById('submit-btn-text')?.addEventListener('click', (e) => { 
         e.preventDefault(); 
         processAccountingTransaction(); 

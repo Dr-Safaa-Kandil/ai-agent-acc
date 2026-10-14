@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="modal-header-title">ai-agent-acc</title>
+    <title id="modal-header-title">المساعد المحاسبي الذكي - ai-agent-acc</title>
+    <!-- الرمز المصغر: حقيبة رسمية واحدة بلون برتقالي محمر زاهي -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF5722'><path d='M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0-2-.9-2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z'/></svg>">
     <link rel="stylesheet" href="widget.css">
 </head>
 <body>
 
     <!-- الكائن المصغر العائم -->
     <div id="ai-modal-launcher" class="floating-widget" onclick="toggleModal()">
-        <div class="bag-icon">🛍️</div>
+        <div class="bag-icon">💼</div>
         <div class="widget-title" id="widget-launcher-title">المساعد المحاسبي الذكي</div>
     </div>
 
     <!-- نافذة النموذج -->
     <div id="ai-modal-box" class="modal-container hidden">
         
-        <!-- شريط العنوان العلوي (مختصر ونظيف) -->
+        <!-- شريط العنوان العلوي -->
         <div class="modal-header">
             <div class="header-title-group">
-                <span class="main-name" id="modal-header-title-text">ai-agent-acc</span>
+                <span class="main-name" id="modal-header-title-text">المساعد المحاسبي الذكي - ai-agent-acc</span>
             </div>
             <div class="header-controls">
                 <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()">EN</button>
@@ -56,18 +58,18 @@
                 <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
             </div>
 
-            <!-- شبكة الأعمدة -->
+            <!-- شبكة الأعمدة (ترتيب القائمة: اسم الدولة والعملة بالعربية ثم الاختصار بالإنجليزية) -->
             <div class="row-structured-grid">
                 <div class="col-right-group">
                     <select id="country-select" class="compact-select" onchange="onCountryChange()">
-                        <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
-                        <option value="KSA" id="opt-ksa">المملكة العربية السعودية (SA) - SAR</option>
-                        <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة (AE) - AED</option>
-                        <option value="Kuwait" id="opt-kuwait">دولة الكويت (KW) - KWD</option>
-                        <option value="Qatar" id="opt-qatar">دولة قطر (QA) - QAR</option>
-                        <option value="Bahrain" id="opt-bahrain">مملكة البحرين (BH) - BHD</option>
-                        <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
-                        <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
+                        <option value="Egypt" id="opt-egypt">جمهورية مصر العربية - جنيه مصري (EGP)</option>
+                        <option value="KSA" id="opt-ksa">المملكة العربية السعودية - ريال سعودي (SAR)</option>
+                        <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة - درهم إماراتي (AED)</option>
+                        <option value="Kuwait" id="opt-kuwait">دولة الكويت - دينار كويتي (KWD)</option>
+                        <option value="Qatar" id="opt-qatar">دولة قطر - ريال قطري (QAR)</option>
+                        <option value="Bahrain" id="opt-bahrain">مملكة البحرين - دينار بحريني (BHD)</option>
+                        <option value="Oman" id="opt-oman">سلطنة عمان - ريال عماني (OMR)</option>
+                        <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية - دولار أمريكي (USD)</option>
                     </select>
                     <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled>
                 </div>
@@ -78,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- أزرار الوسائط (مع حقل ملفات مخفي لجلب الصور من اللاب والموبايل) -->
+            <!-- أزرار الوسائط -->
             <div class="row-media-buttons-full">
                 <input type="file" id="hidden-file-input" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
@@ -86,18 +88,20 @@
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- مسرح العمليات -->
-            <div class="workspace-container">
-                <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
-                <div class="workspace-instruction-line"><span>📁</span> <span id="ins-2">يمكنك إدخال صورة المستند المالى الموثق للمعاملة</span></div>
-                <div class="workspace-instruction-line"><span>🎙️</span> <span id="ins-3">أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية</span></div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder=""></textarea>
+            <!-- صف زر معاملة مالية جديدة (في سطر مستقل ومتوسط للصف) -->
+            <div class="row-new-transaction">
+                <button id="new-trans-btn-text" class="new-transaction-btn" onclick="confirmNewTransaction()">معاملة مالية جديدة</button>
             </div>
 
-            <!-- أزرار الإجراء (تم تعديل مسح الكل إلى برتقالي هادئ) -->
+            <!-- مسرح العمليات (تم حذف السطرين الإرشاديين الثاني والثالث لتوفير المساحة) -->
+            <div class="workspace-container">
+                <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="" onkeydown="checkForeignRestriction(event)" onpaste="checkForeignRestriction(event)"></textarea>
+            </div>
+
+            <!-- أزرار الإجراء -->
             <div class="row-action-buttons">
-                <button id="submit-btn-text" class="analyze-btn">إرسال المعاملة المالية للتحليل</button>
-                <button id="clear-btn-text" class="clear-all-btn-soft" onclick="clearAllData()">مسح الكل</button>
+                <button id="submit-btn-text" class="analyze-btn" onclick="handleActionWithConfirmation('submit')">إرسال المعاملة المالية للتحليل</button>
             </div>
 
             <!-- نتائج التحليل -->
@@ -114,20 +118,29 @@
 
         <!-- تذييل التصدير -->
         <div class="modal-footer-export">
-            <button class="export-btn" onclick="saveToSupabaseDB()">
+            <button class="export-btn" onclick="handleActionWithConfirmation('supabase')">
                 <span class="line-1" id="exp-sup-l1">تسجيل بقاعدة بيانات</span>
                 <span class="line-2" id="btn-exp-supabase">Supabase (ai-acc)</span>
             </button>
-            <button class="export-btn" onclick="exportToGoogleSheets()">
+            <button class="export-btn" onclick="handleActionWithConfirmation('sheets')">
                 <span class="line-1" id="exp-sh-l1">تصدير إلى</span>
                 <span class="line-2" id="btn-exp-sheets">Google Sheets</span>
             </button>
-            <button class="export-btn" onclick="exportToExcel365()">
+            <button class="export-btn" onclick="handleActionWithConfirmation('excel')">
                 <span class="line-1" id="exp-ex-l1">تصدير إلى</span>
                 <span class="line-2" id="btn-exp-excel">Excel 365</span>
             </button>
         </div>
 
+    </div>
+
+    <!-- نافذة تأكيد التراجع والحذف -->
+    <div id="confirm-modal" class="modal-container hidden" style="z-index: 10005; width: 300px; height: auto; margin: auto; position: fixed; top: 35%; right: 50%; transform: translate(50%, -50%); padding: 15px; background: white; text-align: center;">
+        <p id="confirm-msg-text" style="font-size: 11px; margin-bottom: 12px; font-weight: bold; color: var(--text-dark);">سيجرى حذف بيانات المعاملة السابقة، هل تريد المتابعة؟</p>
+        <div style="display: flex; gap: 8px; justify-content: center;">
+            <button id="confirm-yes-btn" onclick="executeConfirmedAction()" style="background: var(--primary-blue); color: white; border: none; padding: 5px 12px; border-radius: 4px; font-size: 10px; cursor: pointer;">تأكيد</button>
+            <button id="confirm-cancel-btn" onclick="closeConfirmModal()" style="background: var(--soft-orange); color: white; border: none; padding: 5px 12px; border-radius: 4px; font-size: 10px; cursor: pointer;">إلغاء</button>
+        </div>
     </div>
 
     <script src="app.js"></script>
