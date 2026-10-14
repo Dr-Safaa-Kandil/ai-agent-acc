@@ -1,15 +1,18 @@
-// ai-agent-acc - app.js (v7.0 Integrated & Fully Optimized)
+// ai-agent-acc - app.js (v7.1 Integrated & Fully Optimized)
 let isEnglish = false;
 let currentMode = 'user';
 
 function toggleModal() {
     const modal = document.getElementById('ai-modal-box');
     if (modal) {
-        const isOpen = (modal.style.display === 'block');
-        if (!isOpen) {
+        // التحقق من حالة الإخفاء عبر الكلاس بدلاً من الخاصية المباشرة
+        const isHidden = modal.classList.contains('hidden');
+        if (isHidden) {
             resetApplicationState();
+            modal.classList.remove('hidden');
+        } else {
+            modal.classList.add('hidden');
         }
-        modal.style.display = isOpen ? 'none' : 'block';
     }
 }
 
