@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v8.9 Perfect Layout & Translation Synchronization)
+// ai-agent-acc - app.js (v8.10 File Upload & Soft UI Integration)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
@@ -229,9 +229,28 @@ function processAccountingTransaction() {
     }
 }
 
+// دالة تفعيل جلب الصورة (من اللاب توب أو الموبايل)
+function triggerImageUpload() {
+    const fileInput = document.getElementById('hidden-file-input');
+    if (fileInput) {
+        fileInput.click();
+    }
+}
+
+function handleFileSelected(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const fileName = file.name;
+        const txArea = document.getElementById('transaction-text');
+        if (txArea) {
+            txArea.value = isEnglish ? `[Attached Image: ${fileName}]` : `[تم إرفاق صورة المستند: ${fileName}]`;
+        }
+        alert(isEnglish ? `Image "${fileName}" uploaded successfully.` : `تم جلب وعرض المستند "${fileName}" بنجاح.`);
+    }
+}
+
 function triggerVoiceInput() { alert(isEnglish ? 'Voice recording active.' : 'جاري تفعيل التسجيل الصوتي لبيان المعاملة المالية.'); }
-function triggerImageUpload() { alert(isEnglish ? 'Image upload active.' : 'جاري جلب صورة المستند المالي.'); }
-function triggerOCRScan() { alert(isEnglish ? 'OCR scanning.' : 'جاري المسح الضوئي المستندي.'); }
+function triggerOCRScan() { alert(isEnglish ? 'OCR scanning active.' : 'جاري المسح الضوئي المستندي بالذكاء الاصطناعي.'); }
 function saveToSupabaseDB() { alert(isEnglish ? 'Saved to Supabase.' : 'تم التسجيل في قاعدة البيانات بنجاح.'); }
 function exportToGoogleSheets() { alert(isEnglish ? 'Exported to Sheets.' : 'تم التصدير إلى Google Sheets بنجاح.'); }
 function exportToExcel365() { alert(isEnglish ? 'Exported to Excel.' : 'تم التصدير إلى Excel 365 بنجاح.'); }

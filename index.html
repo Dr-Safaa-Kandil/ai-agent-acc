@@ -17,7 +17,7 @@
     <!-- نافذة النموذج -->
     <div id="ai-modal-box" class="modal-container hidden">
         
-        <!-- شريط العنوان العلوي (نظيف وبدون تكرار) -->
+        <!-- شريط العنوان العلوي (مختصر ونظيف) -->
         <div class="modal-header">
             <div class="header-title-group">
                 <span class="main-name" id="modal-header-title-text">ai-agent-acc</span>
@@ -78,8 +78,9 @@
                 </div>
             </div>
 
-            <!-- أزرار الوسائط -->
+            <!-- أزرار الوسائط (مع حقل ملفات مخفي لجلب الصور من اللاب والموبايل) -->
             <div class="row-media-buttons-full">
+                <input type="file" id="hidden-file-input" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
                 <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()">📷 <span id="txt-ocr">مسح ضوئي</span></button>
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
@@ -93,10 +94,10 @@
                 <textarea id="transaction-text" class="workspace-textarea" placeholder=""></textarea>
             </div>
 
-            <!-- أزرار الإجراء -->
+            <!-- أزرار الإجراء (تم تعديل مسح الكل إلى برتقالي هادئ) -->
             <div class="row-action-buttons">
                 <button id="submit-btn-text" class="analyze-btn">إرسال المعاملة المالية للتحليل</button>
-                <button id="clear-btn-text" class="clear-all-btn" onclick="clearAllData()">مسح الكل</button>
+                <button id="clear-btn-text" class="clear-all-btn-soft" onclick="clearAllData()">مسح الكل</button>
             </div>
 
             <!-- نتائج التحليل -->
