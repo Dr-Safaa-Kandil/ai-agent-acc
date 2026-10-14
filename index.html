@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- الكائن المصغر العائم (Floating Widget) -->
+    <!-- الكائن المصغر العائم -->
     <div id="ai-modal-launcher" class="floating-widget" onclick="toggleModal()">
         <div class="bag-icon">🛍️</div>
         <div class="widget-title" id="widget-launcher-title">المساعد المحاسبي الذكي</div>
@@ -29,15 +29,15 @@
             </div>
         </div>
 
-        <!-- شريط أزرار أنماط الواجهة الثلاثة -->
+        <!-- شريط أزرار الأنماط -->
         <div class="modes-toolbar">
-            <button class="mode-icon-btn active-mode" onclick="switchMode('user')" title="عزيزي المستخدم العادى">
+            <button class="mode-icon-btn active-mode" onclick="switchMode('user')">
                 👤 <span class="mode-lbl" id="lbl-mode-user">المستخدم</span>
             </button>
-            <button class="mode-icon-btn" onclick="switchMode('auditor')" title="المراجع المحاسبي الخبير">
+            <button class="mode-icon-btn" onclick="switchMode('auditor')">
                 🔍 <span class="mode-lbl" id="lbl-mode-auditor">المراجع</span>
             </button>
-            <button class="mode-icon-btn" onclick="switchMode('manager')" title="المخطط المالي الاستراتيجي">
+            <button class="mode-icon-btn" onclick="switchMode('manager')">
                 📊 <span class="mode-lbl" id="lbl-mode-manager">المخطط المالي</span>
             </button>
         </div>
@@ -45,21 +45,20 @@
         <!-- محتوى النموذج -->
         <div class="modal-body">
             
-            <!-- الصف الأول: رسالة الترحيب وتاريخ اليوم -->
+            <!-- الصف الأول: الترحيب والتاريخ -->
             <div class="welcome-row-box">
                 <div id="welcome-msg-1" class="welcome-main-title">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
                 <div class="date-box" id="dynamic-date-display"></div>
             </div>
 
-            <!-- الصف الثاني: التعليمات وسعر الصرف مضبوط المحاذاة -->
+            <!-- الصف الثاني: التعليمات وسعر الصرف -->
             <div class="row-instruction-currency">
-                <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل اللحظى</div>
-                <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة = محلي (EGP)</div>
+                <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل</div>
+                <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
             </div>
 
-            <!-- شبكة الأعمدة المتناسقة (محاذاة دقيقة للحد الرأسي الأول) -->
+            <!-- شبكة الأعمدة -->
             <div class="row-structured-grid">
-                <!-- العمود الأيمن: الدولة وبيان المعاملة الأجنبية -->
                 <div class="col-right-group">
                     <select id="country-select" class="compact-select" onchange="onCountryChange()">
                         <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
@@ -74,43 +73,36 @@
                     <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled>
                 </div>
 
-                <!-- العمود الأيسر: المبلغ وناتج التحويل -->
                 <div class="col-left-group">
                     <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
                     <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
                 </div>
             </div>
 
-            <!-- صف أزرار الوسائط -->
+            <!-- أزرار الوسائط (مثقلة الوضوح) -->
             <div class="row-media-buttons-full">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
                 <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()">📷 <span id="txt-ocr">مسح ضوئي</span></button>
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- مسرح العمليات (تم إزالة أي نصوص زائدة أو مزحمة) -->
+            <!-- مسرح العمليات (خانة النص خالية تماماً) -->
             <div class="workspace-container">
-                <div class="workspace-instruction-line font-bold">
-                    <span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span>
-                </div>
-                <div class="workspace-instruction-line font-bold">
-                    <span>📁</span> <span id="ins-2">يمكنك إدخال صورة المستند المالى الموثق للمعاملة</span>
-                </div>
-                <div class="workspace-instruction-line font-bold">
-                    <span>🎙️</span> <span id="ins-3">أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية</span>
-                </div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="شراء حاسب مكتبى بمبلغ ٣٥٠٠٠ جنيه مصرى"></textarea>
+                <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
+                <div class="workspace-instruction-line"><span>📁</span> <span id="ins-2">يمكنك إدخال صورة المستند المالى الموثق للمعاملة</span></div>
+                <div class="workspace-instruction-line"><span>🎙️</span> <span id="ins-3">أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية</span></div>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder=""></textarea>
             </div>
 
-            <!-- صف زر التحليل وزر مسح الكل -->
+            <!-- أزرار الإجراء -->
             <div class="row-action-buttons">
                 <button id="submit-btn-text" class="analyze-btn">إرسال المعاملة المالية للتحليل</button>
                 <button id="clear-btn-text" class="clear-all-btn" onclick="clearAllData()">مسح الكل</button>
             </div>
 
-            <!-- قسم نتائج التحليل المحاسبي -->
+            <!-- نتائج التحليل -->
             <div id="results-container" class="analysis-result-section" style="display: none;">
-                <div style="font-weight: bold; margin-bottom: 5px; color: var(--primary-blue-dark);" id="res-badge">النتائج التحليلية الفورية:</div>
+                <div style="margin-bottom: 5px; color: var(--primary-blue-dark);" id="res-badge">النتائج التحليلية الفورية:</div>
                 <div class="entry-row"><strong id="res-label-amount">المبلغ والقيمة:</strong> <span id="val-amount">---</span></div>
                 <div class="entry-row debit-row"><strong id="res-label-debit">الجانب المدين:</strong> <span id="val-debit">---</span></div>
                 <div class="entry-row credit-row"><strong id="res-label-credit">الجانب الدائن:</strong> <span id="val-credit">---</span></div>
@@ -120,7 +112,7 @@
 
         </div>
 
-        <!-- الأزرار الثلاثة الأخيرة للتصدير -->
+        <!-- تذييل التصدير -->
         <div class="modal-footer-export">
             <button class="export-btn" onclick="saveToSupabaseDB()">
                 <span class="line-1" id="exp-sup-l1">تسجيل بقاعدة بيانات</span>
