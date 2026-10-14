@@ -72,10 +72,10 @@
                 <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
             </div>
 
-            <!-- صف عرض قيمة التحويل الفوري وجانبها خانة بيان المعاملة الأجنبية -->
+            <!-- صف عرض قيمة التحويل الفوري وجانبها خانة بيان المعاملة الأجنبية مع تفعيل Tooltip -->
             <div class="row-conversion-note">
                 <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل للجنيه..." readonly>
-                <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
+                <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
             </div>
 
             <!-- صف الأزرار الوسائطية الملونة -->
@@ -85,9 +85,18 @@
                 <button class="media-btn mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- مسرح العمل (خانة النص الموحدة) -->
+            <!-- مسرح العمل منظم في 3 سطور إرشادية واضحة -->
             <div class="workspace-container">
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية"></textarea>
+                <div class="workspace-instruction-line">
+                    <span>📝</span> فضلاً أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق
+                </div>
+                <div class="workspace-instruction-line">
+                    <span>📁</span> يمكنك إدخال صورة المستند المالى الموثق للمعاملة
+                </div>
+                <div class="workspace-instruction-line">
+                    <span>🎙️</span> أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية
+                </div>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="أدخل بيان المعاملة المالية هنا..."></textarea>
             </div>
 
             <!-- صف زر التحليل وزر مسح الكل -->

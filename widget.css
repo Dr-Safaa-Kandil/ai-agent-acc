@@ -67,10 +67,14 @@ body { background-color: transparent; height: 100vh; overflow: hidden; }
 .scan-btn { color: #3a86ff; border-color: var(--primary-blue); }
 .mic-btn { color: var(--accent-red); border-color: var(--accent-red); }
 
-.workspace-container { background: var(--turquoise-light); border: 1px solid var(--primary-blue-light); border-radius: 8px; padding: 6px; }
+/* تنظيم مسرح العمل في 3 سطور بأسلوب هيكلي مريح ومدعوم بالرموز التعبيرية */
+.workspace-container { background: var(--turquoise-light); border: 1px solid var(--primary-blue-light); border-radius: 8px; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.workspace-instruction-line {
+    font-size: 10px; color: var(--text-dark); font-weight: 600; display: flex; align-items: center; gap: 6px; line-height: 1.3;
+}
 .workspace-textarea {
-    width: 100%; height: 60px; border: none; background: transparent; font-size: 10px; resize: none;
-    outline: none; color: var(--text-dark); line-height: 1.35; font-weight: bold; overflow-y: hidden;
+    width: 100%; height: 50px; border: 1px solid var(--primary-blue-light); border-radius: 6px; background: var(--bg-white); font-size: 10px; resize: none;
+    outline: none; color: var(--text-dark); padding: 6px; line-height: 1.35; font-weight: bold;
 }
 
 .row-action-buttons { display: grid; grid-template-columns: 2.2fr 1fr; gap: 6px; }

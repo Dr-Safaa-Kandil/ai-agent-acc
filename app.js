@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v7.8 Final Full Version)
+// ai-agent-acc - app.js (v7.9 Updated Full Version)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
@@ -66,14 +66,19 @@ function resetApplicationState() {
     if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
 
     if (amountInput) { amountInput.value = ''; amountInput.disabled = true; }
-    if (foreignNoteInput) { foreignNoteInput.value = ''; foreignNoteInput.disabled = true; }
+    if (foreignNoteInput) { 
+        foreignNoteInput.value = ''; 
+        foreignNoteInput.disabled = true;
+        foreignNoteInput.placeholder = isEnglish ? 'Complete foreign transaction statement' : 'أكمل بيان المعاملة بالدولة الأجنبية';
+        foreignNoteInput.title = isEnglish ? 'Example: Hotel accommodation expenses - mission in Saudi Arabia' : 'مثال: مصروفات إقامة فندقية - لمهمة بالسعودية';
+    }
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = isEnglish 
-            ? 'Please enter transaction statement including amount.. You can also upload financial document image or voice record.' 
-            : 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية';
+            ? 'Please enter transaction statement including amount..' 
+            : 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ..';
     }
     
     if (resultsContainer) resultsContainer.style.display = 'none';
@@ -225,6 +230,12 @@ function toggleLanguage() {
     const body = document.body;
     const langBtn = document.getElementById('langToggleBtn');
     
+    const foreignNoteInput = document.getElementById('foreign-note-input');
+    if (foreignNoteInput) {
+        foreignNoteInput.placeholder = isEnglish ? 'Complete foreign transaction statement' : 'أكمل بيان المعاملة بالدولة الأجنبية';
+        foreignNoteInput.title = isEnglish ? 'Example: Hotel accommodation expenses - mission in Saudi Arabia' : 'مثال: مصروفات إقامة فندقية - لمهمة بالسعودية';
+    }
+
     if (isEnglish) {
         body.classList.add('lang-en');
         if (langBtn) langBtn.innerText = 'ع';
@@ -236,8 +247,7 @@ function toggleLanguage() {
         document.getElementById('lbl-mode-auditor').innerText = 'Accounting Auditor';
         document.getElementById('lbl-mode-manager').innerText = 'Financial Planner';
         document.getElementById('foreign-result-display').placeholder = 'Conversion to EGP...';
-        document.getElementById('foreign-note-input').placeholder = 'Complete foreign transaction note...';
-        document.getElementById('transaction-text').placeholder = 'Please enter transaction statement including amount.. You can also upload financial document image or voice record.';
+        document.getElementById('transaction-text').placeholder = 'Please enter transaction statement including amount..';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
         document.getElementById('clear-btn-text').innerText = 'Clear All';
         document.getElementById('txt-voice').innerText = 'Voice';
@@ -260,8 +270,7 @@ function toggleLanguage() {
         document.getElementById('lbl-mode-auditor').innerText = 'المراجع';
         document.getElementById('lbl-mode-manager').innerText = 'المخطط المالي';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه...';
-        document.getElementById('foreign-note-input').placeholder = 'أكمل بيان المعاملة بالدولة الأجنبية كالمثال : مصروفات إقامة فندقية - لمهمة بالسعودية';
-        document.getElementById('transaction-text').placeholder = 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ.. ويمكنك أيضا جلب صورة المستند المالى أو التسجيل الصوتى لبيان المعاملة المالية';
+        document.getElementById('transaction-text').placeholder = 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ..';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
         document.getElementById('clear-btn-text').innerText = 'مسح الكل';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
