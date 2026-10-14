@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- الكائن المصغر العائم (Floating Widget) على اليمين الفيزيائي الحقيقي -->
+    <!-- الكائن المصغر العائم (Floating Widget) -->
     <div id="ai-modal-launcher" class="floating-widget" onclick="toggleModal()">
         <div class="bag-icon">🛍️</div>
         <div class="widget-title" id="widget-launcher-title">المساعد المحاسبي الذكي</div>
@@ -32,34 +32,34 @@
         <!-- شريط أزرار أنماط الواجهة الثلاثة -->
         <div class="modes-toolbar">
             <button class="mode-icon-btn active-mode" onclick="switchMode('user')" title="عزيزي المستخدم العادى">
-                👤 <span class="mode-lbl" id="lbl-mode-user" data-ar="المستخدم" data-en="User">المستخدم</span>
+                👤 <span class="mode-lbl" id="lbl-mode-user">المستخدم</span>
             </button>
             <button class="mode-icon-btn" onclick="switchMode('auditor')" title="المراجع المحاسبي الخبير">
-                🔍 <span class="mode-lbl" id="lbl-mode-auditor" data-ar="المراجع" data-en="Accounting Auditor">المراجع</span>
+                🔍 <span class="mode-lbl" id="lbl-mode-auditor">المراجع</span>
             </button>
             <button class="mode-icon-btn" onclick="switchMode('manager')" title="المخطط المالي الاستراتيجي">
-                📊 <span class="mode-lbl" id="lbl-mode-manager" data-ar="المخطط المالي" data-en="Financial Planner">المخطط المالي</span>
+                📊 <span class="mode-lbl" id="lbl-mode-manager">المخطط المالي</span>
             </button>
         </div>
 
         <!-- محتوى النموذج -->
         <div class="modal-body">
             
-            <!-- الصف الأول: رسالة الترحيب في البداية وتاريخ اليوم في نهاية نفس السطر -->
+            <!-- الصف الأول: رسالة الترحيب وتاريخ اليوم -->
             <div class="welcome-row-box">
                 <div id="welcome-msg-1" class="welcome-main-title">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
                 <div class="date-box" id="dynamic-date-display"></div>
             </div>
 
-            <!-- الصف الثاني: التعليمات المحدثة ممتدة حتى سعر الصرف -->
+            <!-- الصف الثاني: التعليمات وسعر الصرف مضبوط المحاذاة -->
             <div class="row-instruction-currency">
                 <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل اللحظى</div>
                 <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة = محلي (EGP)</div>
             </div>
 
-            <!-- شبكة الأعمدة المتناسقة بدقة -->
+            <!-- شبكة الأعمدة المتناسقة (محاذاة دقيقة للحد الرأسي الأول) -->
             <div class="row-structured-grid">
-                <!-- العمود الأيمن: الدولة وتحتها بيان المعاملة الأجنبية -->
+                <!-- العمود الأيمن: الدولة وبيان المعاملة الأجنبية -->
                 <div class="col-right-group">
                     <select id="country-select" class="compact-select" onchange="onCountryChange()">
                         <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
@@ -71,35 +71,35 @@
                         <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
                         <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
                     </select>
-                    <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
+                    <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled>
                 </div>
 
-                <!-- العمود الأيسر: المبلغ وتحته ناتج التحويل باللون الأبيض -->
+                <!-- العمود الأيسر: المبلغ وناتج التحويل -->
                 <div class="col-left-group">
                     <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
                     <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
                 </div>
             </div>
 
-            <!-- صف أزرار الوسائط متساوية وممتدة بالخط المثقل الواضح -->
+            <!-- صف أزرار الوسائط -->
             <div class="row-media-buttons-full">
-                <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
-                <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
-                <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
+                <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
+                <button class="media-btn-bold scan-btn" onclick="triggerOCRScan()">📷 <span id="txt-ocr">مسح ضوئي</span></button>
+                <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- مسرح العمل منظم في 3 سطور (حذف كلمة فضلا من السطر الأول، وخانة النص خالية تماماً) -->
+            <!-- مسرح العمليات (تم إزالة أي نصوص زائدة أو مزحمة) -->
             <div class="workspace-container">
-                <div class="workspace-instruction-line">
-                    <span>📝</span> أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق
+                <div class="workspace-instruction-line font-bold">
+                    <span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span>
                 </div>
-                <div class="workspace-instruction-line">
-                    <span>📁</span> يمكنك إدخال صورة المستند المالى الموثق للمعاملة
+                <div class="workspace-instruction-line font-bold">
+                    <span>📁</span> <span id="ins-2">يمكنك إدخال صورة المستند المالى الموثق للمعاملة</span>
                 </div>
-                <div class="workspace-instruction-line">
-                    <span>🎙️</span> أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية
+                <div class="workspace-instruction-line font-bold">
+                    <span>🎙️</span> <span id="ins-3">أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية</span>
                 </div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder=""></textarea>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="شراء حاسب مكتبى بمبلغ ٣٥٠٠٠ جنيه مصرى"></textarea>
             </div>
 
             <!-- صف زر التحليل وزر مسح الكل -->

@@ -10,7 +10,7 @@
     --bg-white: #ffffff;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; }
 body { background-color: transparent; height: 100vh; overflow: hidden; }
 
 .floating-widget {
@@ -20,7 +20,7 @@ body { background-color: transparent; height: 100vh; overflow: hidden; }
 }
 .floating-widget:hover { transform: scale(1.05); }
 .bag-icon { font-size: 26px; color: var(--accent-orange); }
-.widget-title { font-size: 13px; font-weight: bold; color: var(--primary-blue-dark); }
+.widget-title { font-size: 13px; font-weight: 800; color: var(--primary-blue-dark); }
 
 .modal-container {
     position: fixed; bottom: 85px; right: 25px; width: 340px; max-height: 88vh; background: var(--bg-white);
@@ -34,73 +34,73 @@ body { background-color: transparent; height: 100vh; overflow: hidden; }
     display: flex; justify-content: space-between; align-items: center; border-top-left-radius: 16px; border-top-right-radius: 16px;
 }
 .header-title-group { display: flex; flex-direction: column; }
-.main-name { font-size: 12px; font-weight: bold; }
-.sub-code { font-size: 9px; color: var(--primary-blue-light); }
+.main-name { font-size: 12px; font-weight: 800; }
+.sub-code { font-size: 9px; color: var(--primary-blue-light); font-weight: 700; }
 .header-controls { display: flex; gap: 6px; align-items: center; }
-.lang-btn { background: var(--primary-blue); color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; cursor: pointer; }
+.lang-btn { background: var(--primary-blue); color: white; border: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; cursor: pointer; }
 .close-btn { background: transparent; color: white; border: none; font-size: 18px; cursor: pointer; }
 
 .modes-toolbar { display: flex; justify-content: space-around; background: #edf6f9; padding: 5px; border-bottom: 1px solid var(--primary-blue-light); }
 .mode-icon-btn {
     background: var(--bg-white); border: 1px solid var(--primary-blue-light); border-radius: 6px; padding: 3px 6px;
-    font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 3px; color: var(--primary-blue-dark); font-weight: 600;
+    font-size: 10px; cursor: pointer; display: flex; align-items: center; gap: 3px; color: var(--primary-blue-dark); font-weight: 800;
 }
 .mode-icon-btn.active-mode { background: var(--primary-blue); color: white; border-color: var(--primary-blue-dark); }
 
-.modal-body { padding: 10px; display: flex; flex-direction: column; gap: 6px; background: #f8f9fa; }
+.modal-body { padding: 10px; display: flex; flex-direction: column; gap: 7px; background: #f8f9fa; }
 
 /* صف الترحيب العلوي مع التاريخ في نفس السطر */
-.welcome-row-box { display: flex; justify-content: space-between; align-items: center; background: #edf6f9; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--primary-blue-light); }
-.welcome-main-title { font-size: 10px; font-weight: bold; color: var(--primary-blue-dark); }
-.date-box { font-size: 8.5px; font-weight: bold; color: var(--primary-blue-dark); background: white; padding: 2px 5px; border-radius: 4px; border: 1px solid var(--primary-blue-light); white-space: nowrap; }
+.welcome-row-box { display: flex; justify-content: space-between; align-items: center; background: #edf6f9; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--primary-blue-light); }
+.welcome-main-title { font-size: 10.5px; font-weight: 800; color: var(--primary-blue-dark); }
+.date-box { font-size: 9px; font-weight: 800; color: var(--primary-blue-dark); background: white; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--primary-blue-light); white-space: nowrap; }
 
-/* صف التعليمات وسعر صرف الوحدة */
-.row-instruction-currency { display: flex; justify-content: space-between; align-items: center; gap: 4px; padding: 2px 2px; }
-.instruction-text-mini { font-size: 8px; color: #d90429; font-weight: bold; }
-.currency-rate-box-mini { font-size: 8px; color: var(--primary-blue-dark); font-weight: bold; background: var(--turquoise-light); padding: 3px 5px; border-radius: 4px; border: 1px solid var(--primary-blue-light); white-space: nowrap; }
+/* صف التعليمات وسعر صرف الوحدة (محاذاة دقيقة ومثقلة) */
+.row-instruction-currency { display: grid; grid-template-columns: 1.4fr 1fr; gap: 5px; align-items: center; padding: 2px 0; }
+.instruction-text-mini { font-size: 8.5px; color: var(--text-dark); font-weight: 800; }
+.currency-rate-box-mini { font-size: 8.5px; color: var(--primary-blue-dark); font-weight: 800; background: var(--turquoise-light); padding: 5px; border-radius: 6px; border: 1px solid var(--primary-blue-light); text-align: center; width: 100%; height: 28px; display: flex; align-items: center; justify-content: center; }
 
-/* شبكة الأعمدة المنضبطة */
-.row-structured-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 5px; align-items: start; }
+/* شبكة الأعمدة المنضبطة والمحاذاة على نفس الحد الرأسي الأول */
+.row-structured-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 5px; align-items: stretch; }
 .col-right-group { display: flex; flex-direction: column; gap: 5px; }
 .col-left-group { display: flex; flex-direction: column; gap: 5px; }
 
 .compact-select, .compact-input {
-    padding: 5px; font-size: 9.5px; border: 1px solid var(--primary-blue-light); border-radius: 6px; background: var(--bg-white); width: 100%; height: 28px;
+    padding: 5px; font-size: 10px; border: 1px solid var(--primary-blue-light); border-radius: 6px; background: var(--bg-white); width: 100%; height: 28px; font-weight: 800;
 }
-.cyan-note-box { background: var(--turquoise-light); color: var(--primary-blue-dark); font-weight: bold; }
-.white-result-box { background: var(--bg-white); color: var(--primary-blue-dark); font-weight: bold; }
+.cyan-note-box { background: var(--turquoise-light); color: var(--primary-blue-dark); font-weight: 800; }
+.white-result-box { background: var(--bg-white); color: var(--primary-blue-dark); font-weight: 800; }
 
 /* أزرار الوسائط متساوية وممتدة بخط مثقل واضح */
 .row-media-buttons-full { display: flex; justify-content: space-between; gap: 5px; }
 .media-btn-bold {
-    flex: 1; padding: 6px 4px; font-size: 9.5px; border: 1px solid #ccc; border-radius: 6px; background: var(--bg-white);
+    flex: 1; padding: 6px 4px; font-size: 10px; border: 1px solid #ccc; border-radius: 6px; background: var(--bg-white);
     cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: 800;
 }
 .folder-btn { color: #b5838d; border-color: var(--accent-yellow); }
 .scan-btn { color: #3a86ff; border-color: var(--primary-blue); }
 .mic-btn { color: var(--accent-red); border-color: var(--accent-red); }
 
-/* مسرح العمل منظم في 3 سطور ومساحة نص خالية تماماً */
+/* مسرح العمل */
 .workspace-container { background: var(--turquoise-light); border: 1px solid var(--primary-blue-light); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 5px; }
 .workspace-instruction-line {
-    font-size: 9px; color: var(--text-dark); font-weight: 600; display: flex; align-items: center; gap: 5px; line-height: 1.25;
+    font-size: 9.5px; color: var(--text-dark); font-weight: 800; display: flex; align-items: center; gap: 5px; line-height: 1.25;
 }
 .workspace-textarea {
-    width: 100%; height: 48px; border: 1px solid var(--primary-blue-light); border-radius: 6px; background: var(--bg-white); font-size: 9.5px; resize: none;
-    outline: none; color: var(--text-dark); padding: 5px; line-height: 1.3; font-weight: bold;
+    width: 100%; height: 48px; border: 1px solid var(--primary-blue-light); border-radius: 6px; background: var(--bg-white); font-size: 10px; resize: none;
+    outline: none; color: var(--text-dark); padding: 5px; line-height: 1.3; font-weight: 800;
 }
 
 .row-action-buttons { display: grid; grid-template-columns: 2.2fr 1fr; gap: 5px; }
-.analyze-btn { background: var(--primary-blue); color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
-.clear-all-btn { background: var(--accent-red); color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; text-align: center; }
+.analyze-btn { background: var(--primary-blue); color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10.5px; font-weight: 800; cursor: pointer; text-align: center; }
+.clear-all-btn { background: var(--accent-red); color: white; border: none; padding: 6px; border-radius: 6px; font-size: 10.5px; font-weight: 800; cursor: pointer; text-align: center; }
 
-.analysis-result-section { background: #edf6f9; border: 1px solid var(--primary-blue); border-radius: 6px; padding: 7px; font-size: 10px; }
-.entry-row { padding: 2px 0; font-weight: bold; }
+.analysis-result-section { background: #edf6f9; border: 1px solid var(--primary-blue); border-radius: 6px; padding: 7px; font-size: 10px; font-weight: 800; }
+.entry-row { padding: 2px 0; font-weight: 800; }
 .debit-row { color: #2a9d8f; }
 .credit-row { color: #e76f51; }
 
 .modal-footer-export { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; padding: 6px 8px; background: #e9ecef; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
 .export-btn { background: var(--primary-blue-dark); color: white; border: none; border-radius: 6px; padding: 4px 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
 .export-btn:hover { background: var(--primary-blue); }
-.export-btn .line-1 { font-size: 8px; opacity: 0.85; }
-.export-btn .line-2 { font-size: 9px; font-weight: bold; }
+.export-btn .line-1 { font-size: 8px; opacity: 0.85; font-weight: 700; }
+.export-btn .line-2 { font-size: 9.5px; font-weight: 800; }

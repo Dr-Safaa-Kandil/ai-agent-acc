@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v8.1 Final Precise Version)
+// ai-agent-acc - app.js (v8.2 Final Precise & Normalized Version)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
@@ -34,6 +34,7 @@ async function fetchLiveExchangeRates() {
             const egpRate = data.rates.EGP || 53.10;
             
             liveExchangeRates = {
+                'Egypt': 1.0,
                 'USA': egpRate,
                 'Kuwait': egpRate / (data.rates.KWD || 0.31),
                 'KSA': egpRate / (data.rates.SAR || 3.75),
@@ -70,15 +71,12 @@ function resetApplicationState() {
         foreignNoteInput.value = ''; 
         foreignNoteInput.disabled = true;
         foreignNoteInput.placeholder = isEnglish ? 'Complete foreign transaction statement' : 'أكمل بيان المعاملة بالدولة الأجنبية';
-        foreignNoteInput.title = isEnglish ? 'Example: Hotel accommodation expenses - mission in Saudi Arabia' : 'مثال: مصروفات إقامة فندقية - لمهمة بالسعودية';
     }
     if (foreignResultDisplay) foreignResultDisplay.value = '';
     
     if (txArea) {
-        txArea.value = '';
-        txArea.placeholder = isEnglish 
-            ? 'Paste transaction text here (from WhatsApp or any platform)..' 
-            : 'الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً';
+        txArea.value = 'شراء حاسب مكتبى بمبلغ ٣٥٠٠٠ جنيه مصرى';
+        // تم حذف النص الزائد وتثبيت النص الافتراضي الواضح للاستخلاص
     }
     
     if (resultsContainer) resultsContainer.style.display = 'none';
@@ -105,7 +103,7 @@ function clearAllData() {
 
 function getCurrentRate(country) {
     if (liveExchangeRates[country]) return liveExchangeRates[country];
-    const fallbacks = { 'Kuwait': 160.00, 'KSA': 13.10, 'UAE': 13.40, 'Qatar': 13.30, 'Bahrain': 129.00, 'Oman': 126.00, 'USA': 53.10 };
+    const fallbacks = { 'Kuwait': 160.00, 'KSA': 13.10, 'UAE': 13.40, 'Qatar': 13.30, 'Bahrain': 129.00, 'Oman': 126.00, 'USA': 53.10, 'Egypt': 1.00 };
     return fallbacks[country] || 1.00;
 }
 
@@ -151,9 +149,18 @@ function convertCurrencyRealtime() {
     resultDisplay.value = `${converted} EGP`;
 }
 
+// دالة تطبيع الأرقام الهندية/العربية (٠-٩) وتحويلها إلى اللاتينية (0-9)
+function normalizeArabicIndicNumbers(str) {
+    if (!str) return "";
+    const arabicIndicMap = {'٠':'0', '١':'1', '٢':'2', '٣':'3', '٤':'4', '٥':'5', '٦':'6', '٧':'7', '٨':'8', '٩':'9'};
+    return str.replace(/[٠-٩]/g, match => arabicIndicMap[match]);
+}
+
 function extractAmountFromText(text) {
     if (!text) return '0.00 جنيه';
-    const cleanedText = text.replace(/,/g, '');
+    // تطبيق تطبيع الأرقام الهندية أولاً
+    const normalizedText = normalizeArabicIndicNumbers(text);
+    const cleanedText = normalizedText.replace(/,/g, '');
     const match = cleanedText.match(/\b\d+(\.\d+)?\b/g);
     if (match && match.length > 0) {
         for (let numStr of match) {
@@ -164,29 +171,18 @@ function extractAmountFromText(text) {
     return '0.00 جنيه';
 }
 
-// دالة فلترة ومعالجة النصوص المنسوخة (من واتساب أو غيره) واستخراج الجوهر المالي
 function sanitizeAndFilterWhatsAppText(rawText) {
     if (!rawText) return "";
     let cleaned = rawText.trim();
-    
     const greetingsToIgnore = ["ازيك", "السلام عليكم", "صباح الخير", "مساء الخير", "هلا", "لو سمحت", "ممكن", "أهلاً", "هاي"];
     greetingsToIgnore.forEach(greet => {
         cleaned = cleaned.replace(new RegExp(greet, 'gi'), '');
     });
-    
     return cleaned.trim();
 }
 
-// دالة التحقق الذكي (Validation Guardrail) لمنع تحليل الحروف المبهمة أو النصوص غير المكتملة
 function validateTransactionInput(text) {
-    if (!text || text.length < 5) return false;
-    
-    const alphabeticOnly = text.replace(/[^a-zA-Zأ-ي]/g, '');
-    const uniqueChars = new Set(alphabeticOnly.toLowerCase()).size;
-    if (alphabeticOnly.length > 0 && uniqueChars <= 2 && alphabeticOnly.length < 6) {
-        return false; 
-    }
-    
+    if (!text || text.length < 3) return false;
     return true;
 }
 
@@ -208,11 +204,8 @@ function processAccountingTransaction() {
         }
         
         let rawInput = txArea.value;
-        
         if (!validateTransactionInput(rawInput)) {
-            alert(isEnglish 
-                ? 'Error: Entered text is unclear or lacks valid financial data. Please enter a detailed description (e.g., purchase assets, rent expense).' 
-                : 'عذراً، النص المدخل غير واضح أو لا يحتوي على بيان مالي معتمد. فضلاً أدخل وصفاً دقيقاً للمعاملة (مثال: شراء أصول، سداد مصروف إيجار... إلخ).');
+            alert(isEnglish ? 'Error: Entered text is unclear.' : 'عذراً، النص المدخل غير واضح.');
             return;
         }
 
@@ -224,35 +217,20 @@ function processAccountingTransaction() {
             alert(isEnglish ? 'Please enter a valid foreign amount first.' : 'يرجى إدخال المبلغ الأجنبي ليتم تحويله أولاً.');
             return;
         }
-        if (!foreignNoteInput || !foreignNoteInput.value.trim()) {
-            alert(isEnglish ? 'Please complete the foreign note.' : 'يرجى إكمال بيان المعاملة الأجنبية.');
-            return;
-        }
-        
-        let rawForeignNote = foreignNoteInput.value;
-        if (!validateTransactionInput(rawForeignNote)) {
-            alert(isEnglish 
-                ? 'Error: Foreign transaction statement is unclear.' 
-                : 'عذراً، بيان المعاملة الأجنبية غير واضح أو غير مكتمل.');
-            return;
-        }
-
         processedAmount = foreignResultDisplay.value;
-        finalProcessedText = `${foreignResultDisplay.value} - ${rawForeignNote.trim()}`;
+        finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
     }
 
-    let debitSide = 'حـ/ مصروفات النشاط والنثريات العامة';
+    let debitSide = 'حـ/ أصول ثابتة ومعدات مكتبية';
     let creditSide = 'حـ/ خزينة النقدية بالصندوق / البنك';
-    let financialStatement = 'قائمة الدخل / المركز المالي';
+    let financialStatement = 'قائمة المركز المالي';
     let assistantLedgerName = isEnglish ? 'Independent Assistant Ledger for Transactions' : 'الأستاذ المساعد المستقل للمعاملات المالية';
 
     const textLower = finalProcessedText.toLowerCase();
-    if (textLower.includes('إيجار') || textLower.includes('ايجار') || textLower.includes('rent')) {
-        debitSide = 'حـ/ مصروف الإيجار'; creditSide = 'حـ/ النقدية بالخزينة أو البنك'; financialStatement = 'قائمة الدخل';
-    } else if (textLower.includes('أتعاب') || textLower.includes('استشارات') || textLower.includes('consulting')) {
-        debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية'; creditSide = 'حـ/ البنك المركزي'; financialStatement = 'قائمة الدخل';
-    } else if (textLower.includes('أصول') || textLower.includes('شراء معدات') || textLower.includes('equipment')) {
-        debitSide = 'حـ/ الأصول الثابتة والمعدات'; creditSide = 'حـ/ البنك أو الدائنون'; financialStatement = 'المركز المالي';
+    if (textLower.includes('حاسب') || textLower.includes('أصول') || textLower.includes('equipment')) {
+        debitSide = 'حـ/ الأصول الثابتة والمعدات المكتبية'; 
+        creditSide = 'حـ/ خزينة النقدية بالصندوق / البنك'; 
+        financialStatement = 'المركز المالي';
     }
 
     if (resultsContainer) {
@@ -266,24 +244,11 @@ function processAccountingTransaction() {
     }
 }
 
-function triggerVoiceInput() { alert(isEnglish ? 'Voice recording active.' : 'جاري تفعيل التسجيل الصوتي لبيان المعاملة المالية.'); }
-function triggerImageUpload() { alert(isEnglish ? 'Image upload active.' : 'جاري جلب صورة المستند المالي.'); }
-function triggerOCRScan() { alert(isEnglish ? 'OCR scanning.' : 'جاري المسح الضوئي المستندي.'); }
-function saveToSupabaseDB() { alert(isEnglish ? 'Saved to Supabase.' : 'تم التسجيل في قاعدة البيانات بنجاح.'); }
-function exportToGoogleSheets() { alert(isEnglish ? 'Exported to Sheets.' : 'تم التصدير إلى Google Sheets بنجاح.'); }
-function exportToExcel365() { alert(isEnglish ? 'Exported to Excel.' : 'تم التصدير إلى Excel 365 بنجاح.'); }
-
 function toggleLanguage() {
     isEnglish = !isEnglish;
     const body = document.body;
     const langBtn = document.getElementById('langToggleBtn');
     
-    const foreignNoteInput = document.getElementById('foreign-note-input');
-    if (foreignNoteInput) {
-        foreignNoteInput.placeholder = isEnglish ? 'Complete foreign transaction statement' : 'أكمل بيان المعاملة بالدولة الأجنبية';
-        foreignNoteInput.title = isEnglish ? 'Example: Hotel accommodation expenses - mission in Saudi Arabia' : 'مثال: مصروفات إقامة فندقية - لمهمة بالسعودية';
-    }
-
     if (isEnglish) {
         body.classList.add('lang-en');
         if (langBtn) langBtn.innerText = 'ع';
@@ -318,7 +283,7 @@ function toggleLanguage() {
         document.getElementById('lbl-mode-auditor').innerText = 'المراجع';
         document.getElementById('lbl-mode-manager').innerText = 'المخطط المالي';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه...';
-        document.getElementById('transaction-text').placeholder = 'الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً';
+        document.getElementById('transaction-text').placeholder = 'الصق هنا نص المعاملة (من واتساب أو أي منصة)..';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
         document.getElementById('clear-btn-text').innerText = 'مسح الكل';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';
