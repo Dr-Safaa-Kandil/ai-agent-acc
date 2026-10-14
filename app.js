@@ -1,4 +1,4 @@
-// ai-agent-acc - app.js (v7.9 Updated Full Version)
+// ai-agent-acc - app.js (v8.1 Final Precise Version)
 let isEnglish = false;
 let currentMode = 'user';
 let liveExchangeRates = {};
@@ -63,7 +63,7 @@ function resetApplicationState() {
     const today = new Date().toISOString().split('T')[0];
     if (dynamicDateDisplay) dynamicDateDisplay.innerText = today;
     if (countrySelect) countrySelect.value = 'Egypt';
-    if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
+    if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Unit Rate = Local (EGP)' : 'سعر صرف الوحدة = محلي (EGP)';
 
     if (amountInput) { amountInput.value = ''; amountInput.disabled = true; }
     if (foreignNoteInput) { 
@@ -77,8 +77,8 @@ function resetApplicationState() {
     if (txArea) {
         txArea.value = '';
         txArea.placeholder = isEnglish 
-            ? 'Please enter transaction statement including amount..' 
-            : 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ..';
+            ? 'Paste transaction text here (from WhatsApp or any platform)..' 
+            : 'الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً';
     }
     
     if (resultsContainer) resultsContainer.style.display = 'none';
@@ -130,10 +130,10 @@ function onCountryChange() {
     if (foreignNoteInput) foreignNoteInput.disabled = isEgypt;
 
     if (isEgypt) {
-        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Exchange Rate: Local (EGP)' : 'سعر الصرف: محلي (EGP)';
+        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? 'Unit Rate = Local (EGP)' : 'سعر صرف الوحدة = محلي (EGP)';
     } else {
         const rate = getCurrentRate(val).toFixed(2);
-        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? `Rate: 1 Unit = ${rate} EGP` : `سعر الصرف: 1 وحدة = ${rate} جنيه`;
+        if (exchangeRateDisplay) exchangeRateDisplay.innerText = isEnglish ? `Unit Rate = 1 = ${rate} EGP` : `سعر صرف الوحدة = 1 = ${rate} جنيه`;
     }
 }
 
@@ -164,6 +164,32 @@ function extractAmountFromText(text) {
     return '0.00 جنيه';
 }
 
+// دالة فلترة ومعالجة النصوص المنسوخة (من واتساب أو غيره) واستخراج الجوهر المالي
+function sanitizeAndFilterWhatsAppText(rawText) {
+    if (!rawText) return "";
+    let cleaned = rawText.trim();
+    
+    const greetingsToIgnore = ["ازيك", "السلام عليكم", "صباح الخير", "مساء الخير", "هلا", "لو سمحت", "ممكن", "أهلاً", "هاي"];
+    greetingsToIgnore.forEach(greet => {
+        cleaned = cleaned.replace(new RegExp(greet, 'gi'), '');
+    });
+    
+    return cleaned.trim();
+}
+
+// دالة التحقق الذكي (Validation Guardrail) لمنع تحليل الحروف المبهمة أو النصوص غير المكتملة
+function validateTransactionInput(text) {
+    if (!text || text.length < 5) return false;
+    
+    const alphabeticOnly = text.replace(/[^a-zA-Zأ-ي]/g, '');
+    const uniqueChars = new Set(alphabeticOnly.toLowerCase()).size;
+    if (alphabeticOnly.length > 0 && uniqueChars <= 2 && alphabeticOnly.length < 6) {
+        return false; 
+    }
+    
+    return true;
+}
+
 function processAccountingTransaction() {
     const countrySelect = document.getElementById('country-select');
     const txArea = document.getElementById('transaction-text');
@@ -180,8 +206,19 @@ function processAccountingTransaction() {
             alert(isEnglish ? 'Please enter transaction statement.' : 'يرجى إدخال نص المعاملة المالية أولاً.');
             return;
         }
-        finalProcessedText = txArea.value.trim();
+        
+        let rawInput = txArea.value;
+        
+        if (!validateTransactionInput(rawInput)) {
+            alert(isEnglish 
+                ? 'Error: Entered text is unclear or lacks valid financial data. Please enter a detailed description (e.g., purchase assets, rent expense).' 
+                : 'عذراً، النص المدخل غير واضح أو لا يحتوي على بيان مالي معتمد. فضلاً أدخل وصفاً دقيقاً للمعاملة (مثال: شراء أصول، سداد مصروف إيجار... إلخ).');
+            return;
+        }
+
+        finalProcessedText = sanitizeAndFilterWhatsAppText(rawInput);
         processedAmount = extractAmountFromText(finalProcessedText);
+        
     } else {
         if (!foreignResultDisplay || !foreignResultDisplay.value.trim()) {
             alert(isEnglish ? 'Please enter a valid foreign amount first.' : 'يرجى إدخال المبلغ الأجنبي ليتم تحويله أولاً.');
@@ -191,8 +228,17 @@ function processAccountingTransaction() {
             alert(isEnglish ? 'Please complete the foreign note.' : 'يرجى إكمال بيان المعاملة الأجنبية.');
             return;
         }
+        
+        let rawForeignNote = foreignNoteInput.value;
+        if (!validateTransactionInput(rawForeignNote)) {
+            alert(isEnglish 
+                ? 'Error: Foreign transaction statement is unclear.' 
+                : 'عذراً، بيان المعاملة الأجنبية غير واضح أو غير مكتمل.');
+            return;
+        }
+
         processedAmount = foreignResultDisplay.value;
-        finalProcessedText = `${foreignResultDisplay.value} - ${foreignNoteInput.value.trim()}`;
+        finalProcessedText = `${foreignResultDisplay.value} - ${rawForeignNote.trim()}`;
     }
 
     let debitSide = 'حـ/ مصروفات النشاط والنثريات العامة';
@@ -205,6 +251,8 @@ function processAccountingTransaction() {
         debitSide = 'حـ/ مصروف الإيجار'; creditSide = 'حـ/ النقدية بالخزينة أو البنك'; financialStatement = 'قائمة الدخل';
     } else if (textLower.includes('أتعاب') || textLower.includes('استشارات') || textLower.includes('consulting')) {
         debitSide = 'حـ/ مصروفات الاستشارات والخدمات المهنية'; creditSide = 'حـ/ البنك المركزي'; financialStatement = 'قائمة الدخل';
+    } else if (textLower.includes('أصول') || textLower.includes('شراء معدات') || textLower.includes('equipment')) {
+        debitSide = 'حـ/ الأصول الثابتة والمعدات'; creditSide = 'حـ/ البنك أو الدائنون'; financialStatement = 'المركز المالي';
     }
 
     if (resultsContainer) {
@@ -242,12 +290,12 @@ function toggleLanguage() {
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
         document.getElementById('modal-header-title-text').innerText = 'ai-agent-acc Financial Accounting Agent';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
-        document.getElementById('welcome-msg-2').innerText = 'Select Country / Enter Amount for Conversion';
+        document.getElementById('welcome-msg-2').innerText = 'Select Country / Enter Amount and Note Conversion';
         document.getElementById('lbl-mode-user').innerText = 'User';
         document.getElementById('lbl-mode-auditor').innerText = 'Accounting Auditor';
         document.getElementById('lbl-mode-manager').innerText = 'Financial Planner';
         document.getElementById('foreign-result-display').placeholder = 'Conversion to EGP...';
-        document.getElementById('transaction-text').placeholder = 'Please enter transaction statement including amount..';
+        document.getElementById('transaction-text').placeholder = 'Paste transaction text here (from WhatsApp or any platform)..';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
         document.getElementById('clear-btn-text').innerText = 'Clear All';
         document.getElementById('txt-voice').innerText = 'Voice';
@@ -265,12 +313,12 @@ function toggleLanguage() {
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
         document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي - ai-agent-acc';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
-        document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ لتحويله فورياً';
+        document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ ولاحظ ناتج التحويل';
         document.getElementById('lbl-mode-user').innerText = 'المستخدم';
         document.getElementById('lbl-mode-auditor').innerText = 'المراجع';
         document.getElementById('lbl-mode-manager').innerText = 'المخطط المالي';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل للجنيه...';
-        document.getElementById('transaction-text').placeholder = 'فضلاً أدخل هنا بيان المعاملة المالية شاملاً المبلغ..';
+        document.getElementById('transaction-text').placeholder = 'الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً';
         document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
         document.getElementById('clear-btn-text').innerText = 'مسح الكل';
         document.getElementById('txt-voice').innerText = 'تسجيل صوتي';

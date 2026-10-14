@@ -45,44 +45,46 @@
         <!-- محتوى النموذج -->
         <div class="modal-body">
             
-            <!-- رسالة الترحيب -->
-            <div class="welcome-box">
-                <div id="welcome-msg-1" style="font-size: 11px; font-weight: bold; color: var(--primary-blue-dark);">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
-                <div id="welcome-msg-2" style="font-size: 10px; color: #555;">اختر الدولة / أدخل المبلغ لتحويله فورياً</div>
-            </div>
-
-            <!-- صف التاريخ وسعر العملة -->
-            <div class="row-date-currency">
+            <!-- الصف الأول: رسالة الترحيب في البداية وتاريخ اليوم في نهاية نفس السطر -->
+            <div class="welcome-row-box">
+                <div id="welcome-msg-1" class="welcome-main-title">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
                 <div class="date-box" id="dynamic-date-display"></div>
-                <div class="currency-rate-box" id="exchange-rate-display">سعر الصرف: محلي (EGP)</div>
             </div>
 
-            <!-- صف الاختيارات (الدولة - المبلغ) -->
-            <div class="row-inputs-grid-dual">
-                <select id="country-select" class="compact-select" onchange="onCountryChange()">
-                    <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
-                    <option value="KSA" id="opt-ksa">المملكة العربية السعودية (SA) - SAR</option>
-                    <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة (AE) - AED</option>
-                    <option value="Kuwait" id="opt-kuwait">دولة الكويت (KW) - KWD</option>
-                    <option value="Qatar" id="opt-qatar">دولة قطر (QA) - QAR</option>
-                    <option value="Bahrain" id="opt-bahrain">مملكة البحرين (BH) - BHD</option>
-                    <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
-                    <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
-                </select>
-                <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
+            <!-- الصف الثاني: التعليمات وبجوارها سعر صرف الوحدة في نفس السطر -->
+            <div class="row-instruction-currency">
+                <div id="welcome-msg-2" class="instruction-text-mini">اختر الدولة / أدخل المبلغ لتحويله فورياً</div>
+                <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة = محلي (EGP)</div>
             </div>
 
-            <!-- صف عرض قيمة التحويل الفوري وجانبها خانة بيان المعاملة الأجنبية مع تفعيل Tooltip -->
-            <div class="row-conversion-note">
-                <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل للجنيه..." readonly>
-                <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
-            </div>
+            <!-- صف الإدخال المتناسق بشبكة أعمدة دقيقة -->
+            <div class="row-structured-grid">
+                <!-- العمود الأيمن: الدولة، ناتج التحويل، والوسائط -->
+                <div class="col-right-group">
+                    <select id="country-select" class="compact-select" onchange="onCountryChange()">
+                        <option value="Egypt" id="opt-egypt">جمهورية مصر العربية (EG) - EGP</option>
+                        <option value="KSA" id="opt-ksa">المملكة العربية السعودية (SA) - SAR</option>
+                        <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة (AE) - AED</option>
+                        <option value="Kuwait" id="opt-kuwait">دولة الكويت (KW) - KWD</option>
+                        <option value="Qatar" id="opt-qatar">دولة قطر (QA) - QAR</option>
+                        <option value="Bahrain" id="opt-bahrain">مملكة البحرين (BH) - BHD</option>
+                        <option value="Oman" id="opt-oman">سلطنة عمان (OM) - OMR</option>
+                        <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية (US) - USD</option>
+                    </select>
+                    <input type="text" id="foreign-result-display" class="compact-input result-box" placeholder="ناتج التحويل للجنيه..." readonly>
+                    
+                    <div class="row-media-buttons">
+                        <button class="media-btn folder-btn" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
+                        <button class="media-btn scan-btn" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
+                        <button class="media-btn mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
+                    </div>
+                </div>
 
-            <!-- صف الأزرار الوسائطية الملونة -->
-            <div class="row-media-buttons">
-                <button class="media-btn folder-btn" onclick="triggerImageUpload()" title="جلب صورة">📁 <span id="txt-image">جلب صورة</span></button>
-                <button class="media-btn scan-btn" onclick="triggerOCRScan()" title="مسح ضوئي">📷 <span id="txt-ocr">مسح ضوئي</span></button>
-                <button class="media-btn mic-btn" onclick="triggerVoiceInput()" title="تسجيل صوتي">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
+                <!-- العمود الأيسر: المبلغ وبيان المعاملة الأجنبية -->
+                <div class="col-left-group">
+                    <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
+                    <input type="text" id="foreign-note-input" class="compact-input" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" title="مثال: مصروفات إقامة فندقية - لمهمة بالسعودية" disabled>
+                </div>
             </div>
 
             <!-- مسرح العمل منظم في 3 سطور إرشادية واضحة -->
@@ -96,7 +98,7 @@
                 <div class="workspace-instruction-line">
                     <span>🎙️</span> أو إرسال ملف تسجيل صوتى يوضح المعاملة المالية
                 </div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="أدخل بيان المعاملة المالية هنا..."></textarea>
+                <textarea id="transaction-text" class="workspace-textarea" placeholder="الصق هنا نص المعاملة (من واتساب أو أي منصة).. وسيتم فلترتها واستخراج القيود تلقائياً"></textarea>
             </div>
 
             <!-- صف زر التحليل وزر مسح الكل -->
