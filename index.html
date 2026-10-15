@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <!-- شريط أزرار الأنماط -->
+        <!-- شريط أزرار الأنماط الثلاثة (متساوية الاتساع مع بروز نمط المستخدم الافتراضي) -->
         <div class="modes-toolbar">
             <button class="mode-icon-btn active-mode" onclick="switchMode('user')">
                 👤 <span class="mode-lbl" id="lbl-mode-user">المستخدم</span>
@@ -46,7 +46,7 @@
         <!-- محتوى النموذج -->
         <div class="modal-body">
             
-            <!-- الصف الأول: الترحيب والتاريخ -->
+            <!-- الصف الأول: الترحيب وكائن التاريخ الموسع والأكثر وضوحاً -->
             <div class="welcome-row-box">
                 <div id="welcome-msg-1" class="welcome-main-title">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
                 <div class="date-box" id="dynamic-date-display"></div>
@@ -58,11 +58,11 @@
                 <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
             </div>
 
-            <!-- شبكة الأعمدة (ترتيب القائمة: اسم الدولة والعملة بالعربية ثم الاختصار بالإنجليزية) -->
+            <!-- شبكة الأعمدة (حالات المعاملة المحلية والأجنبية والستة كائنات) -->
             <div class="row-structured-grid">
                 <div class="col-right-group">
                     <select id="country-select" class="compact-select" onchange="onCountryChange()">
-                        <option value="Egypt" id="opt-egypt">جمهورية مصر العربية - جنيه مصري (EGP)</option>
+                        <option value="Egypt" id="opt-egypt">معاملة مالية محلية بمصر (EGP)</option>
                         <option value="KSA" id="opt-ksa">المملكة العربية السعودية - ريال سعودي (SAR)</option>
                         <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة - درهم إماراتي (AED)</option>
                         <option value="Kuwait" id="opt-kuwait">دولة الكويت - دينار كويتي (KWD)</option>
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- أزرار الوسائط -->
+            <!-- أزرار الوسائط المتعددة (بمظهر ثلاثي الأبعاد 3D) -->
             <div class="row-media-buttons-full">
                 <input type="file" id="hidden-file-input" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
@@ -88,20 +88,20 @@
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- صف زر معاملة مالية جديدة (في سطر مستقل ومتوسط للصف) -->
+            <!-- صف زر معاملة مالية جديدة (بلون أزرق واضح ومميز للحذف وبدء معاملة جديدة) -->
             <div class="row-new-transaction">
                 <button id="new-trans-btn-text" class="new-transaction-btn" onclick="confirmNewTransaction()">معاملة مالية جديدة</button>
             </div>
 
-            <!-- مسرح العمليات (تم حذف السطرين الإرشاديين الثاني والثالث لتوفير المساحة) -->
+            <!-- مسرح العمليات (خانة النص البيضاء الأساسية للمعاملة) -->
             <div class="workspace-container">
                 <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
                 <textarea id="transaction-text" class="workspace-textarea" placeholder="" onkeydown="checkForeignRestriction(event)" onpaste="checkForeignRestriction(event)"></textarea>
             </div>
 
-            <!-- أزرار الإجراء -->
+            <!-- أزرار الإجراء (زر إرسال مستقل تماماً للتحليل دون رسائل حذف) -->
             <div class="row-action-buttons">
-                <button id="submit-btn-text" class="analyze-btn" onclick="handleActionWithConfirmation('submit')">إرسال المعاملة المالية للتحليل</button>
+                <button id="submit-btn-text" class="analyze-btn" onclick="processAccountingTransactionDirect()">إرسال المعاملة المالية للتحليل</button>
             </div>
 
             <!-- نتائج التحليل -->
@@ -116,7 +116,7 @@
 
         </div>
 
-        <!-- تذييل التصدير -->
+        <!-- تذييل التصدير (أزرار ثلاثية الأبعاد 3D وواضحة) -->
         <div class="modal-footer-export">
             <button class="export-btn" onclick="handleActionWithConfirmation('supabase')">
                 <span class="line-1" id="exp-sup-l1">تسجيل بقاعدة بيانات</span>
@@ -134,7 +134,7 @@
 
     </div>
 
-    <!-- نافذة تأكيد التراجع والحذف -->
+    <!-- نافذة تأكيد التراجع والحذف (خاصة بمعاملة جديدة أو التصدير فقط وليس لها علاقة بزر التحليل) -->
     <div id="confirm-modal" class="modal-container hidden" style="z-index: 10005; width: 300px; height: auto; margin: auto; position: fixed; top: 35%; right: 50%; transform: translate(50%, -50%); padding: 15px; background: white; text-align: center;">
         <p id="confirm-msg-text" style="font-size: 11px; margin-bottom: 12px; font-weight: bold; color: var(--text-dark);">سيجرى حذف بيانات المعاملة السابقة، هل تريد المتابعة؟</p>
         <div style="display: flex; gap: 8px; justify-content: center;">
@@ -144,6 +144,5 @@
     </div>
 
     <script src="app.js"></script>
-    <script src="recorder.js"></script>
 </body>
 </html>
