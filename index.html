@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="modal-header-title">المساعد المحاسبي الذكي - ai-agent-acc</title>
-    <!-- الرمز المصغر: حقيبة رسمية واحدة بلون برتقالي محمر زاهي -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF5722'><path d='M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0-2-.9-2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4zm10 15H4V8h16v11z'/></svg>">
     <link rel="stylesheet" href="widget.css">
 </head>
@@ -30,7 +29,7 @@
             </div>
         </div>
 
-        <!-- شريط أزرار الأنماط الثلاثة (متساوية الاتساع مع بروز نمط المستخدم الافتراضي) -->
+        <!-- شريط أزرار الأنماط -->
         <div class="modes-toolbar">
             <button class="mode-icon-btn active-mode" onclick="switchMode('user')">
                 👤 <span class="mode-lbl" id="lbl-mode-user">المستخدم</span>
@@ -46,41 +45,76 @@
         <!-- محتوى النموذج -->
         <div class="modal-body">
             
-            <!-- الصف الأول: الترحيب وكائن التاريخ الموسع والأكثر وضوحاً -->
+            <!-- القسم الثابت: الترحيب والتاريخ -->
             <div class="welcome-row-box">
                 <div id="welcome-msg-1" class="welcome-main-title">مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية</div>
                 <div class="date-box" id="dynamic-date-display"></div>
             </div>
 
-            <!-- الصف الثاني: التعليمات وسعر الصرف -->
-            <div class="row-instruction-currency">
-                <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل</div>
-                <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
-            </div>
-
-            <!-- شبكة الأعمدة (حالات المعاملة المحلية والأجنبية والستة كائنات) -->
-            <div class="row-structured-grid">
-                <div class="col-right-group">
-                    <select id="country-select" class="compact-select" onchange="onCountryChange()">
-                        <option value="Egypt" id="opt-egypt">معاملة مالية محلية بمصر (EGP)</option>
-                        <option value="KSA" id="opt-ksa">المملكة العربية السعودية - ريال سعودي (SAR)</option>
-                        <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة - درهم إماراتي (AED)</option>
-                        <option value="Kuwait" id="opt-kuwait">دولة الكويت - دينار كويتي (KWD)</option>
-                        <option value="Qatar" id="opt-qatar">دولة قطر - ريال قطري (QAR)</option>
-                        <option value="Bahrain" id="opt-bahrain">مملكة البحرين - دينار بحريني (BHD)</option>
-                        <option value="Oman" id="opt-oman">سلطنة عمان - ريال عماني (OMR)</option>
-                        <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية - دولار أمريكي (USD)</option>
-                    </select>
-                    <input type="text" id="foreign-note-input" class="compact-input cyan-note-box" placeholder="أكمل بيان المعاملة بالدولة الأجنبية" disabled>
+            <!-- تخطيط رئيسي يضم أزرار التبديل الرأسية (Toggle) جهة اليمين ومسرح/كائنات العمل جهة اليسار -->
+            <div class="main-workspace-layout">
+                
+                <!-- أزرار التبديل الرأسية (Toggle) -->
+                <div class="vertical-toggle-group">
+                    <button id="toggle-local-btn" class="v-toggle-btn active-v-toggle" onclick="switchTransactionScenario('local')">
+                        <span id="txt-local-opt">معاملة مالية محلية بمصر</span>
+                    </button>
+                    <button id="toggle-foreign-btn" class="v-toggle-btn" onclick="switchTransactionScenario('foreign')">
+                        <span id="txt-foreign-opt">معاملة بدولة / بعملة أجنبية</span>
+                    </button>
                 </div>
 
-                <div class="col-left-group">
-                    <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." disabled>
-                    <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
+                <!-- محتوى السيناريوهات التبديلية -->
+                <div class="scenario-content-area">
+                    
+                    <!-- السيناريو الأول: معاملة محلية (يظهر مسرح العمل مباشرة) -->
+                    <div id="scenario-local-box" class="scenario-pane">
+                        <div class="workspace-container">
+                            <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
+                            <textarea id="transaction-text" class="workspace-textarea" placeholder="اكتب تفاصيل المعاملة هنا..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- السيناريو الثاني: معاملة أجنبية (يضم الـ 6 كائنات بتسلسلها الدقيق) -->
+                    <div id="scenario-foreign-box" class="scenario-pane hidden">
+                        <!-- 1. رسالة إرشادية -->
+                        <div id="welcome-msg-2" class="instruction-text-mini">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل</div>
+                        
+                        <!-- 2. سعر صرف الوحدة بالجنيه -->
+                        <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
+                        
+                        <!-- 3 & 4. قائمة الدول والعملة وخانة المبلغ -->
+                        <div class="row-structured-grid">
+                            <select id="country-select" class="compact-select" onchange="onCountryChange()">
+                                <option value="KSA" id="opt-ksa">المملكة العربية السعودية - ريال سعودي (SAR)</option>
+                                <option value="UAE" id="opt-uae">دولة الإمارات العربية المتحدة - درهم إماراتي (AED)</option>
+                                <option value="Kuwait" id="opt-kuwait">دولة الكويت - دينار كويتي (KWD)</option>
+                                <option value="Qatar" id="opt-qatar">دولة قطر - ريال قطري (QAR)</option>
+                                <option value="Bahrain" id="opt-bahrain">مملكة البحرين - دينار بحريني (BHD)</option>
+                                <option value="Oman" id="opt-oman">سلطنة عمان - ريال عماني (OMR)</option>
+                                <option value="USA" id="opt-usa">الولايات المتحدة الأمريكية - دولار أمريكي (USD)</option>
+                            </select>
+                            <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." oninput="convertCurrencyRealtime()">
+                        </div>
+
+                        <!-- 5. خانة ناتج التحويل -->
+                        <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
+
+                        <!-- 6. مسرح العمل المعني بالمعاملة الأجنبية -->
+                        <div class="workspace-container">
+                            <div class="workspace-instruction-line"><span>📝</span> <span id="ins-2">أكمل بيان أطراف المعاملة المالية وطريقة السداد بعد أدخالك المبلغ</span></div>
+                            <textarea id="foreign-transaction-text" class="workspace-textarea" placeholder="اكتب بيان أطراف المعاملة وطريقة السداد..."></textarea>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- أزرار الوسائط المتعددة (بمظهر ثلاثي الأبعاد 3D) -->
+            <!-- القسم الثابت: زر بدء معاملة مالية جديدة وأزرار الوسائط -->
+            <div class="row-new-transaction">
+                <button id="new-trans-btn-text" class="new-transaction-btn" onclick="confirmNewTransaction()">معاملة مالية جديدة</button>
+            </div>
+
             <div class="row-media-buttons-full">
                 <input type="file" id="hidden-file-input" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
                 <button class="media-btn-bold folder-btn" onclick="triggerImageUpload()">📁 <span id="txt-image">جلب صورة</span></button>
@@ -88,18 +122,7 @@
                 <button class="media-btn-bold mic-btn" onclick="triggerVoiceInput()">🎙️ <span id="txt-voice">تسجيل صوتي</span></button>
             </div>
 
-            <!-- صف زر معاملة مالية جديدة (بلون أزرق واضح ومميز للحذف وبدء معاملة جديدة) -->
-            <div class="row-new-transaction">
-                <button id="new-trans-btn-text" class="new-transaction-btn" onclick="confirmNewTransaction()">معاملة مالية جديدة</button>
-            </div>
-
-            <!-- مسرح العمليات (خانة النص البيضاء الأساسية للمعاملة) -->
-            <div class="workspace-container">
-                <div class="workspace-instruction-line"><span>📝</span> <span id="ins-1">أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق</span></div>
-                <textarea id="transaction-text" class="workspace-textarea" placeholder="" onkeydown="checkForeignRestriction(event)" onpaste="checkForeignRestriction(event)"></textarea>
-            </div>
-
-            <!-- أزرار الإجراء (زر إرسال مستقل تماماً للتحليل دون رسائل حذف) -->
+            <!-- القسم الرابع: إرسال المعاملة المالية للتحليل -->
             <div class="row-action-buttons">
                 <button id="submit-btn-text" class="analyze-btn" onclick="processAccountingTransactionDirect()">إرسال المعاملة المالية للتحليل</button>
             </div>
@@ -116,7 +139,7 @@
 
         </div>
 
-        <!-- تذييل التصدير (أزرار ثلاثية الأبعاد 3D وواضحة) -->
+        <!-- تذييل التصدير -->
         <div class="modal-footer-export">
             <button class="export-btn" onclick="handleActionWithConfirmation('supabase')">
                 <span class="line-1" id="exp-sup-l1">تسجيل بقاعدة بيانات</span>
@@ -134,7 +157,7 @@
 
     </div>
 
-    <!-- نافذة تأكيد التراجع والحذف (خاصة بمعاملة جديدة أو التصدير فقط وليس لها علاقة بزر التحليل) -->
+    <!-- نافذة التأكيد -->
     <div id="confirm-modal" class="modal-container hidden" style="z-index: 10005; width: 300px; height: auto; margin: auto; position: fixed; top: 35%; right: 50%; transform: translate(50%, -50%); padding: 15px; background: white; text-align: center;">
         <p id="confirm-msg-text" style="font-size: 11px; margin-bottom: 12px; font-weight: bold; color: var(--text-dark);">سيجرى حذف بيانات المعاملة السابقة، هل تريد المتابعة؟</p>
         <div style="display: flex; gap: 8px; justify-content: center;">
