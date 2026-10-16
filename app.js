@@ -79,7 +79,7 @@ function onCountryChange() {
 
     if (countryData) {
         rateDisplay.innerText = isEnglish ? 
-            `Exchange Rate: 1 ${countryData.nameEn} = ${countryData.rate} EGP` : 
+            `1 ${countryData.nameEn} = ${countryData.rate} EGP` : 
             `سعر صرف الوحدة: 1 ${countryData.nameAr} = ${countryData.rate} جنيه`;
     }
     convertCurrencyRealtime();
@@ -102,8 +102,8 @@ function convertCurrencyRealtime() {
     if (countryData) {
         let totalEGP = amount * countryData.rate;
         resultDisplay.value = isEnglish ? 
-            `Equivalent: ${totalEGP.toFixed(2)} EGP` : 
-            `المعادل بالجنيه المصري: ${totalEGP.toFixed(2)} جنيه`;
+            `${totalEGP.toFixed(2)} EGP` : 
+            `${totalEGP.toFixed(2)} جنيه مصري`;
     }
 }
 
@@ -168,7 +168,7 @@ function resetTransactionForm() {
 }
 
 function exportData(type) {
-    alert(isEnglish ? `Exporting transaction report as ${type.toUpperCase()}...` : `جاري تصدير تقرير المعاملات بتنسيق ${type.toUpperCase()}...`);
+    alert(isEnglish ? `Exporting transaction report as ${type.toUpperCase()}...` : `جاري تنفيذ العملية المطلوبة بتنسيق ${type.toUpperCase()}...`);
 }
 
 function toggleLanguage() {
@@ -184,7 +184,7 @@ function toggleLanguage() {
         if (langBtn) langBtn.innerText = 'ع';
 
         document.getElementById('widget-launcher-title').innerText = 'Smart Accounting Assistant';
-        document.getElementById('modal-header-title-text').innerText = 'SmartDashboard - ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'Smart Accounting Assistant';
         document.getElementById('welcome-msg-1').innerText = 'Welcome to your smart financial transaction agent';
         
         document.getElementById('txt-local-l1').innerText = 'Financial';
@@ -200,7 +200,7 @@ function toggleLanguage() {
         document.getElementById('ins-1').innerText = 'Enter financial transaction including amount and payment method';
         document.getElementById('ins-2').innerText = 'Complete transaction parties and payment method after entering amount';
         
-        document.getElementById('new-trans-btn-text').innerText = 'New Financial Transaction';
+        document.getElementById('new-trans-btn-text').innerText = 'Clear All';
         document.getElementById('submit-btn-text').innerText = 'Send Transaction for Analysis';
         
         document.getElementById('txt-image').innerText = 'Image';
@@ -227,7 +227,7 @@ function toggleLanguage() {
         if (langBtn) langBtn.innerText = 'EN';
 
         document.getElementById('widget-launcher-title').innerText = 'المساعد المحاسبي الذكي';
-        document.getElementById('modal-header-title-text').innerText = 'SmartDashboard - ai-agent-acc';
+        document.getElementById('modal-header-title-text').innerText = 'المساعد المحاسبي الذكي';
         document.getElementById('welcome-msg-1').innerText = 'مرحبا مع وكيلك الذكى لتسجيل المعاملات المالية';
         
         document.getElementById('txt-local-l1').innerText = 'معاملة مالية';
@@ -236,15 +236,15 @@ function toggleLanguage() {
         document.getElementById('txt-foreign-l2').innerText = 'بدولة أجنبية';
         document.getElementById('txt-btn-add-client').innerText = 'إضافة عميل';
         
-        document.getElementById('welcome-msg-2').innerText = 'إختر الدولة / أدخل المبلغ لعرض ناتج التحويل';
+        document.getElementById('welcome-msg-2').innerText = 'اختر الدولة / أدخل المبلغ لعرض ناتج التحويل';
         document.getElementById('amount-input').placeholder = 'المبلغ...';
         document.getElementById('foreign-result-display').placeholder = 'ناتج التحويل...';
         
         document.getElementById('ins-1').innerText = 'أدخل بيان المعاملة المالية شاملا المبلغ وسداده نقدا أم بالبنك أومستحق';
         document.getElementById('ins-2').innerText = 'أكمل بيان أطراف المعاملة المالية وطريقة السداد بعد أدخالك المبلغ';
         
-        document.getElementById('new-trans-btn-text').innerText = 'معاملة مالية جديدة';
-        document.getElementById('submit-btn-text').innerText = 'إرسال المعاملة المالية للتحليل';
+        document.getElementById('new-trans-btn-text').innerText = 'مسح الكل';
+        document.getElementById('submit-btn-text').innerText = 'إرسال معاملة إلى التحليل';
         
         document.getElementById('txt-image').innerText = 'جلب صورة';
         document.getElementById('txt-ocr').innerText = 'مسح ضوئي';

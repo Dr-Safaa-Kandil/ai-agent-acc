@@ -93,7 +93,9 @@ const accountingDictionary = {
         }
 
         let matchedCredit = this.analyzePaymentMethod(text, isEnglish);
-        let financialStatement = isEnglish ? "Financial Position / Income Statement" : "المركز المالي / قائمة الدخل";
+        
+        // استخدام الترجمة الأكاديمية والمهنية الكاملة لمعايير IFRS
+        let financialStatement = isEnglish ? "Statement of Financial Position" : "قائمة المركز المالي";
 
         return {
             translatedStatement: translatedText,

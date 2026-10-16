@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
-    <title>SmartDashboard - ai-agent-acc</title>
+    <title>المساعد المحاسبي الذكي - ai-agent-acc</title>
     <link rel="stylesheet" href="widget.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
     <div id="smart-modal" class="modal-container hidden">
         <div class="modal-header">
             <div class="header-title-group">
-                <span class="main-name" id="modal-header-title-text">SmartDashboard - ai-agent-acc</span>
+                <span class="main-name" id="modal-header-title-text">المساعد المحاسبي الذكي</span>
             </div>
             <div class="header-controls">
                 <button id="langToggleBtn" class="lang-btn" onclick="toggleLanguage()">EN</button>
@@ -32,24 +32,31 @@
                 <div id="current-date-box" class="date-box">2026-10-16</div>
             </div>
 
+            <!-- شريط أنماط العمل الثلاثة -->
+            <div class="modes-row-box">
+                <button class="mode-tab-btn active-mode" id="mode-user-btn">نمط المستخدم</button>
+                <button class="mode-tab-btn" id="mode-auditor-btn">المراجع</button>
+                <button class="mode-tab-btn" id="mode-planner-btn">المخطط المالى</button>
+            </div>
+
             <!-- مسرح العمل والتبديل الرأسي مع زر إضافة العميل سطر واحد رمادي ثلاثي الأبعاد -->
             <div class="main-workspace-layout">
                 
                 <div class="vertical-toggle-group">
                     <button id="toggle-local-btn" class="v-toggle-btn active-v-toggle" onclick="switchTransactionScenario('local')">
                         <span class="v-toggle-icon">🇪🇬</span>
-                        <span id="txt-local-l1">معاملة مالية</span>
-                        <span id="txt-local-l2">محلية بمصر</span>
+                        <span id="txt-local-l1" class="bold-larger">معاملة مالية</span>
+                        <span id="txt-local-l2" class="bold-larger">محلية بمصر</span>
                     </button>
                     <button id="toggle-foreign-btn" class="v-toggle-btn" onclick="switchTransactionScenario('foreign')">
                         <span class="v-toggle-icon">🌍</span>
-                        <span id="txt-foreign-l1">معاملة مالية</span>
-                        <span id="txt-foreign-l2">بدولة أجنبية</span>
+                        <span id="txt-foreign-l1" class="bold-larger">معاملة مالية</span>
+                        <span id="txt-foreign-l2" class="bold-larger">بدولة أجنبية</span>
                     </button>
                     <!-- زر إدخال اسم عميل: سطر واحد ورمادي ثلاثي الأبعاد -->
                     <button class="v-client-btn" onclick="openAddClientModal()">
                         <span>➕</span>
-                        <span id="txt-btn-add-client">إضافة عميل</span>
+                        <span id="txt-btn-add-client" class="bold-larger-client">إضافة عميل</span>
                     </button>
                 </div>
 
@@ -66,8 +73,7 @@
 
                     <!-- 2. سيناريو المعاملة الأجنبية -->
                     <div id="scenario-foreign-box" class="scenario-pane hidden">
-                        <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
-                        <div id="welcome-msg-2" class="instruction-text-bold">إختر الدولة / أدخل المبلغ لعرض ناتج التحويل</div>
+                        <div id="welcome-msg-2" class="instruction-text-bold">اختر الدولة / أدخل المبلغ لعرض ناتج التحويل</div>
                         
                         <div class="row-structured-grid">
                             <select id="country-select" class="compact-select" onchange="onCountryChange()">
@@ -82,7 +88,10 @@
                             <input type="number" id="amount-input" class="compact-input" placeholder="المبلغ..." oninput="convertCurrencyRealtime()">
                         </div>
 
-                        <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
+                        <div class="row-structured-grid" style="grid-template-columns: 1.2fr 1fr; align-items: center;">
+                            <div class="currency-rate-box-mini" id="exchange-rate-display">سعر صرف الوحدة بالجنيه</div>
+                            <input type="text" id="foreign-result-display" class="compact-input white-result-box" placeholder="ناتج التحويل..." readonly>
+                        </div>
 
                         <div class="workspace-container">
                             <div class="workspace-instruction-line"><span>📝</span> <span id="ins-2">أكمل بيان أطراف المعاملة المالية وطريقة السداد بعد أدخالك المبلغ</span></div>
@@ -93,14 +102,14 @@
                 </div>
             </div>
 
-            <!-- زر معاملة جديدة -->
+            <!-- زر مسح الكل -->
             <div class="row-new-transaction">
                 <button class="new-transaction-btn" onclick="resetTransactionForm()">
-                    <span id="new-trans-btn-text">معاملة مالية جديدة</span>
+                    <span id="new-trans-btn-text">مسح الكل</span>
                 </button>
             </div>
 
-            <!-- أزرار جلب الوسائط -->
+            <!-- أزرار جلب الوسائط ثلاثية الأبعاد -->
             <div class="row-media-buttons-full">
                 <button class="media-btn-bold folder-btn"><span>📁</span> <span id="txt-image">جلب صورة</span></button>
                 <button class="media-btn-bold scan-btn"><span>📄</span> <span id="txt-ocr">مسح ضوئي</span></button>
@@ -110,7 +119,7 @@
             <!-- زر إرسال للتحليل -->
             <div class="row-action-buttons">
                 <button class="analyze-btn" onclick="processAccountingTransactionDirect()">
-                    <span id="submit-btn-text">إرسال المعاملة المالية للتحليل</span>
+                    <span id="submit-btn-text">إرسال معاملة إلى التحليل</span>
                 </button>
             </div>
 
@@ -132,9 +141,9 @@
 
         <!-- تذييل التصدير -->
         <div class="modal-footer-export">
-            <button class="export-btn" onclick="exportData('excel')"><span class="line-1">تصدير</span><span class="line-2">Excel</span></button>
-            <button class="export-btn" onclick="exportData('pdf')"><span class="line-1">تقرير</span><span class="line-2">PDF</span></button>
-            <button class="export-btn" onclick="exportData('json')"><span class="line-1">حفظ كـ</span><span class="line-2">JSON</span></button>
+            <button class="export-btn" onclick="exportData('excel')"><span class="line-1">تصدير</span><span class="line-2">التداول</span></button>
+            <button class="export-btn" onclick="exportData('pdf')"><span class="line-1">استخراج</span><span class="line-2">تقرير</span></button>
+            <button class="export-btn" onclick="exportData('db')"><span class="line-1">تسجيل بقاعدة</span><span class="line-2">البيانات</span></button>
         </div>
     </div>
 
